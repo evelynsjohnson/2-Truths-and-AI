@@ -1,0 +1,44 @@
+[
+    {
+        "aiModel": "gpt-5-nano",
+        "dateExported": "10-0-2025",
+        "numAIStatements": 4,
+        "numPlayers": 2
+    },
+    {
+        "id": 1,
+        "set": 1,
+        "playerID": 1,
+        "playerName": "Evelyn",
+        "playerStatement1": "I learned to rollerblade in elementary school.",
+        "playerStatement2": "I have never broke a bone.",
+        "aiStatement": "I once won a local scavenger hunt competition."
+    },
+    {
+        "id": 2,
+        "set": 2,
+        "playerID": 1,
+        "playerName": "Evelyn",
+        "playerStatement1": "I can crack my wrists on command",
+        "playerStatement2": "I had to train myself to curl my tongue.",
+        "aiStatement": "I can juggle three balls for a full minute."
+    },
+    {
+        "id": 3,
+        "set": 1,
+        "playerName": "Ariel",
+        "playerID": 2,
+        "playerStatement1": "I can solve a rubix cube in under 25 seconds.",
+        "playerStatement2": "I used to compete in professional bowling tournaments",
+        "aiStatement": "I once trained as a classical pianist for five years."
+    },
+    {
+        "id": 4,
+        "set": 2,
+        "playerName": "Ariel",
+        "playerID": 2,
+        "playerStatement1": "I have been to California.",
+        "playerStatement2": "I know how to ski.",
+        "aiStatement": "I once ran a weekend farmers market booth selling handmade soap."
+    }
+]
