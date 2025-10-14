@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>App Settings - 2 Truths and A Lie</title>
+    <!-- Tab icon (favicon) - centralized via js/tab-icon.js -->
+    <script src="js/tab-icon.js"></script>
+    <link rel="stylesheet" href="css/theme-overrides.css">
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d0d0d;
+            color: #fff;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            background: var(--bg);
+            color: #fff;
+            font-family: 'Afacad', sans-serif;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .stage {
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 6px 0 24px;
+        }
+
+        .home-btn {
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: var(--secondary);
+            border: none;
+            border-radius: 10px;
+            padding: 10px;
+            height: 48px;
+            width: 48px;
+            display: grid;
+            place-items: center;
+            cursor: pointer
+        }
+
+        h1 {
+            font-size: 2.6rem;
+        }
+
+        /* uses .divider from theme-overrides.css */
+
+        .controls {
+            margin-top: 36px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            gap: 20px
+        }
+
+        label {
+            min-width: 220px;
+            font-size: 1.4rem
+        }
+
+        input[type=range] {
+            width: 60%;
+        }
+
+        .theme-swatches {
+            display: flex;
+            gap: 18px;
+            align-items: center
+        }
+
+        .theme-swatch {
+            width: 72px;
+            height: 48px;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.06)
+        }
+        .theme-swatch .swatch-icon {
+            position: relative;
+            width: 22px;
+            height: 22px;
+            pointer-events: none;
+            display: none;
+        }
+
+        /* custom swatch shows an overlay picker icon */
+        #theme-swatch-custom { position: relative; }
+        #theme-swatch-custom .swatch-icon {
+            position: absolute;
+            right: 6px;
+            bottom: 6px;
+            display: block;
+            opacity: 0.95;
+            filter: drop-shadow(0 1px 0 rgba(0,0,0,0.5));
+        }
+
+        .music-select {
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: #111;
+            color: #fff;
+            border: 1px solid #222
+        }
+
+        .footer {
+            margin-top: 40px;
+            display: flex;
+            justify-content: flex-end
+        }
+    </style>
+</head>
+
+<body>
+    <main class="stage">
+        <header>
+        <button class="home-btn" aria-label="Home" onclick="window.location.href='start-screen.html'"><img
+            src="img/button-icons/home.png" alt="Home" style="width:22px" /></button>
+            <div>
+                <h1>App Settings</h1>
+                <div class="divider" aria-hidden="true"></div>
+            </div>
+        </header>
+
+        <section class="controls">
+            <div class="row">
+                <label for="master-volume">Master Volume</label>
+                <input id="master-volume" type="range" min="0" max="100" value="20" />
+                <span id="master-volume-label">20%</span>
+            </div>
+
+            <div class="row">
+                <label for="sfx-volume">Sound Effects</label>
+                <input id="sfx-volume" type="range" min="0" max="100" value="20" />
+                <span id="sfx-volume-label">20%</span>
+            </div>
+
+            <div class="row">
+                <label for="bg-music-volume">Music Volume</label>
+                <input id="bg-music-volume" type="range" min="0" max="100" value="20" />
+                <span id="bg-music-volume-label">20%</span>
+            </div>
+
+            <div class="row">
+                <label for="bg-music-select">Background Music</label>
+                <select id="bg-music-select" class="music-select">
+                    <option value="tell-me-what.mp3">Tell Me What (default)</option>
+                    <option value="sandbreaker.mp3">Sandbreaker</option>
+                    <option value="experimental-cinematic-hip-hop.mp3">Experimental Cinematic</option>
+                    <option value="gardens-stylish-chill.mp3">Gardens Style</option>
+                </select>
+            </div>
+
+            <div class="row">
+                <label>Theme</label>
+                <div class="theme-swatches">
+                    <div class="theme-swatch" data-theme-value="theme-default" style="background:#6b63ff"></div>
+                    <div class="theme-swatch" data-theme-value="theme-coral" style="background:#e86b6b"></div>
+                    <div class="theme-swatch" data-theme-value="theme-pink" style="background:#f07ad9"></div>
+                    <div class="theme-swatch" data-theme-value="theme-green" style="background:#59b89b"></div>
+                    <div class="theme-swatch" data-theme-value="theme-gray" style="background:#9a9a9a"></div>
+                    <div class="theme-swatch" data-theme-value="theme-custom" id="theme-swatch-custom"
+                        style="background: radial-gradient(circle at 50% 50%, rgba(107,99,255,0.95) 0%, rgba(240,122,217,0.7) 20%, rgba(232,107,107,0.5) 36%, rgba(255,200,80,0.35) 54%, rgba(89,184,155,0.28) 72%, rgba(75,0,130,0.18) 86%, var(--bg) 100%), radial-gradient(circle at center, rgba(255,255,255,0.02) 0%, transparent 40%); border:1px solid rgba(0,0,0,0.12);">
+                        <input id="theme-custom-color" type="color" value="#ffffff" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;padding:0;margin:0;cursor:pointer;" />
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                // inject the picker icon into the custom swatch and make clicking it open the color input
+                document.addEventListener('DOMContentLoaded', () => {
+                    const custom = document.getElementById('theme-swatch-custom');
+                    const colorInput = document.getElementById('theme-custom-color');
+                    if (!custom || !colorInput) return;
+                    const img = document.createElement('img');
+                    img.src = 'img/button-icons/color-picker.png';
+                    img.className = 'swatch-icon';
+                    img.alt = 'Pick color';
+                    custom.appendChild(img);
+
+                    // clicking the swatch should select it and open the color picker
+                    custom.addEventListener('click', (e) => {
+                        // trigger settings selection
+                        const v = custom.getAttribute('data-theme-value');
+                        if (window._appSettings) window._appSettings.setTheme(v);
+                        // open color input
+                        colorInput.click();
+                    });
+                });
+            </script>
+
+            
+
+        </section>
+
+        <div style="position:relative;">
+            <button id="reset-defaults" style="position:fixed;right:20px;bottom:18px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.06);color:#fff;font-family:'Afacad',sans-serif;">Reset to Default</button>
+        </div>
+
+        <!-- Include settings script -->
+    <script src="js/settings.js"></script>
+        <script>
+            // Wire local UI to settings.js where possible
+            document.addEventListener('DOMContentLoaded', () => {
+                const master = document.getElementById('master-volume');
+                const masterLabel = document.getElementById('master-volume-label');
+                const sfxVol = document.getElementById('sfx-volume');
+                const sfxLabel = document.getElementById('sfx-volume-label');
+                const bgSelect = document.getElementById('bg-music-select');
+                const bgVol = document.getElementById('bg-music-volume');
+                const bgVolLabel = document.getElementById('bg-music-volume-label');
+                const customColor = document.getElementById('theme-custom-color');
+
+                const settings = window._appSettings ? window._appSettings.get() : {};
+
+                // Initialize UI from settings
+                master.value = Math.round((settings.masterVolume ?? 0.5) * 100);
+                masterLabel.textContent = master.value + '%';
+
+                sfxVol.value = Math.round((settings.sfxVolume ?? 0.72) * 100);
+                sfxLabel.textContent = sfxVol.value + '%';
+
+                bgVol.value = Math.round((settings.bgMusicVolume ?? 0.8) * 100);
+                bgVolLabel.textContent = bgVol.value + '%';
+
+                if (settings && settings.bgMusic) bgSelect.value = settings.bgMusic;
+
+                if (settings && settings.customPrimary) customColor.value = settings.customPrimary;
+                // set custom swatch appearance: show gradient preview by default unless the active theme is theme-custom
+                const customSwatch = document.getElementById('theme-swatch-custom');
+                if (customSwatch) {
+                    const gradientPreview = 'linear-gradient(90deg,#ff0000,#ff7f00,#ffff00,#00ff00,#0000ff,#4b0082,#8b00ff)';
+                    
+                    if (settings && settings.theme === 'theme-custom') {
+                        // when custom theme active show the selected customPrimary color
+                        if (settings.customPrimary) customSwatch.style.background = settings.customPrimary;
+                        else customSwatch.style.background = gradientPreview;
+                    } else {
+                        // default: show gradient preview so the swatch reads as a palette
+                        customSwatch.style.background = gradientPreview;
+                    }
+                }
+
+                // Events: update settings via the exposed API + localStorage
+                master.addEventListener('input', () => {
+                    masterLabel.textContent = master.value + '%';
+                    if (!window._appSettings) return;
+                    const s = window._appSettings.get();
+                    s.masterVolume = Number(master.value) / 100;
+                    try { localStorage.setItem('2tai_settings_v1', JSON.stringify(s)); } catch (e) { }
+                    // update bg audio volume immediately
+                    if (window._appSettings && s.bgMusic && document.querySelector('audio')) {
+                        const bg = document.querySelector('audio');
+                        if (bg) bg.volume = (s.masterVolume ?? 0.5) * (s.bgMusicVolume ?? 0.8);
+                    }
+                });
+
+                sfxVol.addEventListener('input', () => {
+                    sfxLabel.textContent = sfxVol.value + '%';
+                    if (!window._appSettings) return;
+                    const s = window._appSettings.get();
+                    s.sfxVolume = Number(sfxVol.value) / 100;
+                    try { localStorage.setItem('2tai_settings_v1', JSON.stringify(s)); } catch (e) { }
+                });
+
+                bgVol.addEventListener('input', () => {
+                    bgVolLabel.textContent = bgVol.value + '%';
+                    if (!window._appSettings) return;
+                    const s = window._appSettings.get();
+                    s.bgMusicVolume = Number(bgVol.value) / 100;
+                    try { localStorage.setItem('2tai_settings_v1', JSON.stringify(s)); } catch (e) { }
+                    if (s.bgMusic && document.querySelector('audio')) {
+                        const bg = document.querySelector('audio');
+                        if (bg) bg.volume = (s.masterVolume ?? 0.5) * (s.bgMusicVolume ?? 0.8);
+                    }
+                });
+
+                bgSelect.addEventListener('change', () => {
+                    if (!window._appSettings) return;
+                    window._appSettings.setBgMusic(bgSelect.value);
+                });
+
+                customColor.addEventListener('input', () => {
+                    if (!window._appSettings) return;
+                    const s = window._appSettings.get();
+                    s.customPrimary = customColor.value;
+                    try { localStorage.setItem('2tai_settings_v1', JSON.stringify(s)); } catch (e) { }
+                    // update swatch visual immediately
+                    try { if (typeof customSwatch !== 'undefined' && customSwatch) customSwatch.style.background = customColor.value; } catch (e) {}
+                    if (s.theme === 'theme-custom' || document.documentElement.getAttribute('data-theme') === 'theme-custom') {
+                        // apply instantly
+                        if (window._appSettings.setTheme) window._appSettings.setTheme('theme-custom');
+                    }
+                });
+
+                const testBtn = document.getElementById('test-sfx');
+                if (testBtn) {
+                    testBtn.addEventListener('click', () => {
+                        if (window._appSettings && window._appSettings.playSfx) {
+                            window._appSettings.playSfx();
+                        } else {
+                            // fallback: try to play audio directly
+                            try { new Audio('mp3/sound-effects/button-click.mp3').play().catch(()=>{}); } catch(e){}
+                        }
+                    });
+                }
+
+                // wire theme swatches (already done in settings.js, but highlight active)
+                document.querySelectorAll('[data-theme-value]').forEach(el => {
+                    el.addEventListener('click', () => {
+                        document.querySelectorAll('.theme-swatch').forEach(sw => sw.classList.remove('active-theme'));
+                        el.classList.add('active-theme');
+                        // if custom selected, apply custom color
+                        if (el.getAttribute('data-theme-value') === 'theme-custom') {
+                            if (window._appSettings) {
+                                const s = window._appSettings.get();
+                                if (s && s.customPrimary) {
+                                    // apply custom directly
+                                    document.documentElement.style.setProperty('--primary', s.customPrimary);
+                                }
+                            }
+                        }
+                    });
+                });
+
+                // Reset to defaults
+                const resetBtn = document.getElementById('reset-defaults');
+                if (resetBtn) {
+                    resetBtn.addEventListener('click', () => {
+                        try { localStorage.removeItem('2tai_settings_v1'); localStorage.removeItem('2tai_bg_time'); } catch (e) {}
+                        // use the exposed API to reset and update the UI
+                        if (window._appSettings && window._appSettings.resetDefaults) {
+                            window._appSettings.resetDefaults();
+                        } else {
+                            // fallback: reload
+                            setTimeout(() => window.location.reload(), 200);
+                        }
+                    });
+                }
+            });
+        </script>
+    </main>
+</body>
+
+</html>

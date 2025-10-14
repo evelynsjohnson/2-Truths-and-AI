@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Our Game - 2 Truths and A Lie</title>
+
+    <!-- Tab icon (favicon) - centralized via js/tab-icon.js -->
+    <script src="../js/tab-icon.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/theme-overrides.css">
+
+    <style>
+        :root {
+            --bg: #0d0d0d;
+            --primary: #6b63ff;
+            --secondary: #3b34d1;
+            --secondary-hover: #5048e5;
+
+            --container-max: 1600px;
+            --container-min: 320px;
+            --container-max-height: 1200px;
+            --container-min-height: 420px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: #fff;
+            font-family: "Afacad", sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .stage {
+            width: clamp(var(--container-min), 100vw, var(--container-max));
+            height: clamp(var(--container-min-height), 90vh, var(--container-max-height));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: clamp(12px, 2vh, 36px);
+            overflow-y: auto;
+        }
+
+        .content {
+            width: 100%;
+            max-width: 1400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 6px 0 32px 0;
+        }
+
+        .home-btn {
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: var(--secondary);
+            border: none;
+            border-radius: 10px;
+            padding: 10px;
+            height: 48px;
+            width: 48px;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .home-btn:hover {
+            background: var(--secondary-hover);
+            transform: translateY(-2px);
+        }
+
+        .home-btn img {
+            width: 22px;
+            height: auto;
+        }
+
+        h1 {
+            font-size: clamp(2.4rem, 4.2vh, 3.6rem);
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+        }
+
+        .divider {
+            width: 280px;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary-hover));
+            border-radius: 6px;
+            margin: 10px auto 0;
+        }
+
+        .layout-grid {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 0;
+            margin-top: clamp(24px, 3vh, 40px);
+        }
+
+        .section {
+            padding: clamp(28px, 4vh, 56px) clamp(24px, 3vw, 56px);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            min-height: clamp(220px, 28vh, 360px);
+        }
+
+        .section-purple {
+            background: var(--secondary);
+        }
+
+        .section-black {
+            background: var(--bg);
+        }
+
+        /* Grid positioning */
+        .idea-section {
+            grid-column: 1 / 2;
+            grid-row: 1 / 2;
+        }
+
+        .text-block-1 {
+            grid-column: 2 / 3;
+            grid-row: 1 / 2;
+            text-align: center;
+            align-items: center;
+        }
+
+        .text-block-2 {
+            grid-column: 1 / 2;
+            grid-row: 2 / 3;
+            text-align: center;
+            align-items: center;
+        }
+
+        .methods-section {
+            grid-column: 2 / 3;
+            grid-row: 2 / 3;
+            align-items: flex-end;
+            text-align: right;
+        }
+
+        .section h2 {
+            font-size: clamp(1.8rem, 3vh, 2.6rem);
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: clamp(16px, 2vh, 24px);
+            text-decoration: underline;
+            text-underline-offset: 8px;
+            text-decoration-thickness: 2px;
+        }
+
+        .section p {
+            font-size: clamp(1rem, 1.85vh, 1.2rem);
+            line-height: 1.7;
+            color: #e6e6e6;
+            max-width: 100%;
+        }
+
+        .text-block-1 p,
+        .text-block-2 p {
+            max-width: 90%;
+            margin: 0 auto;
+        }
+
+        .footer-link {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: clamp(20px, 3vh, 36px) clamp(24px, 3vw, 56px);
+            margin-top: auto;
+        }
+
+        .about-us-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: clamp(1.1rem, 2vh, 1.4rem);
+            font-family: "Afacad", sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .about-us-btn:hover {
+            color: var(--primary);
+            transform: translateX(-4px);
+        }
+
+        .arrow {
+            font-size: clamp(1.4rem, 2.4vh, 1.8rem);
+            transition: transform 0.2s ease;
+        }
+
+        .about-us-btn:hover .arrow {
+            transform: translateX(-6px);
+        }
+
+        @media (max-width: 920px) {
+            .layout-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+            }
+
+            .idea-section {
+                grid-column: 1 / 2;
+                grid-row: 1 / 2;
+                align-items: flex-start;
+                text-align: left;
+            }
+
+            .text-block-1 {
+                grid-column: 1 / 2;
+                grid-row: 2 / 3;
+                align-items: center;
+                text-align: center;
+            }
+
+            .text-block-2 {
+                grid-column: 1 / 2;
+                grid-row: 3 / 4;
+                align-items: center;
+                text-align: center;
+            }
+
+            .methods-section {
+                grid-column: 1 / 2;
+                grid-row: 4 / 5;
+                align-items: flex-start;
+                text-align: left;
+            }
+
+            .section {
+                padding: clamp(24px, 3.5vh, 40px) clamp(20px, 4vw, 32px);
+            }
+        }
+
+        @media (max-width: 520px) {
+            .content {
+                width: calc(100% - 20px);
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .divider {
+                width: 200px;
+            }
+
+            .section {
+                padding: 20px 16px;
+                min-height: 180px;
+            }
+
+            .section h2 {
+                text-underline-offset: 6px;
+            }
+
+            .footer-link {
+                padding: 16px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="stage" role="main" aria-labelledby="game-title">
+        <div class="content">
+            <header>
+                <button class="home-btn" aria-label="Go home" onclick="window.location.href='start-screen.html'">
+                    <img src="img/button-icons/home.png" alt="Home">
+                </button>
+
+                <div>
+                    <h1 id="game-title">About Our Game</h1>
+                    <div class="divider" aria-hidden="true"></div>
+                </div>
+            </header>
+
+            <div class="layout-grid">
+                <section class="section section-purple idea-section" aria-labelledby="idea-title">
+                    <h2 id="idea-title">Our Inspiration</h2>
+                    <p>
+
+
+                        Riccardo suggested an idea for the game, asking us if we've ever played "2 Truths and a Lie",
+                        saying that he had noticed that after a few rounds it's tough to come up with believable
+                        lies, and that we could use AI to help with that. So we decided to expand on it. Eventually
+                        Evelyn
+                        renamed it "2 Truths and AI?" as a clever play on words from the original game.
+                    </p>
+                </section>
+
+                <section class="section section-black text-block-1">
+                    <p>
+                        Our original assignment was to brainstorm about potential interactive experience, system,
+                        device, and/or
+                        service projects in our class,
+
+                        <a href="https://catalog.uic.edu/search/?P=CS%20422" style="color: #a9b8ff;">CS 422 - User
+                            Interface Design and Programming</a>
+
+                        with
+
+                        <a href="https://ecologylab.net/people/andruid/start-screen.html" style="color: #a9b8ff;">Dr. Andruid
+                            Kerne</a>.
+                    </p>
+                </section>
+
+                <section class="section section-black text-block-2">
+                    <p>
+                        Our process is centered on a core gameplay loop: players submit truths, our system sends them to
+                        a free AI API (gpt-35-turbo, gpt-5-nano, and gpt-4.1-mini) to generate a convincing lie, and
+                        then
+                        having players vote to identify which statement is the AI.
+                    </p>
+                </section>
+
+                <section class="section section-purple methods-section" aria-labelledby="methods-title">
+                    <h2 id="methods-title">Our Methods</h2>
+                    <p>
+                        We follow design principles like providing clear feedback (e.g., loading screens, animations,
+                        tooltips), using
+                        unambiguous signifiers (like unique player symbols for voting), and relying on both knowledge
+                        in the world and in the head to make the game intuitive and engaging for everyone.
+                    </p>
+                </section>
+            </div>
+
+            <div class="footer-link">
+                <button class="about-us-btn" onclick="window.location.href='about-us.html'">
+                    <span class="arrow">←</span>
+                    <span>About Us</span>
+                </button>
+            </div>
+        </div>
+    </main>
+</body>
+
+    <script src="js/settings.js"></script>
+
+</html>

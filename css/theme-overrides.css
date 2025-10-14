@@ -1,0 +1,122 @@
+/* Theme overrides by data-theme on <html>
+   Usage: document.documentElement.setAttribute('data-theme', 'theme-name')
+*/
+:root {
+    --bg: #0d0d0d;
+    --primary: #6b63ff;
+    --secondary: #3b34d1;
+    --secondary-hover: #5048e5;
+}
+
+[data-theme="theme-default"] {
+    --primary: #6b63ff;
+    --secondary: #3b34d1;
+    --secondary-hover: #5048e5;
+}
+
+[data-theme="theme-coral"] {
+    --primary: #e86b6b;
+    --secondary: #d9534f;
+    --secondary-hover: #f08a84;
+}
+
+[data-theme="theme-pink"] {
+    --primary: #f07ad9;
+    --secondary: #d94ec9;
+    --secondary-hover: #f59fe0;
+}
+
+[data-theme="theme-green"] {
+    --primary: #59b89b;
+    --secondary: #48a17f;
+    --secondary-hover: #6fc2a9;
+}
+
+[data-theme="theme-gray"] {
+    --primary: #9a9a9a;
+    --secondary: #7f7f7f;
+    --secondary-hover: #a9a9a9;
+}
+
+[data-theme="theme-custom"] {
+    --primary: #6b63ff;
+    --secondary: #5048e5;
+    --secondary-hover: #857cff;
+}
+
+/* Active theme swatch outline */
+.theme-swatch.active-theme {
+    outline: 4px solid #fff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+/* Page header and divider defaults (will ensure consistent title+divider centering) */
+.stage>header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.stage>header>div {
+    text-align: center;
+}
+
+.divider {
+    width: 280px;
+    height: 6px;
+    background: var(--primary);
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+/* Styled range inputs: circular thumb using primary color */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    width: 100%;
+}
+
+/* WebKit track */
+input[type="range"]::-webkit-slider-runnable-track {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 999px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--primary);
+    margin-top: -6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Firefox */
+input[type="range"]::-moz-range-track {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 999px;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Make focus visible */
+input[type="range"]:focus {
+    outline: none;
+}
+
+input[type="range"]:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 0 6px rgba(107, 99, 255, 0.12);
+}
