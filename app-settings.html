@@ -100,6 +100,7 @@
             box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
             border: 3px solid rgba(255, 255, 255, 0.06)
         }
+
         .theme-swatch .swatch-icon {
             position: relative;
             width: 22px;
@@ -109,14 +110,17 @@
         }
 
         /* custom swatch shows an overlay picker icon */
-        #theme-swatch-custom { position: relative; }
+        #theme-swatch-custom {
+            position: relative;
+        }
+
         #theme-swatch-custom .swatch-icon {
             position: absolute;
             right: 6px;
             bottom: 6px;
             display: block;
             opacity: 0.95;
-            filter: drop-shadow(0 1px 0 rgba(0,0,0,0.5));
+            filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.5));
         }
 
         .music-select {
@@ -138,8 +142,8 @@
 <body>
     <main class="stage">
         <header>
-        <button class="home-btn" aria-label="Home" onclick="window.location.href='start-screen.html'"><img
-            src="img/button-icons/home.png" alt="Home" style="width:22px" /></button>
+            <button class="home-btn" aria-label="Home" onclick="window.location.href='start-screen.html'"><img
+                    src="img/button-icons/home.png" alt="Home" style="width:22px" /></button>
             <div>
                 <h1>App Settings</h1>
                 <div class="divider" aria-hidden="true"></div>
@@ -185,7 +189,8 @@
                     <div class="theme-swatch" data-theme-value="theme-gray" style="background:#9a9a9a"></div>
                     <div class="theme-swatch" data-theme-value="theme-custom" id="theme-swatch-custom"
                         style="background: radial-gradient(circle at 50% 50%, rgba(107,99,255,0.95) 0%, rgba(240,122,217,0.7) 20%, rgba(232,107,107,0.5) 36%, rgba(255,200,80,0.35) 54%, rgba(89,184,155,0.28) 72%, rgba(75,0,130,0.18) 86%, var(--bg) 100%), radial-gradient(circle at center, rgba(255,255,255,0.02) 0%, transparent 40%); border:1px solid rgba(0,0,0,0.12);">
-                        <input id="theme-custom-color" type="color" value="#ffffff" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;padding:0;margin:0;cursor:pointer;" />
+                        <input id="theme-custom-color" type="color" value="#ffffff"
+                            style="position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;padding:0;margin:0;cursor:pointer;" />
                     </div>
                 </div>
             </div>
@@ -213,16 +218,18 @@
                 });
             </script>
 
-            
+
 
         </section>
 
         <div style="position:relative;">
-            <button id="reset-defaults" style="position:fixed;right:20px;bottom:18px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.06);color:#fff;font-family:'Afacad',sans-serif;">Reset to Default</button>
+            <button id="reset-defaults"
+                style="position:fixed;right:20px;bottom:18px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.06);color:#fff;font-family:'Afacad',sans-serif;">Reset
+                to Default</button>
         </div>
 
         <!-- Include settings script -->
-    <script src="js/settings.js"></script>
+        <script src="js/settings.js"></script>
         <script>
             // Wire local UI to settings.js where possible
             document.addEventListener('DOMContentLoaded', () => {
@@ -254,7 +261,7 @@
                 const customSwatch = document.getElementById('theme-swatch-custom');
                 if (customSwatch) {
                     const gradientPreview = 'linear-gradient(90deg,#ff0000,#ff7f00,#ffff00,#00ff00,#0000ff,#4b0082,#8b00ff)';
-                    
+
                     if (settings && settings.theme === 'theme-custom') {
                         // when custom theme active show the selected customPrimary color
                         if (settings.customPrimary) customSwatch.style.background = settings.customPrimary;
@@ -277,6 +284,8 @@
                         const bg = document.querySelector('audio');
                         if (bg) bg.volume = (s.masterVolume ?? 0.5) * (s.bgMusicVolume ?? 0.8);
                     }
+                    // play UI sfx so user hears the change
+                    try { if (window._appSettings && window._appSettings.playSfx) window._appSettings.playSfx(); } catch (e) {}
                 });
 
                 sfxVol.addEventListener('input', () => {
@@ -285,6 +294,8 @@
                     const s = window._appSettings.get();
                     s.sfxVolume = Number(sfxVol.value) / 100;
                     try { localStorage.setItem('2tai_settings_v1', JSON.stringify(s)); } catch (e) { }
+                    // play UI sfx at the new volume
+                    try { if (window._appSettings && window._appSettings.playSfx) window._appSettings.playSfx(); } catch (e) {}
                 });
 
                 bgVol.addEventListener('input', () => {
@@ -297,6 +308,8 @@
                         const bg = document.querySelector('audio');
                         if (bg) bg.volume = (s.masterVolume ?? 0.5) * (s.bgMusicVolume ?? 0.8);
                     }
+                    // play UI sfx so the user gets feedback
+                    try { if (window._appSettings && window._appSettings.playSfx) window._appSettings.playSfx(); } catch (e) {}
                 });
 
                 bgSelect.addEventListener('change', () => {
@@ -310,7 +323,7 @@
                     s.customPrimary = customColor.value;
                     try { localStorage.setItem('2tai_settings_v1', JSON.stringify(s)); } catch (e) { }
                     // update swatch visual immediately
-                    try { if (typeof customSwatch !== 'undefined' && customSwatch) customSwatch.style.background = customColor.value; } catch (e) {}
+                    try { if (typeof customSwatch !== 'undefined' && customSwatch) customSwatch.style.background = customColor.value; } catch (e) { }
                     if (s.theme === 'theme-custom' || document.documentElement.getAttribute('data-theme') === 'theme-custom') {
                         // apply instantly
                         if (window._appSettings.setTheme) window._appSettings.setTheme('theme-custom');
@@ -324,7 +337,7 @@
                             window._appSettings.playSfx();
                         } else {
                             // fallback: try to play audio directly
-                            try { new Audio('mp3/sound-effects/button-click.mp3').play().catch(()=>{}); } catch(e){}
+                            try { new Audio('mp3/sound-effects/button-click.mp3').play().catch(() => { }); } catch (e) { }
                         }
                     });
                 }
@@ -351,8 +364,7 @@
                 const resetBtn = document.getElementById('reset-defaults');
                 if (resetBtn) {
                     resetBtn.addEventListener('click', () => {
-                        try { localStorage.removeItem('2tai_settings_v1'); localStorage.removeItem('2tai_bg_time'); } catch (e) {}
-                        // use the exposed API to reset and update the UI
+                        try { localStorage.removeItem('2tai_settings_v1'); localStorage.removeItem('2tai_bg_time'); } catch (e) { }
                         if (window._appSettings && window._appSettings.resetDefaults) {
                             window._appSettings.resetDefaults();
                         } else {

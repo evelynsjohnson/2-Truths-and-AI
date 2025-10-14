@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,8 +29,16 @@
       --logo-max-height: 46vh;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
 
     body {
       background-color: var(--bg);
@@ -84,7 +93,11 @@
       place-items: center;
       cursor: pointer;
     }
-    .home-btn img { width: 22px; height: auto; }
+
+    .home-btn img {
+      width: 22px;
+      height: auto;
+    }
 
     h1 {
       font-size: clamp(2.4rem, 4.2vh, 3.4rem);
@@ -130,12 +143,14 @@
       color: #fff;
       text-align: left;
     }
+
     .step h3 {
       font-size: clamp(1.25rem, 2.4vh, 1.6rem);
       margin-bottom: 6px;
       font-weight: 700;
       text-align: left;
     }
+
     .step p {
       font-size: clamp(0.95rem, 1.8vh, 1.05rem);
       color: #e6e6e6;
@@ -153,19 +168,45 @@
     }
 
     @media (max-width: 680px) {
-      .steps { grid-template-columns: 56px 1fr; gap: 18px; }
-      .step-num { width: 52px; height: 52px; font-size: 1.2rem; }
-      header { padding-bottom: 12px; }
+      .steps {
+        grid-template-columns: 56px 1fr;
+        gap: 18px;
+      }
+
+      .step-num {
+        width: 52px;
+        height: 52px;
+        font-size: 1.2rem;
+      }
+
+      header {
+        padding-bottom: 12px;
+      }
     }
 
     @media (max-width: 520px) {
-      .content { width: calc(100% - 20px); }
-      .steps { grid-template-columns: 46px 1fr; gap: 12px; }
-      .step-num { width: 44px; height: 44px; font-size: 1rem; }
-      h1 { font-size: 2rem; }
+      .content {
+        width: calc(100% - 20px);
+      }
+
+      .steps {
+        grid-template-columns: 46px 1fr;
+        gap: 12px;
+      }
+
+      .step-num {
+        width: 44px;
+        height: 44px;
+        font-size: 1rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
     }
   </style>
 </head>
+
 <body>
   <main class="stage" role="main" aria-labelledby="howto-title">
     <div class="content">
@@ -184,25 +225,29 @@
         <div class="step-num" aria-hidden="true">1</div>
         <div class="step">
           <h3>Enter Your Truths</h3>
-          <p>Each player writes 2 or more true statements about themselves. Be specific but concise to help the AI learn your writing style.</p>
+          <p>Each player writes 2 or more true statements about themselves. Be specific but concise to help the AI learn
+            your writing style.</p>
         </div>
 
         <div class="step-num" aria-hidden="true">2</div>
         <div class="step">
           <h3>AI Generates Lies</h3>
-          <p>Our AI crafts one believable lie for each pair of truths, matching your tone and style so other players have to think twice.</p>
+          <p>Our AI crafts one believable lie for each pair of truths, matching your tone and style so other players
+            have to think twice.</p>
         </div>
 
         <div class="step-num" aria-hidden="true">3</div>
         <div class="step">
           <h3>Spot the Lie!</h3>
-          <p>In each round, players review the three statements (two truths and one AI-generated lie) and vote on which they think is the lie.</p>
+          <p>In each round, players review the three statements (two truths and one AI-generated lie) and vote on which
+            they think is the lie.</p>
         </div>
 
         <div class="step-num" aria-hidden="true">4</div>
         <div class="step">
           <h3>Earn Points</h3>
-          <p>Score points for correct guesses and for fooling other players with your truths. The fastest correct guesses earn bonus points.</p>
+          <p>Score points for correct guesses and for fooling other players with your truths. The fastest correct
+            guesses earn bonus points.</p>
         </div>
       </section>
 
@@ -211,4 +256,5 @@
   </main>
 </body>
 <script src="js/settings.js"></script>
+
 </html>

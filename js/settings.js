@@ -24,6 +24,11 @@ Persists choices in localStorage and applies them on load.
     let bgAudio = null;
     let sfxAudio = null;
 
+    // track whether we've shown the enable-sound prompt or the user has already
+    // unlocked audible playback via a gesture so we don't repeatedly nag the user
+    let enableSoundPromptShown = false;
+    let userGestureUnlocked = false;
+
     function load() {
         try {
             const raw = localStorage.getItem(STORE_KEY);
@@ -63,7 +68,6 @@ Persists choices in localStorage and applies them on load.
         } else {
             const def = themeDefs[theme];
             if (def) {
-                // write inline styles to override any :root declarations in page styles
                 document.documentElement.style.setProperty('--primary', def.primary);
                 document.documentElement.style.setProperty('--secondary', def.secondary);
                 document.documentElement.style.setProperty('--secondary-hover', def.secondaryHover);
@@ -87,11 +91,8 @@ Persists choices in localStorage and applies them on load.
             bgAudio = new Audio('mp3/bg-music/' + filename);
             bgAudio.preload = 'auto';
             bgAudio.loop = true;
-            // set volume based on master * bg multiplier
-            // use nullish coalescing so that explicit 0 values are preserved
             bgAudio.volume = (settings.masterVolume ?? 0.5) * (settings.bgMusicVolume ?? 0.8);
 
-            // try to resume at previously saved time (best-effort)
             const savedTime = Number(localStorage.getItem('2tai_bg_time') || 0) || 0;
             let triedSetTime = false;
             bgAudio.addEventListener('loadedmetadata', () => {
@@ -106,6 +107,9 @@ Persists choices in localStorage and applies them on load.
             });
 
             const showEnableSoundPrompt = () => {
+                // don't show repeatedly during the same session if we've already
+                // shown it or the user already unlocked sound via gesture
+                if (enableSoundPromptShown || userGestureUnlocked) return;
                 // create a minimal, accessible prompt if not already present
                 if (document.getElementById('enable-sound-prompt')) return;
 
@@ -166,6 +170,7 @@ Persists choices in localStorage and applies them on load.
                 card.appendChild(row);
                 wrapper.appendChild(card);
                 document.body.appendChild(wrapper);
+                enableSoundPromptShown = true;
 
                 function cleanup() {
                     try { wrapper.remove(); } catch (e) { }
@@ -179,6 +184,9 @@ Persists choices in localStorage and applies them on load.
                             bgAudio.play().catch(() => { });
                         }
                     } catch (e) { }
+                    // mark that the user explicitly enabled sound so we don't prompt again
+                    userGestureUnlocked = true;
+                    enableSoundPromptShown = true;
                     cleanup();
                 });
 
@@ -220,13 +228,19 @@ Persists choices in localStorage and applies them on load.
                             // try to resume playback in case it wasn't started
                             bgAudio.play().catch(() => { /* ignore */ });
                         } catch (e) { }
+                        // remove any prompt UI if present
+                        try {
+                            const wrapper = document.getElementById('enable-sound-prompt');
+                            if (wrapper) wrapper.remove();
+                        } catch (e) { }
+                        userGestureUnlocked = true;
                         document.removeEventListener('click', unmuteOnce);
                         document.removeEventListener('keydown', unmuteOnce);
                         document.removeEventListener('touchstart', unmuteOnce);
                     };
 
                     // show a prompt to help users enable sound if they want
-                    showEnableSoundPrompt();
+                    if (!enableSoundPromptShown && !userGestureUnlocked) showEnableSoundPrompt();
 
                     document.addEventListener('click', unmuteOnce, { once: true, passive: true });
                     document.addEventListener('keydown', unmuteOnce, { once: true, passive: true });
