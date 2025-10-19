@@ -26,7 +26,7 @@
 
 4. **Wrong File Path**
    - **Check:** Browser console for 404 errors
-   - **Fix:** Ensure file is named exactly `tell-me-what.mp3` or update settings
+   - **Fix:** Ensure file is named exactly `bloop-vibes.mp3` (default) or update settings
 
 5. **File Format Issue**
    - **Check:** Verify file is valid MP3 format

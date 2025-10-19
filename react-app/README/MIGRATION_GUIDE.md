@@ -110,7 +110,7 @@ import './Button.css';
 ```javascript
 const settings = {
   theme: 'theme-default',
-  bgMusic: 'tell-me-what.mp3',
+  bgMusic: 'bloop-vibes.mp3',
   // ...
 };
 

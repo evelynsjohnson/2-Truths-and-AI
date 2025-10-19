@@ -57,7 +57,7 @@ const {
 ```javascript
 {
   theme: 'theme-default',      // Current theme
-  bgMusic: 'tell-me-what.mp3', // Background music file
+  bgMusic: 'bloop-vibes.mp3', // Background music file
   masterVolume: 0.2,           // Master volume (0-1)
   bgMusicVolume: 0.2,          // Music volume (0-1)
   sfxVolume: 0.2,              // SFX volume (0-1)

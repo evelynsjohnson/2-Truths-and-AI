@@ -5,7 +5,7 @@
 The app expects background music files in this directory. 
 
 ### Expected Files:
-- `tell-me-what.mp3` (default)
+- `bloop-vibes.mp3` (default)
 - Add your own MP3 files here
 
 ### File Format:

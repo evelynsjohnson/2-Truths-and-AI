@@ -7,7 +7,7 @@ Persists choices in localStorage and applies them on load.
 
     const defaultSettings = {
         theme: 'theme-default',
-        bgMusic: 'tell-me-what.mp3', // default background music filename
+        bgMusic: 'bloop-vibes.mp3', // default background music filename
         // volumes are 0.0 - 1.0
         masterVolume: 0.2,
         bgMusicVolume: 0.2,

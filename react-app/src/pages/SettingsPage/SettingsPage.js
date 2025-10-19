@@ -74,9 +74,9 @@ export default function SettingsPage() {
 
   const handleResetDefaults = () => {
     resetSettings();
-    setMasterVolume(50);
-    setSfxVolume(72);
-    setBgMusicVolume(80);
+    setMasterVolume(20);
+    setSfxVolume(20);
+    setBgMusicVolume(20);
     setCustomColor('#6b63ff');
   };
 
@@ -147,10 +147,11 @@ export default function SettingsPage() {
             value={settings.bgMusic}
             onChange={handleBgMusicChange}
           >
-            <option value="tell-me-what.mp3">Tell Me What (default)</option>
+            <option value="bloop-vibes.mp3">Bloop Vibes (Default)</option>
+            <option value="gardens-stylish-chill.mp3">Gardens Style</option>
             <option value="sandbreaker.mp3">Sandbreaker</option>
             <option value="experimental-cinematic-hip-hop.mp3">Experimental Cinematic</option>
-            <option value="gardens-stylish-chill.mp3">Gardens Style</option>
+            <option value="tell-me-what.mp3">Tell Me What</option>
           </select>
         </div>
 

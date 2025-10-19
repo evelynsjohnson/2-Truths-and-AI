@@ -11,7 +11,7 @@ const STORE_KEY = '2tai_settings_v1';   // Key for storing settings in localStor
 // Initialize default settings
 const defaultSettings = {
   theme: 'theme-default',
-  bgMusic: 'tell-me-what.mp3',
+  bgMusic: 'bloop-vibes.mp3',
   masterVolume: 0.2,
   bgMusicVolume: 0.2,
   sfxVolume: 0.2,

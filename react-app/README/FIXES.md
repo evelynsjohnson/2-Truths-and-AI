@@ -112,7 +112,7 @@ Added future flags to `BrowserRouter` in `App.js`:
 
 1. **Copy audio files** (if you have them):
    ```bash
-   cp ../mp3/bg-music/tell-me-what.mp3 public/assets/mp3/bg-music/
+   cp ../mp3/bg-music/bloop-vibes.mp3 public/assets/mp3/bg-music/
    ```
 
 2. **Start the app**:
