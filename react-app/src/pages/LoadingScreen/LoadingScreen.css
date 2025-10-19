@@ -1,0 +1,102 @@
+/* LoadingScreen Styles */
+
+.loading-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.loading-card {
+  max-width: 600px;
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+/* Spinner Animation */
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 5px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--primary-color, #9333ea);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Loading Messages */
+.loading-card h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary, #ffffff);
+}
+
+.loading-message {
+  font-size: 1.1rem;
+  color: var(--text-secondary, #d1d5db);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.progress-text {
+  font-size: 0.95rem;
+  color: var(--primary-color, #9333ea);
+  font-weight: 500;
+  margin-top: 1rem;
+  font-style: italic;
+}
+
+/* Error State */
+.error-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.error-message {
+  color: var(--danger-color, #ef4444);
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Controls */
+.loading-controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .loading-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .loading-card h1 {
+    font-size: 1.5rem;
+  }
+
+  .loading-message {
+    font-size: 1rem;
+  }
+
+  .loading-controls {
+    flex-direction: column;
+  }
+}

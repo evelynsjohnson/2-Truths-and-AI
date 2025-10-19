@@ -1,0 +1,160 @@
+.stage {
+  width: clamp(320px, 100vw, 1600px);
+  height: clamp(420px, 74vh, 1200px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: clamp(6px, 1vh, 20px);
+}
+
+.content {
+  width: 100%;
+  max-width: 1400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  transition: width 180ms ease;
+}
+
+.logo {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  max-height: 70vh;
+  display: block;
+}
+
+/* Main Start button - full width, large */
+.start-btn {
+  width: 100%;
+  font-size: clamp(4rem, 3.2vh, 2rem) !important;
+  padding: clamp(0.2rem, 0vh, 1rem) 2rem !important;
+  border-radius: 12px !important;
+}
+
+/* Sub-row container */
+.sub-row {
+  width: 100%;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+/* Left "How to Play" button - 20% width */
+.how-to-play-btn {
+  background-color: var(--secondary) !important;
+  flex: 0 0 20%;
+  font-size: clamp(1.4rem, 1.5vh, 1.05rem) !important;
+  font-weight: 300 !important;
+  border-radius: 12px !important;
+  padding: 0 clamp(0.9rem, 1.8vw, 1.4rem) !important;
+  height: clamp(44px, 6vh, 70px) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.how-to-play-btn:hover {
+  background-color: var(--secondary-hover) !important;
+  font-weight: 400 !important;
+}
+
+/* Right controls group */
+.right-controls {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex: 0 0 60%;
+  justify-content: flex-end;
+}
+
+/* Icon buttons */
+.icon-btn {
+  background: var(--secondary) !important;
+  border: none !important;
+  border-radius: 10px !important;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  padding: 6px !important;
+  height: clamp(44px, 6vh, 70px) !important;
+  aspect-ratio: 1 / 1;
+  min-width: clamp(44px, 6vh, 70px) !important;
+  width: auto !important;
+}
+
+.icon-btn:hover {
+  background: var(--secondary-hover) !important;
+}
+
+.icon-btn img {
+  width: clamp(22px, 2.8vh, 28px);
+  height: auto;
+}
+
+.info-btn img {
+  width: clamp(28px, 3.2vh, 36px) !important;
+  height: auto;
+}
+
+/* Tooltip */
+.tooltip {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  position: absolute;
+  background: #222;
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  transform: translateY(-170%);
+  font-family: "Afacad", sans-serif;
+  pointer-events: none;
+}
+
+.icon-btn:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+@media (max-width: 520px) {
+  .content {
+    width: calc(100% - 28px);
+  }
+
+  .sub-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .how-to-play-btn {
+    flex: 1 0 100%;
+    height: clamp(40px, 7vh, 60px) !important;
+  }
+
+  .right-controls {
+    flex: 1 0 100%;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    margin-top: 6px;
+  }
+
+  .icon-btn {
+    height: clamp(40px, 7vh, 60px) !important;
+    min-width: clamp(40px, 7vh, 60px) !important;
+  }
+
+  .icon-btn img {
+    width: 18px;
+  }
+
+  .info-btn img {
+    width: 24px !important;
+  }
+}

@@ -1,0 +1,77 @@
+.leaderboard-card {
+  max-width: 700px;
+}
+
+.leaderboard-card h1 {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+  color: var(--primary);
+}
+
+.leaderboard {
+  margin: 32px 0;
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  margin-bottom: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.leaderboard-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateX(4px);
+}
+
+.leaderboard-item.rank-1 {
+  border-color: gold;
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), transparent);
+}
+
+.leaderboard-item.rank-2 {
+  border-color: silver;
+  background: linear-gradient(90deg, rgba(192, 192, 192, 0.1), transparent);
+}
+
+.leaderboard-item.rank-3 {
+  border-color: #cd7f32;
+  background: linear-gradient(90deg, rgba(205, 127, 50, 0.1), transparent);
+}
+
+.rank {
+  font-size: 1.8rem;
+  font-weight: 700;
+  min-width: 60px;
+  text-align: center;
+  color: var(--primary);
+}
+
+.rank-1 .rank {
+  color: gold;
+}
+
+.rank-2 .rank {
+  color: silver;
+}
+
+.rank-3 .rank {
+  color: #cd7f32;
+}
+
+.player-name {
+  flex: 1;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.score {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--primary);
+}

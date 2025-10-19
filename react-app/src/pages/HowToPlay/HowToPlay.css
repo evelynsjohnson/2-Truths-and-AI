@@ -1,0 +1,159 @@
+/* Scope all styles to HowToPlay page only */
+.how-to-play-stage {
+  width: clamp(var(--container-min, 320px), 100vw, var(--container-max, 1600px));
+  height: clamp(var(--container-min-height, 420px), 84vh, var(--container-max-height, 1200px));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  padding: clamp(12px, 2vh, 36px);
+}
+
+.how-to-play-content {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.how-to-play-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 6px 0 18px 0;
+}
+
+.how-to-play-home-btn {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: var(--secondary);
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  height: 48px;
+  width: 48px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.how-to-play-home-btn:hover {
+  background: var(--secondary-hover);
+}
+
+.how-to-play-home-btn img {
+  width: 22px;
+  height: auto;
+}
+
+.how-to-play-title {
+  font-size: clamp(2.4rem, 4.2vh, 3.4rem);
+  letter-spacing: 1px;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+}
+
+.how-to-play-divider {
+  width: 120px;
+  height: 6px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary-hover));
+  border-radius: 6px;
+  margin: 10px auto 0;
+}
+
+.how-to-play-steps {
+  width: 100%;
+  margin-top: 6px;
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 24px 24px;
+  align-items: start;
+}
+
+.how-to-play-step-num {
+  width: 64px;
+  height: 64px;
+  background: var(--primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.how-to-play-step {
+  color: #fff;
+  text-align: left;
+}
+
+.how-to-play-step h3 {
+  font-size: clamp(1.25rem, 2.4vh, 1.6rem);
+  margin-bottom: 6px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.how-to-play-step p {
+  font-size: clamp(0.95rem, 1.8vh, 1.05rem);
+  color: #e6e6e6;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.how-to-play-note {
+  margin-top: 18px;
+  text-align: center;
+  font-style: italic;
+  color: #dedede;
+  font-size: clamp(0.95rem, 1.9vh, 1.1rem);
+  opacity: 0.95;
+}
+
+@media (max-width: 680px) {
+  .how-to-play-steps {
+    grid-template-columns: 56px 1fr;
+    gap: 18px;
+  }
+
+  .how-to-play-step-num {
+    width: 52px;
+    height: 52px;
+    font-size: 1.2rem;
+  }
+
+  .how-to-play-header {
+    padding-bottom: 12px;
+  }
+}
+
+@media (max-width: 520px) {
+  .how-to-play-content {
+    width: calc(100% - 20px);
+  }
+
+  .how-to-play-steps {
+    grid-template-columns: 46px 1fr;
+    gap: 12px;
+  }
+
+  .how-to-play-step-num {
+    width: 44px;
+    height: 44px;
+    font-size: 1rem;
+  }
+
+  .how-to-play-title {
+    font-size: 2rem;
+  }
+}

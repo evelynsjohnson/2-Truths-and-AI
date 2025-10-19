@@ -1,0 +1,57 @@
+.round-card {
+  max-width: 900px;
+}
+
+.round-card h1 {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+}
+
+.player-info {
+  margin: 24px 0;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.player-info h2 {
+  font-size: 1.5rem;
+  margin: 0;
+  color: var(--primary);
+}
+
+.statements-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 32px 0;
+}
+
+.statement-card {
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: white;
+  font-size: 1.2rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.statement-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(8px);
+}
+
+.statement-card.selected {
+  background: var(--primary);
+  border-color: var(--primary);
+  transform: translateX(8px);
+}
+
+.controls {
+  margin-top: 32px;
+}

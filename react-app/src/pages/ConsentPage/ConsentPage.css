@@ -1,0 +1,58 @@
+.stage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.consent-card {
+  max-width: 820px;
+}
+
+.consent-card h1 {
+  font-size: 1.8rem;
+  margin-bottom: 6px;
+}
+
+.lead {
+  color: var(--muted);
+  margin-top: 0;
+  margin-bottom: 18px;
+}
+
+.terms {
+  background: transparent;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 18px;
+  border: 1px dashed rgba(255, 255, 255, 0.03);
+}
+
+.term-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 8px 6px;
+}
+
+.term-item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  cursor: pointer;
+}
+
+.term-item label {
+  font-size: 1rem;
+  color: #fff;
+  cursor: pointer;
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 18px;
+}
