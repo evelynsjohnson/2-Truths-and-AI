@@ -10,10 +10,10 @@ const GAME_DATA_KEY = '2tai_game_data';     // Key for storing game data separat
 const GAME_STATE_KEY = '2tai_game_state';   // Key for storing overall game state
 
 export function GameProvider({ children }) {
-  // Load initial state from localStorage
+  // Load initial state from sessionStorage (tab-specific)
   const [gameState, setGameState] = useState(() => {
     try {
-      const saved = localStorage.getItem(GAME_STATE_KEY);
+      const saved = sessionStorage.getItem(GAME_STATE_KEY);
       if (saved) {
         return JSON.parse(saved);
       }
@@ -34,10 +34,10 @@ export function GameProvider({ children }) {
     };
   });
 
-  // Save state to localStorage whenever it changes
+  // Save state to sessionStorage whenever it changes (tab-specific)
   useEffect(() => {
     try {
-      localStorage.setItem(GAME_STATE_KEY, JSON.stringify(gameState));
+      sessionStorage.setItem(GAME_STATE_KEY, JSON.stringify(gameState));
     } catch (e) {
       console.warn('Could not save game state', e);
     }
@@ -104,7 +104,7 @@ export function GameProvider({ children }) {
   // Save game data (e.g., statements, truths, lies)
   const saveGameData = (data) => {
     try {
-      localStorage.setItem(GAME_DATA_KEY, JSON.stringify(data));
+      sessionStorage.setItem(GAME_DATA_KEY, JSON.stringify(data));
       setGameState(prev => ({ ...prev, gameData: data }));
     } catch (e) {
       console.warn('Could not save game data', e);
@@ -114,7 +114,7 @@ export function GameProvider({ children }) {
   // Load game data
   const loadGameData = () => {
     try {
-      const stored = localStorage.getItem(GAME_DATA_KEY);
+      const stored = sessionStorage.getItem(GAME_DATA_KEY);
       if (stored) {
         const data = JSON.parse(stored);
         setGameState(prev => ({ ...prev, gameData: data }));

@@ -23,6 +23,7 @@ import AboutUs from './pages/AboutUs/AboutUs';
 import SettingsPage from './pages/SettingsPage/SettingsPage';
 
 const LAST_ROUTE_KEY = '2tai_last_route';
+const SESSION_ACTIVE_KEY = '2tai_session_active';
 
 // Component to track and restore last route
 function RouteTracker() {
@@ -30,17 +31,26 @@ function RouteTracker() {
   const navigate = useNavigate();
   const { gameState } = useGame();
 
-  // Save current route whenever it changes
+  // Mark session as active when app loads
+  useEffect(() => {
+    sessionStorage.setItem(SESSION_ACTIVE_KEY, 'true');
+  }, []);
+
+  // Save current route to sessionStorage whenever it changes
   useEffect(() => {
     if (location.pathname !== '/') {
-      localStorage.setItem(LAST_ROUTE_KEY, location.pathname);
+      sessionStorage.setItem(LAST_ROUTE_KEY, location.pathname);
     }
   }, [location.pathname]);
 
-  // On initial mount, restore last route if consent was given
+  // On initial mount, restore last route only if this is a page refresh (session is active)
   useEffect(() => {
-    if (gameState.consentGiven && location.pathname === '/') {
-      const lastRoute = localStorage.getItem(LAST_ROUTE_KEY);
+    // Check if this is a page refresh or a new session
+    const isPageRefresh = sessionStorage.getItem(SESSION_ACTIVE_KEY) === 'true';
+    
+    if (gameState.consentGiven && location.pathname === '/' && isPageRefresh) {
+      // This is a page refresh within an active session - restore the last route
+      const lastRoute = sessionStorage.getItem(LAST_ROUTE_KEY);
       if (lastRoute && lastRoute !== '/') {
         navigate(lastRoute, { replace: true });
       } else {
@@ -48,7 +58,8 @@ function RouteTracker() {
         navigate('/start', { replace: true });
       }
     }
-  }, [gameState.consentGiven, location.pathname, navigate]); // Run when these change
+    // If not a page refresh (fresh session), stay on consent page (no navigation needed)
+  }, [gameState.consentGiven, location.pathname, navigate]);
 
   return null;
 }
