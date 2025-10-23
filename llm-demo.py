@@ -11,7 +11,7 @@ statement1 = sys.argv[2]
 statement2 = sys.argv[3]
 
 client = AzureOpenAI(
-    api_key="MY-PRIVATE-API-KEY",
+    api_key="",
     api_version="2024-12-01-preview",  # use the API version from your Azure resource
     azure_endpoint="https://truth-or-ai.openai.azure.com/"
 )

@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2 Truths and AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #121212;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #ffffff;
+        }
+        
+        .container {
+            background: #3A36B7;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        
+        h1 {
+            color: #ffffff;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2em;
+        }
+        
+        h2 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        h3 {
+            color: #ffffff;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        
+        input[type="number"],
+        input[type="text"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #6561DD;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            background: #ffffff;
+            color: #121212;
+        }
+        
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #ffffff;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        button {
+            background: #6561DD;
+            color: #ffffff;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-right: 10px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            background: #7d79e8;
+        }
+        
+        button.secondary {
+            background: #121212;
+        }
+        
+        button.secondary:hover {
+            background: #2a2a2a;
+        }
+        
+        .statement-option {
+            background: #6561DD;
+            color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 2px solid #6561DD;
+        }
+        
+        .guess-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .guess-button {
+            flex: 1;
+            padding: 10px;
+            background: #121212;
+            color: #ffffff;
+            border: 2px solid #6561DD;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .guess-button:hover {
+            background: #6561DD;
+        }
+        
+        .guess-button.selected {
+            background: #6561DD;
+            color: #ffffff;
+            border-color: #ffffff;
+        }
+        
+        .player-guess {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(101, 97, 221, 0.3);
+            border-radius: 8px;
+            border: 1px solid #6561DD;
+        }
+        
+        .player-guess strong {
+            color: #ffffff;
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .leaderboard {
+            margin-top: 20px;
+        }
+        
+        .leaderboard h3 {
+            margin-bottom: 15px;
+        }
+        
+        .leaderboard-entry {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #6561DD;
+            color: #ffffff;
+        }
+        
+        .leaderboard-entry.first {
+            background: #FFD700;
+            color: #121212;
+        }
+        
+        .leaderboard-entry.second {
+            background: #C0C0C0;
+            color: #121212;
+        }
+        
+        .leaderboard-entry.third {
+            background: #CD7F32;
+            color: #ffffff;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .loading h2 {
+            color: #ffffff;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #ffffff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .info-text {
+            color: #ffffff;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .round-info {
+            background: #6561DD;
+            color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .results-box {
+            background: #6561DD;
+            color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .results-box p {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Settings Screen -->
+        <div id="settings-screen">
+            <h1>2 Truths and AI</h1>
+            <div class="form-group">
+                <label for="num-players">Enter number of players (max 6):</label>
+                <input type="number" id="num-players" min="2" max="6" value="2">
+            </div>
+            <div class="form-group">
+                <label for="ai-model">Select AI Model:</label>
+                <select id="ai-model">
+                    <option value="gpt-5-nano">gpt-5-nano</option>
+                    <option value="gpt-4.1-mini">gpt-4.1-mini</option>
+                    <option value="gpt-35-turbo">gpt-35-turbo (not recommended)</option>
+                </select>
+            </div>
+            <div class="info-text">
+                <p>Current rounds: <span id="rounds-display">2</span></p>
+                <p>Current truths-per-player: 2</p>
+            </div>
+            <button onclick="startGame()">Start</button>
+        </div>
+
+        <!-- Truth Input Screen -->
+        <div id="truth-input-screen" class="hidden">
+            <h2>Player <span id="current-player-num"></span></h2>
+            <div class="form-group">
+                <label for="truth1">Truth 1:</label>
+                <textarea id="truth1"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="truth2">Truth 2:</label>
+                <textarea id="truth2"></textarea>
+            </div>
+            <button onclick="confirmTruths()">Confirm</button>
+            <button class="secondary" onclick="backToSettings()">Back</button>
+        </div>
+
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="hidden">
+            <div class="loading">
+                <h2>Generating AI lies for your Truths</h2>
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+
+        <!-- Round Screen -->
+        <div id="round-screen" class="hidden">
+            <div class="round-info">
+                <h2>Round <span id="round-number"></span></h2>
+            </div>
+            <div id="statements-container"></div>
+            <h3 style="margin-top: 30px; margin-bottom: 15px;">Select the statement that is the AI Lie!</h3>
+            <div id="guesses-container"></div>
+            <button onclick="submitGuesses()">Submit Guesses</button>
+        </div>
+
+        <!-- Round Leaderboard Screen -->
+        <div id="round-leaderboard-screen" class="hidden">
+            <h2>Round <span id="round-lb-number"></span> Results</h2>
+            <div id="round-results"></div>
+            <div class="leaderboard" id="round-leaderboard"></div>
+            <button onclick="nextRound()">Next Round</button>
+        </div>
+
+        <!-- Final Leaderboard Screen -->
+        <div id="final-leaderboard-screen" class="hidden">
+            <h1>Game Over!</h1>
+            <h2>Final Scores</h2>
+            <div class="leaderboard" id="final-leaderboard"></div>
+            <button onclick="playAgain()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            numPlayers: 2,
+            aiModel: 'gpt-5-nano',
+            players: [],
+            currentPlayerIndex: 0,
+            currentRound: 0,
+            aiLies: [],
+            scores: []
+        };
+
+        document.getElementById('num-players').addEventListener('input', function() {
+            document.getElementById('rounds-display').textContent = this.value;
+        });
+
+        function startGame() {
+            gameState.numPlayers = parseInt(document.getElementById('num-players').value);
+            gameState.aiModel = document.getElementById('ai-model').value;
+            gameState.players = [];
+            gameState.currentPlayerIndex = 0;
+            gameState.currentRound = 0;
+            gameState.aiLies = [];
+            gameState.scores = new Array(gameState.numPlayers).fill(0);
+            
+            document.getElementById('settings-screen').classList.add('hidden');
+            showTruthInput();
+        }
+
+        function showTruthInput() {
+            document.getElementById('truth-input-screen').classList.remove('hidden');
+            document.getElementById('current-player-num').textContent = gameState.currentPlayerIndex + 1;
+            document.getElementById('truth1').value = '';
+            document.getElementById('truth2').value = '';
+        }
+
+        function confirmTruths() {
+            const truth1 = document.getElementById('truth1').value.trim();
+            const truth2 = document.getElementById('truth2').value.trim();
+            
+            if (!truth1 || !truth2) {
+                alert('Please enter both truths!');
+                return;
+            }
+            
+            gameState.players.push({
+                truths: [truth1, truth2]
+            });
+            
+            gameState.currentPlayerIndex++;
+            
+            if (gameState.currentPlayerIndex < gameState.numPlayers) {
+                showTruthInput();
+            } else {
+                document.getElementById('truth-input-screen').classList.add('hidden');
+                generateAILies();
+            }
+        }
+
+        function backToSettings() {
+            document.getElementById('truth-input-screen').classList.add('hidden');
+            document.getElementById('settings-screen').classList.remove('hidden');
+            gameState.currentPlayerIndex = 0;
+            gameState.players = [];
+        }
+
+        async function generateAILies() {
+            document.getElementById('loading-screen').classList.remove('hidden');
+            
+            try {
+                for (let i = 0; i < gameState.players.length; i++) {
+                    const player = gameState.players[i];
+                    const lie = await callAzureAPI(player.truths[0], player.truths[1]);
+                    gameState.aiLies.push(lie);
+                }
+                
+                setTimeout(() => {
+                    document.getElementById('loading-screen').classList.add('hidden');
+                    startRounds();
+                }, 2000);
+            } catch (error) {
+                alert('Error generating AI lies: ' + error.message);
+                document.getElementById('loading-screen').classList.add('hidden');
+                document.getElementById('settings-screen').classList.remove('hidden');
+            }
+        }
+
+        async function callAzureAPI(statement1, statement2) {
+            const apiKey = "";
+            const endpoint = "https://truth-or-ai.openai.azure.com/";
+            const apiVersion = "2024-12-01-preview";
+            
+            const response = await fetch(`${endpoint}openai/deployments/${gameState.aiModel}/chat/completions?api-version=${apiVersion}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'api-key': apiKey
+                },
+                body: JSON.stringify({
+                    messages: [
+                        {
+                            role: "system",
+                            content: "You are the engine of a game called \"2 Truths or AI\".\nRules:\n- The user provides two true personal statements.\n- You generate exactly one believable false statement.\n- Output format: return ONLY the generated statement, with no explanations, introductions, or extra text.\n- The statement must not be offensive, contain offensive language, or derogatory terms.\n- If the user's facts are vague, make the lie vague too, but avoid being too obvious (e.g., avoid \"User likes pizza\").\n- If the user's facts are specific, generate a similarly specific fake statement.\n- Match the user's tone and style of writing (e.g., spelling mistakes, grammar issues, or informal English).\n- Do not repeat any statement the user has provided, your response should be on different topics.\n- Do not say things strictly tied to the user's statements (for example if the user says \"I know how to ski\" don't say \"I once competed in a ski race\" because both are about skiing)."
+                        },
+                        {
+                            role: "user",
+                            content: `Statement1: ${statement1}\nStatement2: ${statement2}\n`
+                        }
+                    ]
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error('API call failed: ' + response.statusText);
+            }
+            
+            const data = await response.json();
+            return data.choices[0].message.content.trim();
+        }
+
+        function startRounds() {
+            gameState.currentRound = 0;
+            gameState.currentGuesses = {};
+            showRound();
+        }
+
+        function showRound() {
+            const roundPlayer = gameState.currentRound;
+            const player = gameState.players[roundPlayer];
+            const aiLie = gameState.aiLies[roundPlayer];
+            
+            const statements = [...player.truths, aiLie];
+            const correctAnswer = 2;
+            
+            gameState.currentRoundData = {
+                playerIndex: roundPlayer,
+                statements: statements,
+                correctAnswer: correctAnswer
+            };
+            
+            const shuffled = statements.map((s, i) => ({statement: s, original: i}))
+                .sort(() => Math.random() - 0.5);
+            gameState.currentRoundData.shuffled = shuffled;
+            gameState.currentRoundData.correctShuffled = shuffled.findIndex(s => s.original === correctAnswer);
+            
+            document.getElementById('round-screen').classList.remove('hidden');
+            document.getElementById('round-number').textContent = gameState.currentRound + 1;
+            
+            const statementsContainer = document.getElementById('statements-container');
+            statementsContainer.innerHTML = '';
+            shuffled.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = 'statement-option';
+                div.innerHTML = `<strong>(${idx + 1})</strong> ${item.statement}`;
+                statementsContainer.appendChild(div);
+            });
+            
+            const guessesContainer = document.getElementById('guesses-container');
+            guessesContainer.innerHTML = '';
+            gameState.currentGuesses = {};
+            
+            // All players vote, including the chameleon (roundPlayer)
+            for (let i = 0; i < gameState.numPlayers; i++) {
+                const div = document.createElement('div');
+                div.className = 'player-guess';
+                div.innerHTML = `
+                    <strong>Player ${i + 1}'s Guess</strong>
+                    <div class="guess-buttons">
+                        <div class="guess-button" onclick="selectGuess(${i}, 0)">1</div>
+                        <div class="guess-button" onclick="selectGuess(${i}, 1)">2</div>
+                        <div class="guess-button" onclick="selectGuess(${i}, 2)">3</div>
+                    </div>
+                `;
+                guessesContainer.appendChild(div);
+            }
+        }
+
+        function selectGuess(playerIdx, guessIdx) {
+            gameState.currentGuesses[playerIdx] = guessIdx;
+            
+            const guessButtons = document.querySelectorAll('.player-guess')[playerIdx].querySelectorAll('.guess-button');
+            guessButtons.forEach((btn, idx) => {
+                btn.classList.toggle('selected', idx === guessIdx);
+            });
+        }
+
+        function submitGuesses() {
+            // All players must guess now
+            if (Object.keys(gameState.currentGuesses).length < gameState.numPlayers) {
+                alert('All players must make a guess!');
+                return;
+            }
+            
+            const roundPlayer = gameState.currentRoundData.playerIndex;
+            const correctAnswer = gameState.currentRoundData.correctShuffled;
+            let roundPlayerPoints = 0;
+            let wrongGuesses = 0;
+            
+            // Score everyone except the chameleon
+            for (let i = 0; i < gameState.numPlayers; i++) {
+                if (i === roundPlayer) continue;
+                
+                if (gameState.currentGuesses[i] === correctAnswer) {
+                    gameState.scores[i] += 100;
+                } else {
+                    wrongGuesses++;
+                }
+            }
+            
+            // Chameleon scoring
+            if (gameState.numPlayers === 2) {
+                roundPlayerPoints = 100;
+            } else {
+                roundPlayerPoints = wrongGuesses * 50;
+            }
+            gameState.scores[roundPlayer] += roundPlayerPoints;
+            
+            document.getElementById('round-screen').classList.add('hidden');
+            showRoundLeaderboard(correctAnswer, roundPlayer, roundPlayerPoints);
+        }
+
+        function showRoundLeaderboard(correctAnswer, roundPlayer, roundPlayerPoints) {
+            document.getElementById('round-leaderboard-screen').classList.remove('hidden');
+            document.getElementById('round-lb-number').textContent = gameState.currentRound + 1;
+            
+            const resultsDiv = document.getElementById('round-results');
+            resultsDiv.innerHTML = `
+                <div class="results-box">
+                    <p><strong>The AI Lie was statement ${correctAnswer + 1}!</strong></p>
+                    <p style="margin-top: 10px;">These were Player ${roundPlayer + 1}'s truths and AI lie.</p>
+                    <p style="margin-top: 10px;">Player ${roundPlayer + 1} earned ${roundPlayerPoints} points this round.</p>
+                </div>
+            `;
+            
+            const leaderboard = document.getElementById('round-leaderboard');
+            leaderboard.innerHTML = '<h3>Current Standings</h3>';
+            
+            const sortedPlayers = gameState.scores
+                .map((score, idx) => ({player: idx + 1, score: score}))
+                .sort((a, b) => b.score - a.score);
+            
+            sortedPlayers.forEach((p, idx) => {
+                const div = document.createElement('div');
+                div.className = 'leaderboard-entry';
+                if (idx === 0) div.classList.add('first');
+                else if (idx === 1) div.classList.add('second');
+                else if (idx === 2) div.classList.add('third');
+                div.innerHTML = `
+                    <span><strong>${idx + 1}.</strong> Player ${p.player}</span>
+                    <span><strong>${p.score} points</strong></span>
+                `;
+                leaderboard.appendChild(div);
+            });
+        }
+
+        function nextRound() {
+            gameState.currentRound++;
+            
+            if (gameState.currentRound >= gameState.numPlayers) {
+                showFinalLeaderboard();
+            } else {
+                document.getElementById('round-leaderboard-screen').classList.add('hidden');
+                showRound();
+            }
+        }
+
+        function showFinalLeaderboard() {
+            document.getElementById('round-leaderboard-screen').classList.add('hidden');
+            document.getElementById('final-leaderboard-screen').classList.remove('hidden');
+            
+            const leaderboard = document.getElementById('final-leaderboard');
+            leaderboard.innerHTML = '';
+            
+            const sortedPlayers = gameState.scores
+                .map((score, idx) => ({player: idx + 1, score: score}))
+                .sort((a, b) => b.score - a.score);
+            
+            sortedPlayers.forEach((p, idx) => {
+                const div = document.createElement('div');
+                div.className = 'leaderboard-entry';
+                if (idx === 0) div.classList.add('first');
+                else if (idx === 1) div.classList.add('second');
+                else if (idx === 2) div.classList.add('third');
+                div.innerHTML = `
+                    <span><strong>${idx + 1}.</strong> Player ${p.player}</span>
+                    <span><strong>${p.score} points</strong></span>
+                `;
+                leaderboard.appendChild(div);
+            });
+        }
+
+        function playAgain() {
+            document.getElementById('final-leaderboard-screen').classList.add('hidden');
+            document.getElementById('settings-screen').classList.remove('hidden');
+            gameState = {
+                numPlayers: 2,
+                aiModel: 'gpt-5-nano',
+                players: [],
+                currentPlayerIndex: 0,
+                currentRound: 0,
+                aiLies: [],
+                scores: []
+            };
+        }
+    </script>
+</body>
+</html>

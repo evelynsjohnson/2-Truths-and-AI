@@ -23,7 +23,7 @@ export default function AboutGame() {
           >
             <img src="/assets/img/button-icons/home.png" alt="Home" />
           </Button>
-
+          
           <div>
             <h1 id="game-title" className="about-game-title">About Our Game</h1>                             {/* Page title */}
             <div className="about-game-divider" aria-hidden="true"></div>
