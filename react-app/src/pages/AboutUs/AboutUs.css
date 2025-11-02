@@ -1,0 +1,248 @@
+/* Scope all styles to AboutUs page only */
+.about-us-stage {
+  min-height: 100vh;
+  background: #0f0f10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px;
+  color: #eae9f7;
+}
+
+.about-us-content {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.about-us-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 0 0 18px 0;
+}
+
+.about-us-home-btn {
+  position: absolute;
+  left: 24px;
+  top: 24px;
+  background: var(--secondary);
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  height: 44px;
+  width: 44px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.about-us-home-btn:hover {
+  background: var(--secondary-hover);
+  transform: translateY(-2px);
+}
+
+.about-us-home-btn img {
+  width: 22px;
+  height: auto;
+}
+
+.about-us-title {
+  font-size: clamp(2.4rem, 4.2vh, 3.4rem);
+  letter-spacing: 1px;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+}
+
+.about-us-divider {
+  width: 280px;
+  height: 6px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary-hover));
+  border-radius: 6px;
+  margin: 10px auto 0;
+}
+
+.team-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: clamp(24px, 3vh, 48px);
+  margin-top: clamp(24px, 3vh, 48px);
+  padding: 0 clamp(12px, 2vw, 24px);
+}
+
+.team-member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.avatar {
+  width: clamp(140px, 18vh, 220px);
+  height: clamp(140px, 18vh, 220px);
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+}
+
+.member-name {
+  font-size: clamp(1.3rem, 2.2vh, 1.7rem);
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0;
+  line-height: 1;
+}
+
+.name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.member-role {
+  font-size: clamp(1rem, 1.8vh, 1.3rem);
+  font-weight: 400;
+  color: var(--primary);
+}
+
+/* LinkedIn */
+.linkedin-link {
+  margin-top: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--primary);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  vertical-align: middle;
+  padding: 2px;
+}
+
+.linkedin-link svg {
+  width: 15px;
+  height: 15px;
+  display: block;
+  fill: currentColor;
+}
+
+.linkedin-link:hover {
+  color: #8f89ff;
+}
+
+.statement-section {
+  width: 100%;
+  background: var(--secondary);
+  padding: clamp(20px, 3vh, 36px) clamp(20px, 3vw, 48px);
+  margin-top: clamp(24px, 3vh, 40px);
+  border-radius: 0;
+}
+
+.statement-section h2 {
+  font-size: clamp(1.6rem, 2.8vh, 2.2rem);
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: clamp(12px, 1.5vh, 20px);
+}
+
+.statement-section p {
+  font-size: clamp(0.95rem, 1.75vh, 1.15rem);
+  line-height: 1.6;
+  color: #e6e6e6;
+  width: 100%;
+  margin: 0;
+}
+
+.footer-link {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0;
+  margin-top: 18px;
+}
+
+.about-game-btn {
+  background: var(--primary);
+  border: none;
+  color: #fff;
+  font-size: clamp(1.1rem, 2vh, 1.4rem);
+  font-family: "Afacad", sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.about-game-btn:hover {
+  background: var(--secondary-hover);
+  transform: translateY(-2px);
+}
+
+.arrow {
+  font-size: clamp(1.4rem, 2.4vh, 1.8rem);
+  transition: transform 0.2s ease;
+}
+
+.about-game-btn:hover .arrow {
+  transform: translateX(6px);
+}
+
+@media (max-width: 920px) {
+  .team-grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .about-us-content {
+    width: calc(100% - 20px);
+  }
+
+  .about-us-title {
+    font-size: 2rem;
+  }
+
+  .about-us-divider {
+    width: 180px;
+  }
+
+  .team-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 0 8px;
+  }
+
+  .statement-section {
+    padding: 20px 16px;
+    margin-top: 24px;
+  }
+
+  .footer-link {
+    padding: 16px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 380px) {
+  .team-grid {
+    grid-template-columns: 1fr;
+    max-width: 280px;
+  }
+}

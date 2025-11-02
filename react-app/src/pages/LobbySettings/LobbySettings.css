@@ -1,0 +1,198 @@
+.lobby-stage {
+  min-height: 100vh;
+  background: #0f0f10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px;
+  color: #eae9f7;
+}
+
+.home-btn {
+  position: absolute;
+  left: 24px;
+  top: 24px;
+  background: var(--secondary);
+  border: none;
+  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.home-btn:hover {
+  background: var(--secondary-hover);
+  transform: translateY(-2px);
+}
+
+.lobby-card {
+  width: 920px;
+  max-width: calc(100% - 40px);
+  background: transparent;
+  padding: 36px 48px 48px 48px;
+  box-sizing: border-box;
+  border-radius: 12px;
+}
+
+.title {
+  font-size: 44px;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 18px 0;
+}
+
+.divider {
+  height: 4px;
+  width: 160px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary-hover));
+  margin: 0 auto 28px auto;
+  border-radius: 8px;
+}
+
+.setting-row {
+  display: grid;
+  /* label | dots (flex) | control */
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 0;
+  border-bottom: 1px dotted rgba(255,255,255,0.06);
+}
+
+.setting-label {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.muted {
+  color: var(--primary);
+  font-size: 13px;
+  margin-left: 8px;
+}
+
+.setting-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dots {
+  height: 2px;
+  width: 100%;
+  /* repeating dots to act as leader dots */
+  background-image: radial-gradient(circle,var(--primary) 1px, transparent 1px);
+  background-size: 8px 2px;
+  background-repeat: repeat-x;
+  background-position: left center;
+  opacity: 0.16;
+  /* leave a small gap before the controls so arrows don't sit on top of dots */
+  padding-right: 18px;
+}
+
+.chev {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.06);
+  color: var(--primary);
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chev:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.setting-value {
+  font-size: 20px;
+  font-weight: 700;
+  min-width: 120px;
+  text-align: center;
+}
+
+.small {
+  font-size: 13px;
+}
+
+.ai-model-control .chev {
+  padding: 6px 10px;
+}
+
+.help-text {
+  width: 100%;
+  color: var(--primary);
+  font-size: 13px;
+  margin-top: 6px;
+  grid-column: 1 / -1;
+}
+
+.unchangeable {
+  margin-top: 22px;
+  padding: 18px 0 6px 0;
+}
+
+.small-muted {
+  color: var(--primary);
+  font-size: 13px;
+}
+
+.truths-label {
+  font-size: 20px;
+  margin-top: 6px;
+  font-weight: 700;
+}
+
+.truths-value {
+  color: var(--primary);
+  margin-left: 8px;
+}
+
+.confirm-row {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.confirm-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 18px 36px;
+  border-radius: 24px;
+  font-size: 22px;
+  font-weight: 700;
+  width: 80%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.confirm-btn:hover {
+  background: var(--secondary-hover);
+  transform: translateY(-2px);
+}
+
+.reset-link {
+  background: transparent;
+  color: var(--primary);
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 14px;
+}
+
+@media (max-width: 760px) {
+  .lobby-card { padding: 20px; }
+  .title { font-size: 28px; }
+  .setting-value { min-width: 100px; font-size: 18px }
+  .confirm-btn { width: 100%; font-size: 18px }
+}

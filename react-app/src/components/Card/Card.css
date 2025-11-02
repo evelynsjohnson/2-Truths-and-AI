@@ -1,0 +1,20 @@
+.card {
+  width: 100%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+  border-radius: 12px;
+  padding: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.card-compact {
+  padding: 16px;
+}
+
+.card-large {
+  padding: 40px;
+}
+
+.card-highlight {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent);
+}

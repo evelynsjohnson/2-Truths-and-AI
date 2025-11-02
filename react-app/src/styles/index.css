@@ -1,0 +1,85 @@
+:root {
+  --bg: #121212;
+  --card: #121212;
+  --primary: #6b63ff;
+  --secondary: #3b34d1;
+  --secondary-hover: #5048e5;
+  --muted: #bdbdbd;
+  --error: #e86b6b;
+  --success: #59b89b;
+  /* Centralized container sizing for all screen "stage" elements */
+  --container-min: 320px; /* minimum viewport-aware container width */
+  --container-max: 2000px; /* maximum container width */
+}
+
+/* Theme overrides */
+[data-theme="theme-coral"] {
+  --primary: #e86b6b;
+  --secondary: #d9534f;
+  --secondary-hover: #f08a84;
+}
+
+[data-theme="theme-pink"] {
+  --primary: #f07ad9;
+  --secondary: #d94ec9;
+  --secondary-hover: #f59fe0;
+}
+
+[data-theme="theme-green"] {
+  --primary: #59b89b;
+  --secondary: #48a17f;
+  --secondary-hover: #6fc2a9;
+}
+
+[data-theme="theme-gray"] {
+  --primary: #9a9a9a;
+  --secondary: #7f7f7f;
+  --secondary-hover: #a9a9a9;
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--bg);
+  color: #fff;
+  font-family: "Afacad", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  height: 100%;
+}
+
+/*
+  Centralized stage rule applied to any element whose class contains "-stage"
+  (e.g. "about-us-stage", "settings-stage") as well as the generic ".stage".
+  This provides a single source of truth for width and minimum height across
+  all pages. Individual page styles may still override other layout details.
+*/
+[class*="-stage"], .stage {
+  width: clamp(var(--container-min, 320px), 100vw, var(--container-max, 2000px));
+  min-height: 100vh;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input,
+textarea {
+  font-family: inherit;
+}
