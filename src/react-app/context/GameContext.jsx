@@ -44,13 +44,33 @@ export function GameProvider({ children }) {
   }, [gameState]);
 
   // Initialize game with players by assigning IDs, names and scores
-  const initializeGame = (numPlayers, aiModel = 'gpt-5-nano') => {
+  const initializeGame = (numPlayersOrOptions, aiModelArg = 'gpt-5-nano') => {
+    // Support two call signatures:
+    // initializeGame(numPlayers, aiModel)
+    // initializeGame({ numPlayers, numRounds, roundLength, aiModel })
+    let numPlayers = 0;
+    let aiModel = aiModelArg;
+    let extra = {};
+
+    if (typeof numPlayersOrOptions === 'object' && numPlayersOrOptions !== null) {
+      numPlayers = Number(numPlayersOrOptions.numPlayers) || 0;
+      aiModel = numPlayersOrOptions.aiModel || aiModelArg;
+      // preserve optional settings like numRounds and roundLength
+      extra = {
+        numRounds: numPlayersOrOptions.numRounds,
+        roundLength: numPlayersOrOptions.roundLength
+      };
+    } else {
+      numPlayers = Number(numPlayersOrOptions) || 0;
+    }
+
     const players = [];
     for (let i = 1; i <= numPlayers; i++) {
       players.push({
         id: i,
         name: `Player ${i}`,
-        score: 0
+        score: 0,
+        streak: 0
       });
     }
 
@@ -61,7 +81,10 @@ export function GameProvider({ children }) {
       aiModel,
       currentRound: 0,
       currentSet: 1,
-      scores: {}
+      scores: {},
+      // merge any extra settings provided from lobby
+      ...(extra.numRounds ? { numRounds: extra.numRounds } : {}),
+      ...(extra.roundLength ? { roundLength: extra.roundLength } : {})
     }));
   };
 
@@ -69,7 +92,7 @@ export function GameProvider({ children }) {
   const addPlayer = (playerName, playerId) => {
     setGameState(prev => ({
       ...prev,
-      players: [...prev.players, { id: playerId, name: playerName, score: 0 }]
+      players: [...prev.players, { id: playerId, name: playerName, score: 0, streak: 0  }]
     }));
   };
 
@@ -123,7 +146,7 @@ export function GameProvider({ children }) {
     } catch (e) {
       console.warn('Could not load game data', e);
     }
-    return null;
+    throw new Error('No game data found');
   };
 
   // Reset game state to initial values

@@ -33,19 +33,65 @@ export default function LoadingScreen() {
 
 
       // Call API to generate lies for all players
-      const data = await generateLiesForAllPlayers(gameState.players);
+      const liesData = await generateLiesForAllPlayers(gameState.players);
       
-      setProgress('Finalizing game setup...');
+      setProgress('Building game rounds...');
 
-      // Update game state with generated lies
+      console.log('Generated lies:', liesData);
+
+      // Build rounds array from truthSets and lies
+      const rounds = [];
+      const totalRounds = gameState.totalRounds || gameState.numRounds || 0;
+      
+      for (let roundIndex = 0; roundIndex < totalRounds; roundIndex++) {
+        // Determine which player's turn it is for this round
+        const playerIndex = roundIndex % gameState.players.length;
+        const player = gameState.players[playerIndex];
+        
+        // Determine which truth set this is for the player (0-indexed)
+        const setIndexForPlayer = Math.floor(roundIndex / gameState.players.length);
+        
+        // Get the truth set and lie for this round
+        const truthSet = player.truthSets?.[setIndexForPlayer];
+        const lie = liesData[player.id]?.[setIndexForPlayer];
+        
+        if (!truthSet || !lie) {
+          console.warn(`Missing data for round ${roundIndex + 1}, player ${player.name}, set ${setIndexForPlayer + 1}`);
+          continue;
+        }
+        
+        // Build statements array: 2 truths + 1 lie, shuffled
+        const statements = [
+          { text: truthSet.truth1, type: 'truth', playerId: player.id },
+          { text: truthSet.truth2, type: 'truth', playerId: player.id },
+          { text: lie, type: 'lie', playerId: player.id }
+        ];
+        
+        // Shuffle statements
+        for (let i = statements.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [statements[i], statements[j]] = [statements[j], statements[i]];
+        }
+        
+        rounds.push({
+          player: player,
+          statements: statements,
+          votes: {},
+          results: null
+        });
+      }
+
+      console.log('Built rounds:', rounds);
+
+      // Update game state with rounds
       updateGameState({ 
-        lies: data,
+        rounds: rounds,
+        currentRound: 0,
         isLiesGenerated: true,
         isGeneratingLies: false
       });
 
-      console.log('Updated game state with generated lies.');
-      console.log('Generated lies:', data);
+      console.log('Game setup complete, navigating to round screen...');
 
       // Short delay for UX
       setTimeout(() => {
@@ -68,8 +114,9 @@ export default function LoadingScreen() {
       return;
     }
 
+    // Check that all players have at least one complete truth set
     const hasAllTruths = gameState.players.every(
-      player => player.truth1 && player.truth2
+      player => player.truthSets && player.truthSets.length > 0
     );
 
     if (!hasAllTruths) {

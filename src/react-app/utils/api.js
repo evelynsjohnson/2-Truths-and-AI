@@ -1,6 +1,30 @@
 // API utilities for communicating with backend/LLM services
 
 /**
+ * DATA STRUCTURE:
+ * Players come in with truthSets array format from TruthInputs:
+ * {
+ *   id: number,
+ *   name: string,
+ *   icon: string,
+ *   truthSets: [
+ *     { setNumber: 1, truth1: "...", truth2: "..." },
+ *     { setNumber: 2, truth1: "...", truth2: "..." },
+ *     ...
+ *   ]
+ * }
+ * 
+ * API sends flattened truths array per player and receives array of lies per player:
+ * Request: { players: [{ id, name, truths: ["truth1", "truth2", "truth3", "truth4", ...] }], aiModel }
+ * Response: { lies: { "playerId": ["lie1", "lie2", ...] } }
+ * 
+ * IMPORTANT: Each player gets ONE LIE PER TRUTH SET (2 truths = 1 set = 1 lie)
+ * Example: Player with 2 sets (4 truths) → receives 2 lies
+ *          truths: ["set1truth1", "set1truth2", "set2truth1", "set2truth2"]
+ *          lies:   ["set1lie", "set2lie"]
+ */
+
+/**
  * Get random lies from the sample lies list as fallback
  */
 async function getRandomLiesFromSamples(count) {
@@ -23,21 +47,35 @@ async function getRandomLiesFromSamples(count) {
 
 /**
  * Generate AI lies for all players based on their truths
- * @param players - Array of player objects with {id, name, truths: [truth1, truth2]}
+ * @param players - Array of player objects with {id, name, truthSets: [{truth1, truth2}, ...]}
  * @param aiModel - AI model to use (default: 'gpt-5-nano')
- * @returns Object mapping player IDs to their generated lies
+ * @returns Object mapping player IDs to their generated lies array
  */
 export async function generateLiesForAllPlayers(players, aiModel = 'gpt-5-nano') {
   try {
+    // Transform players data to send all truth sets to API
+    const playersData = players.map(p => {
+      // Extract all truths from truthSets array
+      const allTruths = [];
+      if (p.truthSets && Array.isArray(p.truthSets)) {
+        p.truthSets.forEach(set => {
+          if (set.truth1) allTruths.push(set.truth1);
+          if (set.truth2) allTruths.push(set.truth2);
+        });
+      }
+      
+      return {
+        id: p.id,
+        name: p.name,
+        truths: allTruths
+      };
+    });
+
     const response = await fetch('/api/generate-lies', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
-        players: players.map(p => ({
-          id: p.id,
-          name: p.name,
-          truths: [p.truth1, p.truth2]  // Convert truth1, truth2 properties to array
-        })),
+        players: playersData,
         aiModel 
       })
     });
@@ -47,18 +85,23 @@ export async function generateLiesForAllPlayers(players, aiModel = 'gpt-5-nano')
     }
     
     const data = await response.json();
-    // Expected format: { lies: { "player1": "lie text", "player2": "lie text", ... } }
+    // Expected format: { lies: { "player1": ["lie1", "lie2", ...], "player2": [...], ... } }
+    // Each player gets an array of lies (one per truth set)
     return data.lies;
   } catch (error) {
     console.error('Error generating AI lies, falling back to random samples:', error);
     
     // Fallback to random lies from sample-lies.json
     try {
-      const randomLies = await getRandomLiesFromSamples(players.length);
+      // Calculate how many lies we need per player (based on their truth sets)
       const liesMap = {};
-      players.forEach((player, index) => {
-        liesMap[player.id] = randomLies[index] || "I once won a hot dog eating contest by accident.";
-      });
+      
+      for (const player of players) {
+        const numLiesNeeded = player.truthSets?.length || 1;
+        const playerLies = await getRandomLiesFromSamples(numLiesNeeded);
+        liesMap[player.id] = playerLies;
+      }
+      
       return liesMap;
     } catch (fallbackError) {
       // If even the fallback fails, show error page

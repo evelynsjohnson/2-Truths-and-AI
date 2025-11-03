@@ -73,11 +73,9 @@ export default function SettingsPage() {
   };
 
   const handleResetDefaults = () => {
+    playClick();
     resetSettings();
-    setMasterVolume(20);
-    setSfxVolume(20);
-    setBgMusicVolume(20);
-    setCustomColor('#6b63ff');
+    // Local state will be updated by the useEffect when settings change
   };
 
   // Render the settings page

@@ -6,8 +6,6 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 
 const SettingsContext = createContext();
 
-const STORE_KEY = '2tai_settings_v1';   // Key for storing settings in localStorage
-
 // Initialize default settings
 const defaultSettings = {
   theme: 'theme-default',
@@ -17,7 +15,10 @@ const defaultSettings = {
   sfxVolume: 0.2,
   sfxEnabled: true,
   sfxFile: 'button-click.mp3',
-  customPrimary: '#ffffff'
+  // sensible defaults for custom theme values
+  customPrimary: '#6b63ff',
+  customSecondary: '#3b34d1',
+  customSecondaryHover: '#5048e5'
 };
 
 // Predefined theme color definitions
@@ -30,23 +31,25 @@ const themeDefs = {
 };
 
 export function SettingsProvider({ children }) {
-  // Load settings from localStorage or fallback to defaults
+  // Initialize settings from localStorage or use defaults
   const [settings, setSettings] = useState(() => {
     try {
-      const stored = localStorage.getItem(STORE_KEY);
-      return stored ? { ...defaultSettings, ...JSON.parse(stored) } : defaultSettings;
-    } catch (e) {
-      console.warn('Could not load settings', e);
-      return defaultSettings;
+      const savedSettings = localStorage.getItem('appSettings');
+      if (savedSettings) {
+        return { ...defaultSettings, ...JSON.parse(savedSettings) };
+      }
+    } catch (error) {
+      console.error('Error loading settings from localStorage:', error);
     }
+    return defaultSettings;
   });
 
   // Save settings to localStorage whenever they change
   useEffect(() => {
     try {
-      localStorage.setItem(STORE_KEY, JSON.stringify(settings));
-    } catch (e) {
-      console.warn('Could not save settings', e);
+      localStorage.setItem('appSettings', JSON.stringify(settings));
+    } catch (error) {
+      console.error('Error saving settings to localStorage:', error);
     }
   }, [settings]);
 
@@ -57,7 +60,11 @@ export function SettingsProvider({ children }) {
     if (theme === 'theme-custom') {
       // Custom theme implementation
       const primary = settings.customPrimary || defaultSettings.customPrimary;
+      const secondary = settings.customSecondary || defaultSettings.customSecondary;
+      const secondaryHover = settings.customSecondaryHover || defaultSettings.customSecondaryHover;
       document.documentElement.style.setProperty('--primary', primary);
+      document.documentElement.style.setProperty('--secondary', secondary);
+      document.documentElement.style.setProperty('--secondary-hover', secondaryHover);
     } else {
       const def = themeDefs[theme];
       if (def) {
@@ -67,7 +74,7 @@ export function SettingsProvider({ children }) {
         document.documentElement.style.setProperty('--bg', def.bg);
       }
     }
-  }, [settings.customPrimary]);
+  }, [settings.customPrimary, settings.customSecondary, settings.customSecondaryHover]);
 
   // Apply theme whenever it changes
   useEffect(() => {

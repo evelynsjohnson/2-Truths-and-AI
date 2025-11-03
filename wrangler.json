@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "2-truths-and-ai",
   "main": "./src/worker/index.js",
-  "compatibility_date": "2025-10-31",
+  "compatibility_date": "2025-10-11",
   "compatibility_flags": ["nodejs_compat"],
   "observability": {
     "enabled": true

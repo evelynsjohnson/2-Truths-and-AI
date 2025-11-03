@@ -70,7 +70,8 @@ function ProtectedRoute({ children }) {
   const { gameState } = useGame();
   
   if (!gameState.consentGiven) {
-    return <Navigate to="/" replace />;
+    // Redirect unconsented users to the start screen which will present the consent modal
+    return <Navigate to="/start" replace />;
   }
   
   return children;
@@ -82,83 +83,80 @@ function AppRoutes() {
     <>
       <RouteTracker />
       <Routes>
-        {/* Consent page - entry point */}
-        <Route path="/" element={<ConsentPage />} />
-      
-      {/* Protected routes */}
-      <Route path="/start" element={
-        <ProtectedRoute>
-          <StartScreen />
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/lobby" element={
-        <ProtectedRoute>
-          <LobbySettings />
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/truth-inputs" element={
-        <ProtectedRoute>
-          <TruthInputs />
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/loading" element={
-        <ProtectedRoute>
-          <LoadingScreen />
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/round" element={
-        <ProtectedRoute>
-          <RoundScreen />
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/round-leaderboard" element={
-        <ProtectedRoute>
-          <RoundLeaderboard />
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/final-leaderboard" element={
-        <ProtectedRoute>
-          <FinalLeaderboard />
-        </ProtectedRoute>
-      } />
-      
-      {/* Info pages */}
-      <Route path="/how-to-play" element={
-        <ProtectedRoute>
-          <HowToPlay />
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/about-game" element={
-        <ProtectedRoute>
-          <AboutGame />
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/about-us" element={
-        <ProtectedRoute>
-          <AboutUs />
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/settings" element={
-        <ProtectedRoute>
-          <SettingsPage />
-        </ProtectedRoute>
-      } />
-      
-      {/* Error page - no protection needed */}
-      <Route path="/error" element={<ErrorPage />} />
-      
-      {/* Catch all - redirect to consent */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        {/* Default route -> start screen (start screen will show consent modal when needed) */}
+        <Route path="/" element={<Navigate to="/start" replace />} />
+
+        {/* Start screen is intentionally NOT protected so users can see it and accept consent */}
+        <Route path="/start" element={<StartScreen />} />
+
+        {/* Protected routes */}
+        <Route path="/lobby" element={
+          <ProtectedRoute>
+            <LobbySettings />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/truth-inputs" element={
+          <ProtectedRoute>
+            <TruthInputs />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/loading" element={
+          <ProtectedRoute>
+            <LoadingScreen />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/round" element={
+          <ProtectedRoute>
+            <RoundScreen />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/round-leaderboard" element={
+          <ProtectedRoute>
+            <RoundLeaderboard />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/final-leaderboard" element={
+          <ProtectedRoute>
+            <FinalLeaderboard />
+          </ProtectedRoute>
+        } />
+
+        {/* Info pages */}
+        <Route path="/how-to-play" element={
+          <ProtectedRoute>
+            <HowToPlay />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/about-game" element={
+          <ProtectedRoute>
+            <AboutGame />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/about-us" element={
+          <ProtectedRoute>
+            <AboutUs />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/settings" element={
+          <ProtectedRoute>
+            <SettingsPage />
+          </ProtectedRoute>
+        } />
+
+        {/* Error page - no protection needed */}
+        <Route path="/error" element={<ErrorPage />} />
+
+        {/* Catch all - redirect to consent */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </>
   );
 }

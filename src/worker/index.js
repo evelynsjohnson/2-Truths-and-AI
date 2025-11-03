@@ -28,32 +28,57 @@ app.use('/*', cors({
 app.post('/api/generate-lies', async (c) => {
     try {
         const body = await c.req.json();
-        let truthList = [];
-
-        for (let player of body.players) {
-            truthList.push(sanitizeTruth(player.truths[0]), sanitizeTruth(player.truths[1]));
+        
+        // Format input according to system prompt:
+        // "User 1" followed by their truths (2 lines per truth set), then "User 2", etc.
+        const formattedInput = [];
+        
+        for (let i = 0; i < body.players.length; i++) {
+            const player = body.players[i];
+            formattedInput.push(`User ${i + 1}`);
+            
+            // Add all truths for this player (already flattened array from frontend)
+            for (let truth of player.truths) {
+                formattedInput.push(sanitizeTruth(truth));
+            }
         }
-        console.log("Received truths for lie generation:", truthList);
+        
+        console.log("Formatted input for lie generation:", formattedInput);
 
         // Check that ai model is provided and valid, else use default
         const validAiModels = ['gpt-5-nano', 'gpt-4.1-mini', 'gpt-35-turbo'];
         const aiModel = validAiModels.includes(body.aiModel) ? body.aiModel : 'gpt-5-nano';
 
-        // Call OpenAI API with truthList and generate lies
-        let lies;
+        // Call OpenAI API with formatted input and generate lies
+        let liesArray;
         try {
-            lies = await generateLiesFromTruths(truthList, aiModel, c.env);
+            liesArray = await generateLiesFromTruths(formattedInput, aiModel, c.env);
         } catch (error) {
             console.error("Error generating lies from truths:", error);
             return c.json({ error: "Error generating lies" }, 500);
         }
-
-        // Mock list of lies for testing. It says: "Lie generated for player #X based on the truths: [truth1], [truth2]."
-        /*const lies = body.players.map((player, index) => 
-            `Lie generated for player #${index + 1} based on the truths: "${truthList[index * 2]}", "${truthList[index * 2 + 1]}".`
-        );*/
         
-        console.log("Generated lies:", lies);
+        // Map lies back to player IDs
+        // Each player should get one lie per truth set (each set = 2 truths)
+        const lies = {};
+        let lieIndex = 0;
+        
+        for (let player of body.players) {
+            const numTruthSets = Math.floor(player.truths.length / 2);
+            const playerLies = liesArray.slice(lieIndex, lieIndex + numTruthSets);
+            lies[player.id] = playerLies;
+            
+            console.log(`Player ${player.id} (${player.name}): ${player.truths.length} truths → ${numTruthSets} sets → expecting ${numTruthSets} lies, got ${playerLies.length}`);
+            
+            lieIndex += numTruthSets;
+        }
+        
+        console.log("Generated lies mapped to players:", lies);
+        
+        // Validate we used all lies
+        if (lieIndex !== liesArray.length) {
+            console.warn(`Warning: Expected ${lieIndex} lies but got ${liesArray.length} from AI`);
+        }
 
         return c.json({ lies: lies });
     } catch (error) {
@@ -108,19 +133,23 @@ async function generateLiesFromTruths(truths, aiModel, env) {
                         "You are the engine of a game called \"2 Truths or AI\".\n" +
 
                         "Rules:\n" +
-                        "- The users provides two true personal statements each.\n" +
-                        "- You generate exactly one believable false statement per user.\n" +
+                        "- Each user provides two true personal statements per set.\n" +
+                        "- You generate exactly one believable false statement per set of truths.\n" +
+                        "- If a user has multiple sets of truths, generate one lie for each set.\n" +
 
                         "Input format:\n" +
-                        "- The input consists of multiple lines, each line containing a single true statement from a user.\n" +
-                        "- Every two lines correspond to one user (i.e., lines 1 and 2 are User 1's truths, lines 3 and 4 are User 2's truths, etc.).\n" +
+                        "- The input consists of multiple lines.\n" +
+                        "- Each user is indicated by a line with this format (where # is a number): User #.\n" +
+                        "- After the user indicator, every two consecutive lines represent one set of truths for that user.\n" +
+                        "- Example: If User 1 has 2 sets, the format is: User 1\\ntruth1\\ntruth2\\ntruth3\\ntruth4\\nUser 2\\n...\n" +
+                        "  (lines 1-2 are User 1's first set, lines 3-4 are User 1's second set)\n" +
 
                         "Output format:\n" +
-                        "- return ONLY the generated statements, with no explanations, introductions, or extra text.\n" +
-                        "- Each lie should correspond to a line.\n" +
-                        "- The order of the lies must match the order of the user's truths provided.\n" +
-                        "- Example: User1LieText\\nUser2LieText\\nUser3LieText\n ..." +
-                        "- Do not bullet point or number the statements.\n" +
+                        "- return ONLY the generated lie statements, with no explanations, introductions, or extra text.\n" +
+                        "- Each lie should be on its own line.\n" +
+                        "- Generate lies in the same order as the truth sets: all lies for User 1 (one per set), then all lies for User 2, etc.\n" +
+                        "- Example output for 2 users with 2 sets each: User1Set1Lie\\nUser1Set2Lie\\nUser2Set1Lie\\nUser2Set2Lie\n" +
+                        "- Do not bullet point, number, or add labels to the statements.\n" +
 
                         "Guidelines for generating lies:\n" +
                         "- The lie must be plausible and fit naturally among the user's true statements, DO NOT contradict their statements.\n" +

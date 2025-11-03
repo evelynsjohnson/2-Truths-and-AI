@@ -6,9 +6,13 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/Button/Button';
 import './StartScreen.css';
+import Modal from '../../components/Modal/Modal';
+import ConsentPage from '../ConsentPage/ConsentPage';
+import { useGame } from '../../context/GameContext';
 
 export default function StartScreen() {
   const navigate = useNavigate();
+  const { gameState } = useGame();
 
   // Render the start screen UI
   return (
@@ -64,6 +68,10 @@ export default function StartScreen() {
           </div>
         </div>
       </div>
+      {/* Consent modal: block interaction until user gives consent */}
+      <Modal isOpen={!gameState.consentGiven} blocking={true}>
+        <ConsentPage modalMode={true} onConfirm={() => { /* no-op; giving consent updates context */ }} />
+      </Modal>
     </div>
   );
 }

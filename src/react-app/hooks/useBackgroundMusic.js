@@ -2,7 +2,7 @@
  * @fileoverview Custom hook to manage background music playback based on user settings.
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useSettings } from '../context/SettingsContext';
 
 export function useBackgroundMusic() {
@@ -37,28 +37,30 @@ export function useBackgroundMusic() {
     // Update source if bgMusic changed
     const expectedSrc = `/assets/mp3/bg-music/${settings.bgMusic}`;
     if (!audioRef.current.src.endsWith(expectedSrc)) {
+      const wasPlaying = !audioRef.current.paused;
       audioRef.current.src = expectedSrc;
       audioRef.current.load();
-      isPlayingRef.current = false; // Reset playing state on source change
+      isPlayingRef.current = false;
+      
+      // Resume playing if it was playing before
+      if (wasPlaying) {
+        audioRef.current.play().catch(e => console.warn('Could not resume music:', e));
+      }
     }
 
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        isPlayingRef.current = false;
-      }
-    };
+    // Cleanup only when component unmounts, not on every re-render
+    return undefined;
   }, [settings.bgMusic, settings.masterVolume, settings.bgMusicVolume]);
 
   // Function to play the background music
-  const play = async () => {
+  const play = useCallback(async () => {
     if (!audioRef.current) return;
-    
+
     // Check if audio is already playing using the element's paused property
     if (!audioRef.current.paused) {
       return; // Already playing, don't try again
     }
-    
+
     try {
       await audioRef.current.play();
       isPlayingRef.current = true;
@@ -66,25 +68,32 @@ export function useBackgroundMusic() {
       console.warn('Could not play background music:', e);
       throw e; // Re-throw so caller knows it failed
     }
-  };
+  }, []);
 
   // Function to pause the background music
-  const pause = () => {
-    if (audioRef.current && isPlayingRef.current) {
-      audioRef.current.pause();
+  const pause = useCallback(() => {
+      if (audioRef.current && isPlayingRef.current) {
+        audioRef.current.pause();
       isPlayingRef.current = false;
     }
-  };
+  }, []);
+
+  // Allow callers to control playback rate (e.g., speed up under 15s)
+  const setPlaybackRate = useCallback((rate) => {
+    if (audioRef.current) {
+      audioRef.current.playbackRate = rate;
+    }
+  }, []);
 
   // Function to toggle playback state
-  const toggle = () => {
+  const toggle = useCallback(() => {
     if (isPlayingRef.current) {
       pause();
     } else {
       play();
     }
-  };
-
+  }, [play, pause]);
+  
   // Return control functions and current playing state
-  return { play, pause, toggle, isPlaying: isPlayingRef.current };
+  return { play, pause, toggle, setPlaybackRate, isPlaying: isPlayingRef.current };
 }
