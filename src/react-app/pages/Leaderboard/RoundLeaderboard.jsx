@@ -29,8 +29,9 @@ export default function RoundLeaderboard() {
       // Navigate back to round screen for next round
       navigate('/round');
     } else {
-      // All rounds complete, go to final leaderboard
-      navigate('/final-leaderboard');
+      // All rounds complete, go to game stats loader which will compute stats and then
+      // allow the user to proceed to the final leaderboard.
+      navigate('/game-stats');
     }
   };
   

@@ -1,0 +1,64 @@
+/* Minimal styling for GameStats page */
+.stats-stage {
+  display: flex;
+  justify-content: center;
+  padding: 32px;
+}
+
+.stats-card {
+  max-width: 920px;
+  padding: 32px;
+}
+
+.stats-loading {
+  font-size: 28px;
+  letter-spacing: 1px;
+}
+
+.stats-sub {
+  margin-top: 8px;
+  color: #d0d0d0;
+}
+
+.stats-card .loading-spinner {
+  margin-top: 25px;
+}
+
+.stats-title {
+  font-size: 36px;
+  margin-bottom: 12px;
+}
+
+.stat-block {
+  margin: 20px 0;
+}
+
+.stat-block h2 {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.stats-controls {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.stats-title {
+  font-size: 50px;
+  margin-bottom: 12px;
+  text-align: center;
+  position: relative;
+  padding-bottom: 18px; /* space for divider */
+}
+
+/* Purple divider under the title */
+.stats-title::after {
+  content: "";
+  display: block;
+  width: 220px;
+  height: 6px;
+  background: var(--primary-color, #7c5cff);
+  margin: 8px auto 0;
+  border-radius: 4px;
+}

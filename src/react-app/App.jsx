@@ -17,6 +17,7 @@ import LoadingScreen from './pages/LoadingScreen/LoadingScreen';
 import RoundScreen from './pages/RoundScreen/RoundScreen';
 import RoundLeaderboard from './pages/Leaderboard/RoundLeaderboard';
 import FinalLeaderboard from './pages/Leaderboard/FinalLeaderboard';
+import GameStats from './pages/GameStats/GameStats';
 import HowToPlay from './pages/HowToPlay/HowToPlay';
 import AboutGame from './pages/AboutGame/AboutGame';
 import AboutUs from './pages/AboutUs/AboutUs';
@@ -117,6 +118,12 @@ function AppRoutes() {
         <Route path="/round-leaderboard" element={
           <ProtectedRoute>
             <RoundLeaderboard />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/game-stats" element={
+          <ProtectedRoute>
+            <GameStats />
           </ProtectedRoute>
         } />
 
