@@ -1,6 +1,6 @@
 # 2-Truths-and-AI
 
-## Credits:
+## Music/Nav Icon Credits:
 Music and sound effects: https://pixabay.com/
 - [DEFAULT] "Bloop-Vibes" https://pixabay.com/music/beats-tvari-tokyo-cafe-159065.
     - Edited and remixed to loop by Mark Miceli
@@ -11,8 +11,9 @@ Music and sound effects: https://pixabay.com/
 
 Navigation Icons: https://www.flaticon.com  
 
-2 Truths and a Lie + AI Game Idea from Riccardo
-Dubbed 2 Truths and AI by Evelyn :P
-Tab Logo & Mainscreen Logo designed in Adobe Illustrator by Evelyn
-UI designed and wireframed in Figma by Evelyn
-Player Icons Idea, TamagochiL [link], from Cindy
+## Other Credits:
+2 Truths and a Lie + AI Game Idea from Riccardo <br>
+Dubbed 2 Truths and AI by Evelyn :P<br>
+Tab Logo & Mainscreen Logo designed in Adobe Illustrator by Evelyn<br>
+UI designed and wireframed in Figma by Evelyn<br>
+Player Icons Idea, TamagochiL [link], from Cindy<br>
