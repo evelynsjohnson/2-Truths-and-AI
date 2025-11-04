@@ -42,43 +42,75 @@ export default function LoadingScreen() {
       // Build rounds array from truthSets and lies
       const rounds = [];
       const totalRounds = gameState.totalRounds || gameState.numRounds || 0;
-      
-      for (let roundIndex = 0; roundIndex < totalRounds; roundIndex++) {
-        // Determine which player's turn it is for this round
-        const playerIndex = roundIndex % gameState.players.length;
-        const player = gameState.players[playerIndex];
-        
-        // Determine which truth set this is for the player (0-indexed)
-        const setIndexForPlayer = Math.floor(roundIndex / gameState.players.length);
-        
-        // Get the truth set and lie for this round
-        const truthSet = player.truthSets?.[setIndexForPlayer];
-        const lie = liesData[player.id]?.[setIndexForPlayer];
-        
-        if (!truthSet || !lie) {
-          console.warn(`Missing data for round ${roundIndex + 1}, player ${player.name}, set ${setIndexForPlayer + 1}`);
-          continue;
-        }
-        
-        // Build statements array: 2 truths + 1 lie, shuffled
-        const statements = [
-          { text: truthSet.truth1, type: 'truth', playerId: player.id },
-          { text: truthSet.truth2, type: 'truth', playerId: player.id },
-          { text: lie, type: 'lie', playerId: player.id }
-        ];
-        
-        // Shuffle statements
-        for (let i = statements.length - 1; i > 0; i--) {
+
+      // Prepare per-player available sets (indices) to ensure each set is used once before repeating
+      const playerSets = {};
+      gameState.players.forEach(player => {
+        const setCount = (player.truthSets && player.truthSets.length) || 0;
+        playerSets[player.id] = Array.from({ length: setCount }, (_, i) => i);
+      });
+
+      const playersList = [...gameState.players];
+
+      // Helper to shuffle in-place
+      const shuffleInPlace = (arr) => {
+        for (let i = arr.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
-          [statements[i], statements[j]] = [statements[j], statements[i]];
+          [arr[i], arr[j]] = [arr[j], arr[i]];
         }
-        
-        rounds.push({
-          player: player,
-          statements: statements,
-          votes: {},
-          results: null
-        });
+      };
+
+      // Continue creating rounds until we reach totalRounds
+      while (rounds.length < totalRounds) {
+        // Randomize player order each pass to reduce predictability
+        const order = playersList.map(p => p.id);
+        shuffleInPlace(order);
+
+        // If no player has remaining sets, repopulate (allow repeats)
+        const anyAvailable = order.some(pid => (playerSets[pid] || []).length > 0);
+        if (!anyAvailable) {
+          // refill each player's available sets
+          gameState.players.forEach(player => {
+            const setCount = (player.truthSets && player.truthSets.length) || 0;
+            playerSets[player.id] = Array.from({ length: setCount }, (_, i) => i);
+          });
+        }
+
+        for (const pid of order) {
+          if (rounds.length >= totalRounds) break;
+          const player = gameState.players.find(p => p.id === pid);
+          if (!player) continue;
+
+          const available = playerSets[pid] || [];
+          if (available.length === 0) continue;
+
+          // pick a random set index from available for this player
+          const pickIdx = Math.floor(Math.random() * available.length);
+          const setIndexForPlayer = available.splice(pickIdx, 1)[0];
+
+          const truthSet = player.truthSets?.[setIndexForPlayer];
+          const lie = (liesData[player.id] || [])[setIndexForPlayer];
+
+          if (!truthSet || !lie) {
+            console.warn(`Missing data for generated round, player ${player.name}, set ${setIndexForPlayer + 1}`);
+            continue;
+          }
+
+          // Build statements array: 2 truths + 1 lie, shuffled
+          const statements = [
+            { text: truthSet.truth1, type: 'truth', playerId: player.id },
+            { text: truthSet.truth2, type: 'truth', playerId: player.id },
+            { text: lie, type: 'lie', playerId: player.id }
+          ];
+          shuffleInPlace(statements);
+
+          rounds.push({
+            player: player,
+            statements: statements,
+            votes: {},
+            results: null
+          });
+        }
       }
 
       console.log('Built rounds:', rounds);

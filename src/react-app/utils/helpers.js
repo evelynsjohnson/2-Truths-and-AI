@@ -118,18 +118,73 @@ function hslToRgb(h, s, l) {
   return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
 }
 
-export function darkenHex(hex, percent) {
+function clamp01(v) {
+  return Math.max(0, Math.min(1, v));
+}
+
+/**
+ * Darken a hex color by reducing lightness. Optionally adjust saturation.
+ * - hex: input hex string
+ * - percent: number (0-100) to reduce lightness by that many percentage points
+ * - options: { saturationMultiplier } - multiply the original saturation by this value (defaults to 1)
+ * Returns a hex string.
+ */
+export function darkenHex(hex, percent, options = {}) {
+  const { saturationMultiplier = 1 } = options;
   const { r, g, b } = hexToRgb(hex);
   const hsl = rgbToHsl(r, g, b);
+  hsl.s = clamp01(hsl.s * saturationMultiplier);
   hsl.l = Math.max(0, hsl.l - (percent / 100));
   const rgb = hslToRgb(hsl.h, hsl.s, hsl.l);
   return rgbToHex(rgb.r, rgb.g, rgb.b);
 }
 
-export function lightenHex(hex, percent) {
+/**
+ * Lighten a hex color by increasing lightness. Optionally nudge saturation.
+ * - percent: number (0-100) to increase lightness
+ * - options: { saturationOffset } - add this to saturation (can be negative)
+ */
+export function lightenHex(hex, percent, options = {}) {
+  const { saturationOffset = 0 } = options;
   const { r, g, b } = hexToRgb(hex);
   const hsl = rgbToHsl(r, g, b);
+  hsl.s = clamp01(hsl.s + saturationOffset);
   hsl.l = Math.min(1, hsl.l + (percent / 100));
   const rgb = hslToRgb(hsl.h, hsl.s, hsl.l);
   return rgbToHex(rgb.r, rgb.g, rgb.b);
+}
+
+/**
+ * Derive a secondary and secondary-hover color from a primary hex using
+ * the project's preferred coefficients so the visual relationship is
+ * consistent across themes.
+ * Coefficients chosen to match existing palette:
+ *  - secondary.s = primary.s * 0.63
+ *  - secondary.l = primary.l - 0.18
+ *  - hover.s = secondary.s + 0.12
+ *  - hover.l = secondary.l + 0.08
+ */
+export function deriveSecondaryFromPrimary(hexPrimary) {
+  const { r, g, b } = hexToRgb(hexPrimary);
+  const { h, s, l } = rgbToHsl(r, g, b);
+
+  const sec = {
+    h,
+    s: clamp01(s * 0.63),
+    l: clamp01(l - 0.18)
+  };
+
+  const hov = {
+    h,
+    s: clamp01(sec.s + 0.12),
+    l: clamp01(sec.l + 0.08)
+  };
+
+  const secRgb = hslToRgb(sec.h, sec.s, sec.l);
+  const hovRgb = hslToRgb(hov.h, hov.s, hov.l);
+
+  return {
+    secondary: rgbToHex(secRgb.r, secRgb.g, secRgb.b),
+    secondaryHover: rgbToHex(hovRgb.r, hovRgb.g, hovRgb.b)
+  };
 }

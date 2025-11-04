@@ -3,6 +3,7 @@
  */
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { darkenHex, lightenHex } from '../utils/helpers';
 
 const SettingsContext = createContext();
 
@@ -60,26 +61,47 @@ export function SettingsProvider({ children }) {
     if (theme === 'theme-custom') {
       // Custom theme implementation
       const primary = settings.customPrimary || defaultSettings.customPrimary;
-      const secondary = settings.customSecondary || defaultSettings.customSecondary;
-      const secondaryHover = settings.customSecondaryHover || defaultSettings.customSecondaryHover;
+
+      // If the user provided explicit custom secondary/hover use them, otherwise derive
+      let secondary = settings.customSecondary || defaultSettings.customSecondary;
+      let secondaryHover = settings.customSecondaryHover || defaultSettings.customSecondaryHover;
+
+      const derivedSecondary = darkenHex(primary, 10);
+      const derivedHover = lightenHex(derivedSecondary, 5);
+      secondary = derivedSecondary;
+      secondaryHover = derivedHover;
+
+      // Also derive darker / lighter variants for UI elements
+      const secondaryDark = derivedSecondary;
+      const secondaryLight = derivedHover;
+
       document.documentElement.style.setProperty('--primary', primary);
       document.documentElement.style.setProperty('--secondary', secondary);
       document.documentElement.style.setProperty('--secondary-hover', secondaryHover);
+      document.documentElement.style.setProperty('--secondary-dark', secondaryDark);
+      document.documentElement.style.setProperty('--secondary-light', secondaryLight);
     } else {
       const def = themeDefs[theme];
       if (def) {
+        // set base theme values
         document.documentElement.style.setProperty('--primary', def.primary);
         document.documentElement.style.setProperty('--secondary', def.secondary);
         document.documentElement.style.setProperty('--secondary-hover', def.secondaryHover);
         document.documentElement.style.setProperty('--bg', def.bg);
+
+        // derive consistent darker / lighter secondary variants for the theme
+        const secondaryDark = darkenHex(def.secondary, 12);
+        const secondaryLight = lightenHex(def.secondaryHover, 10);
+        document.documentElement.style.setProperty('--secondary-dark', secondaryDark);
+        document.documentElement.style.setProperty('--secondary-light', secondaryLight);
       }
     }
   }, [settings.customPrimary, settings.customSecondary, settings.customSecondaryHover]);
 
-  // Apply theme whenever it changes
+  // Apply theme whenever the active theme or any custom color values change
   useEffect(() => {
     applyTheme(settings.theme);
-  }, [settings.theme, applyTheme]);
+  }, [settings.theme, settings.customPrimary, settings.customSecondary, settings.customSecondaryHover, applyTheme]);
 
   // Function to update settings
   const updateSettings = (newSettings) => {

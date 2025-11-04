@@ -119,10 +119,14 @@
   margin-top: 8px;
   text-decoration: underline;
   cursor: pointer;
+  background: transparent;
+  border: none;
+  transition: color 0.2s ease;
 }
 
 .back-link:hover {
   color: white;
+  background: transparent;
 }
 
 /* Right column */
@@ -362,28 +366,67 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(0, 0, 0, 0.92);
   z-index: 1300;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .thankyou-card {
-  background: #0f0f10;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
   color: white;
   text-align: center;
-  padding: 48px 60px;
-  border-radius: 12px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+  padding: 60px 80px;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 100px rgba(107, 99, 255, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  max-width: 90%;
+  animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .thankyou-card h1 {
-  font-size: 2.8rem;
-  text-decoration: underline;
+  font-size: 3.2rem;
   margin-bottom: 24px;
-  font-weight: 700;
+  font-weight: 800;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  line-height: 1.2;
 }
 
-.thankyou-card p {
+.thankyou-card .player-number {
   font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  opacity: 0.95;
+}
+
+.thankyou-card .uploading-text {
+  font-size: 1.5rem;
+  margin-bottom: 12px;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.thankyou-card .pass-text {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
   line-height: 1.4;
 }

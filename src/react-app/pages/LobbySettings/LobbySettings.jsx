@@ -34,14 +34,72 @@ export default function LobbySettings() {
   const MIN_ROUND_LENGTH = 30; // seconds
   const MAX_ROUND_LENGTH = 600; // seconds
 
-  const [numPlayers, setNumPlayers] = useState(2);
-  const [numRounds, setNumRounds] = useState(2);
-  const [roundLength, setRoundLength] = useState(30);
-  const [aiModel, setAiModel] = useState('gpt-5-nano');
+  // Load settings from localStorage or use defaults
+  const [numPlayers, setNumPlayers] = useState(() => {
+    try {
+      const saved = localStorage.getItem('lobbySettings');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed.numPlayers || 2;
+      }
+    } catch (error) {
+      console.error('Error loading lobby settings:', error);
+    }
+    return 2;
+  });
+  
+  const [numRounds, setNumRounds] = useState(() => {
+    try {
+      const saved = localStorage.getItem('lobbySettings');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed.numRounds || 2;
+      }
+    } catch (error) {
+      console.error('Error loading lobby settings:', error);
+    }
+    return 2;
+  });
+  
+  const [roundLength, setRoundLength] = useState(() => {
+    try {
+      const saved = localStorage.getItem('lobbySettings');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed.roundLength || 30;
+      }
+    } catch (error) {
+      console.error('Error loading lobby settings:', error);
+    }
+    return 30;
+  });
+  
+  const [aiModel, setAiModel] = useState(() => {
+    try {
+      const saved = localStorage.getItem('lobbySettings');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed.aiModel || 'gpt-5-nano';
+      }
+    } catch (error) {
+      console.error('Error loading lobby settings:', error);
+    }
+    return 'gpt-5-nano';
+  });
 
   // Assumption: Each round each player supplies 2 truths ("2-Truths-and-AI"),
   // so truths per player is ceil(numRounds / numPlayers) * 2.
   const truthsPerPlayer = useMemo(() => Math.ceil(numRounds / numPlayers) * 2, [numRounds, numPlayers]);
+
+  // Save settings to localStorage whenever they change
+  useEffect(() => {
+    try {
+      const settings = { numPlayers, numRounds, roundLength, aiModel };
+      localStorage.setItem('lobbySettings', JSON.stringify(settings));
+    } catch (error) {
+      console.error('Error saving lobby settings:', error);
+    }
+  }, [numPlayers, numRounds, roundLength, aiModel]);
 
   // Guard rounds not to be less than players
   const clampRounds = (value) => Math.max(MIN_ROUNDS, Math.min(MAX_ROUNDS, value));

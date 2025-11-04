@@ -37,7 +37,7 @@ export default function RoundLeaderboard() {
   
   const handleEndGameEarly = () => {
     if (window.confirm('Are you sure you want to end the game early?')) {
-      navigate('/final-leaderboard');
+      navigate('/game-stats');
     }
   };
 

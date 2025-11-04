@@ -4,6 +4,9 @@
   --primary: #6b63ff;
   --secondary: #3b34d1;
   --secondary-hover: #5048e5;
+  /* Derived darker / lighter secondary fallbacks (JS will override when available) */
+  --secondary-dark: var(--secondary);
+  --secondary-light: var(--secondary-hover);
   --muted: #bdbdbd;
   --error: #e86b6b;
   --success: #59b89b;
@@ -14,24 +17,32 @@
   --primary: #e86b6b;
   --secondary: #d9534f;
   --secondary-hover: #f08a84;
+  --secondary-dark: var(--secondary);
+  --secondary-light: var(--secondary-hover);
 }
 
 [data-theme="theme-pink"] {
   --primary: #f07ad9;
   --secondary: #d94ec9;
   --secondary-hover: #f59fe0;
+  --secondary-dark: var(--secondary);
+  --secondary-light: var(--secondary-hover);
 }
 
 [data-theme="theme-green"] {
   --primary: #59b89b;
   --secondary: #48a17f;
   --secondary-hover: #6fc2a9;
+  --secondary-dark: var(--secondary);
+  --secondary-light: var(--secondary-hover);
 }
 
 [data-theme="theme-gray"] {
   --primary: #9a9a9a;
   --secondary: #7f7f7f;
   --secondary-hover: #a9a9a9;
+  --secondary-dark: var(--secondary);
+  --secondary-light: var(--secondary-hover);
 }
 
 * {

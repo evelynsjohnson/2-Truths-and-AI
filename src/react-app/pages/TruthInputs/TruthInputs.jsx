@@ -295,6 +295,7 @@ export default function TruthInputs() {
                 id="player-name"
                 className="text-input"
                 placeholder="Enter your name"
+                maxLength={15}
                 value={playerData[currentPlayer.id]?.name || ''}
                 onChange={(e) => {
                   handleInputChange('name', e.target.value);
@@ -436,10 +437,13 @@ export default function TruthInputs() {
         <div className="thankyou-overlay">
           <div className="thankyou-card">
             <h1>Thank you {playerData[currentPlayer.id]?.name || `Player ${currentPlayerIndex + 1}`}!</h1>
-            {currentPlayerIndex === gameState.players.length - 1 ? (
-              <p>Uploading Truths...Please wait.</p>
-            ) : (
-              <p>Uploading Truths...Please pass the computer to the next Player!</p>
+            <p className="player-number">You are Player {currentPlayerIndex + 1}.</p>
+            <p className="uploading-text">Uploading your truths...</p>
+            {currentPlayerIndex < gameState.players.length - 1 && (
+              <p className="pass-text">Please pass the computer onto the next player.</p>
+            )}
+            {currentPlayerIndex === gameState.players.length - 1 && (
+              <p className="pass-text">Please return the computer to the group.</p>
             )}
           </div>
         </div>

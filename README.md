@@ -16,4 +16,4 @@ Navigation Icons: https://www.flaticon.com
 Dubbed 2 Truths and AI by Evelyn :P<br>
 Tab Logo & Mainscreen Logo designed in Adobe Illustrator by Evelyn<br>
 UI designed and wireframed in Figma by Evelyn<br>
-Player Icons Idea, TamagochiL [link], from Cindy<br>
+Player Icons Idea, Tamagochi [link], from Cindy<br>

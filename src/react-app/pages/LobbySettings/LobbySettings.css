@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 48px 20px;
+  padding: 30px 20px;
   color: #eae9f7;
 }
 
@@ -188,6 +188,12 @@
   cursor: pointer;
   text-decoration: underline;
   font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+.reset-link:hover {
+  color: var(--secondary-hover);
+  background: transparent;
 }
 
 @media (max-width: 760px) {

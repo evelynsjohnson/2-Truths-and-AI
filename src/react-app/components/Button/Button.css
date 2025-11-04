@@ -92,3 +92,22 @@
   padding: 20px 40px;
   font-size: 1.5rem;
 }
+
+/* Ensure home / icon-style home buttons use the secondary hover color on hover
+   (some pages apply both .btn-icon and a page-specific home class). This
+   overrides the generic .btn-icon hover which sets `background: none`. */
+.btn-icon.settings-home-btn:not(:disabled):hover,
+.btn-icon.about-us-home-btn:not(:disabled):hover,
+.btn-icon.about-game-home-btn:not(:disabled):hover,
+.btn-icon.how-to-play-home-btn:not(:disabled):hover,
+.btn-icon.error-home-button:not(:disabled):hover,
+.btn-icon.home-btn:not(:disabled):hover,
+.home-btn:not(:disabled):hover,
+.settings-home-btn:not(:disabled):hover,
+.about-us-home-btn:not(:disabled):hover,
+.about-game-home-btn:not(:disabled):hover,
+.how-to-play-home-btn:not(:disabled):hover,
+.error-home-button:not(:disabled):hover {
+  background: var(--secondary-hover);
+  transform: translateY(-2px);
+}

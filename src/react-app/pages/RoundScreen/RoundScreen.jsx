@@ -14,10 +14,12 @@ import './RoundScreen.css';
 // Scoring constants
 const FLAT_CORRECT_BONUS = 50;
 const FIRST_GUESS_BONUS = 25;
-const TRICKERY_BONUS = 25;
+const TRICKERY_BONUS = 50;
 const STREAK_STEP = 10;
 const SPEED_DIVISOR = 2;
 const SCORE_ANIMATION_DURATION = 1200;
+// Duration to show the time-up overlay before revealing results (ms)
+const OVERLAY_DURATION = 7000;
 
 const toHalfPoints = (seconds) => {
   const safeSeconds = Number.isFinite(seconds) ? seconds : 0;
@@ -174,6 +176,10 @@ export default function RoundScreen() {
   const countdownPlayedRef = useRef(new Set());
   const finalPlayedRef = useRef(false);
   const [showTimeUp, setShowTimeUp] = useState(false);
+  const [countdownValue, setCountdownValue] = useState(null);
+  const overlayTimeoutRef = useRef(null);
+  const countdownIntervalRef = useRef(null);
+  const [isVotingHelpVisible, setIsVotingHelpVisible] = useState(false);
 
   //Get current round data
   const currentRoundData = gameState.rounds?.[gameState.currentRound];
@@ -290,6 +296,16 @@ export default function RoundScreen() {
     } else {
       setTimeRemaining(null);
     }
+    // Clear any pending overlay timeout from previous round so we don't
+    // accidentally call beginReveal for the new round.
+    if (overlayTimeoutRef.current) {
+      clearTimeout(overlayTimeoutRef.current);
+      overlayTimeoutRef.current = null;
+    }
+    if (countdownIntervalRef.current) {
+      clearInterval(countdownIntervalRef.current);
+      countdownIntervalRef.current = null;
+    }
 
     setIsRevealing(false);             //Reset state for new round
     setRevealedLieIndex(null);
@@ -300,6 +316,7 @@ export default function RoundScreen() {
     countdownPlayedRef.current = new Set();
     finalPlayedRef.current = false;
     setShowTimeUp(false);
+    setCountdownValue(null);
 
     setPlaybackRate(1);
     return () => setPlaybackRate(1);
@@ -337,13 +354,6 @@ export default function RoundScreen() {
   }, [timeRemaining, setPlaybackRate, isRevealing, hasSubmitted]);
 
   useEffect(() => {
-    if (timeRemaining === 0 && !hasSubmitted) {
-      beginReveal('timer');
-    }
-  }, [timeRemaining, hasSubmitted, beginReveal]);
-
-  // Play countdown sounds for 3,2,1 and final at 0; also trigger time-up pop
-  useEffect(() => {
     if (timeRemaining == null) return;
 
     if (timeRemaining > 0 && timeRemaining <= 3) {
@@ -360,13 +370,48 @@ export default function RoundScreen() {
 
     if (timeRemaining === 0 && !finalPlayedRef.current) {
       finalPlayedRef.current = true;
-      playSound('countdownFINAL.mp3');
       setShowTimeUp(true);
-      // Hide pop after a slightly longer delay
-      const t = setTimeout(() => setShowTimeUp(false), 2600);
-      return () => clearTimeout(t);
+      
+      // Natural timer expiry: play countdownFINAL and go straight to final message
+      playSound('countdownFINAL.mp3');
+      setCountdownValue(0);
+
+      // Use shared overlay timeout ref so manual and timer paths behave
+      if (overlayTimeoutRef.current) {
+        clearTimeout(overlayTimeoutRef.current);
+        overlayTimeoutRef.current = null;
+      }
+      overlayTimeoutRef.current = setTimeout(() => {
+        setShowTimeUp(false);
+        setCountdownValue(null);
+        // Trigger reveal after overlay is gone
+        beginReveal('timer');
+        overlayTimeoutRef.current = null;
+      }, OVERLAY_DURATION);
+      return () => {
+        if (overlayTimeoutRef.current) {
+          clearTimeout(overlayTimeoutRef.current);
+          overlayTimeoutRef.current = null;
+        }
+        if (countdownIntervalRef.current) {
+          clearInterval(countdownIntervalRef.current);
+          countdownIntervalRef.current = null;
+        }
+      };
     }
-  }, [timeRemaining, playSound]);
+  }, [timeRemaining, playSound, beginReveal]);
+
+  // Cleanup any pending overlay timeout when component unmounts
+  useEffect(() => () => {
+    if (overlayTimeoutRef.current) {
+      clearTimeout(overlayTimeoutRef.current);
+      overlayTimeoutRef.current = null;
+    }
+    if (countdownIntervalRef.current) {
+      clearInterval(countdownIntervalRef.current);
+      countdownIntervalRef.current = null;
+    }
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -445,13 +490,59 @@ export default function RoundScreen() {
   };
 
   const handleEndEarly = () => {
-    if (window.confirm('Are you sure you want to end this round early?')) {
+    if (!window.confirm('Are you sure you want to end this round early?')) return;
+
+    // If overlay is already playing, do nothing — beginReveal will run when it completes
+    if (overlayTimeoutRef.current || showTimeUp) return;
+
+    // Freeze the timer by marking as submitted
+    setHasSubmitted(true);
+    
+    finalPlayedRef.current = true;
+    setShowTimeUp(true);
+
+    // Start countdown at 3 (same as timer expiry)
+    setCountdownValue(3);
+    playSound('countdown1.mp3');
+    
+    let currentCount = 3;
+    countdownIntervalRef.current = setInterval(() => {
+      currentCount--;
+      
+      if (currentCount === 2) {
+        playSound('countdown2.mp3');
+        setCountdownValue(2);
+      } else if (currentCount === 1) {
+        playSound('countdown3.mp3');
+        setCountdownValue(1);
+      } else if (currentCount === 0) {
+        playSound('countdownFINAL.mp3');
+        setCountdownValue(0);
+      } else if (currentCount < 0) {
+        clearInterval(countdownIntervalRef.current);
+        countdownIntervalRef.current = null;
+      }
+    }, 1000);
+
+    // Keep the overlay visible 2 seconds longer for manual end
+    overlayTimeoutRef.current = setTimeout(() => {
+      setShowTimeUp(false);
+      setCountdownValue(null);
+      overlayTimeoutRef.current = null;
       beginReveal('manual');
-    }
+    }, OVERLAY_DURATION + 2000);
   };
 
   const handleSeeRoundLeaderboard = () => {
-    navigate('/round-leaderboard');
+    const roundNumber = gameState.currentRound + 1;
+    const totalRounds = gameState.rounds?.length || 0;
+    
+    // If this is the last round, go to game stats instead of round leaderboard
+    if (roundNumber >= totalRounds) {
+      navigate('/game-stats');
+    } else {
+      navigate('/round-leaderboard');
+    }
   };
 
   if (!currentRoundData) {
@@ -484,12 +575,16 @@ export default function RoundScreen() {
         </div>
         
         {!isRevealing ? (
-          <Button className="action-button" onClick={handleEndEarly}>
+          <Button 
+            className={`action-button end-early-btn ${timeRemaining <= 5 ? 'disabled' : ''}`} 
+            onClick={timeRemaining > 5 ? handleEndEarly : undefined}
+            disabled={timeRemaining <= 5}
+          >
             <span className="button-label">End Round Early</span>
             <img src="/assets/img/button-icons/next.png" alt="Next" className="button-icon" />
           </Button>
         ) : (
-          <Button className="action-button" onClick={handleSeeRoundLeaderboard}>
+          <Button className="action-button leaderboard-btn" onClick={handleSeeRoundLeaderboard}>
             <span className="button-label">See Round Leaderboard</span>
             <img src="/assets/img/button-icons/next.png" alt="Next" className="button-icon" />
           </Button>
@@ -497,7 +592,17 @@ export default function RoundScreen() {
       </div>
 
       {showTimeUp && (
-        <div className="timeup-pop" aria-live="polite">Time's up — revealing the AI!</div>
+        <div className="timeup-overlay" aria-hidden={!showTimeUp}>
+          <div className="timeup-pop-large" aria-live="polite">
+            <div className="overlay-title">Round {roundNumber} Is Over!</div>
+            <div className="overlay-subtitle">
+              {countdownValue !== null && countdownValue > 0 ? 'Revealing the AI Lie in...' : 'Revealing the AI Lie...'}
+            </div>
+            {countdownValue !== null && countdownValue > 0 && (
+              <div className="overlay-countdown">{countdownValue}</div>
+            )}
+          </div>
+        </div>
       )}
 
       <div className="statements-grid">
@@ -511,12 +616,13 @@ export default function RoundScreen() {
 
           const voters = gameState.players.filter(p => voterIds.includes(p.id));
           const isLie = index === revealedLieIndex;
+          const showingReveal = isRevealing && !showTimeUp;
           const statementClasses = [
             'statement-box',
-            selectedPlayer && !isRevealing ? 'votable' : '',
-            isRevealing ? 'revealing' : '',
-            isRevealing && isLie ? 'lie-revealed' : '',
-            isRevealing && !isLie ? 'truth-revealed' : ''
+            selectedPlayer && !showingReveal ? 'votable' : '',
+            showingReveal ? 'revealing' : '',
+            showingReveal && isLie ? 'lie-revealed' : '',
+            showingReveal && !isLie ? 'truth-revealed' : ''
           ].filter(Boolean).join(' ');
 
           return (
@@ -525,7 +631,9 @@ export default function RoundScreen() {
               className={statementClasses}
               onClick={() => handleStatementSelect(index)}
             >
-              <div className="statement-number">{index + 1}</div>
+              <div className="statement-number">
+                {showingReveal && isLie ? 'AI' : index + 1}
+              </div>
               <div className="statement-text">{statement.text}</div>
               
               {voters.length > 0 && (
@@ -545,6 +653,30 @@ export default function RoundScreen() {
         })}
       </div>
 
+      {/* Voting Help Tooltip */}
+      <div className="voting-help-container">
+        <div 
+          className="voting-help-trigger"
+          onMouseEnter={() => setIsVotingHelpVisible(true)}
+          onMouseLeave={() => setIsVotingHelpVisible(false)}
+        >
+          <span className="help-icon">?</span>
+          <span className="help-text">Unsure how to vote? Hover Here!</span>
+        </div>
+        {isVotingHelpVisible && (
+          <div className="voting-help-popup">
+            <video 
+              src="/src/react-app/assets/mp4/voting-demo.mp4" 
+              autoPlay 
+              loop 
+              muted 
+              playsInline
+              className="voting-demo-video"
+            />
+          </div>
+        )}
+      </div>
+
       <div className="players-section" onClick={() => setSelectedPlayer(null)}>
         <div className="players-grid">
           {gameState.players.map(player => {
@@ -555,23 +687,24 @@ export default function RoundScreen() {
             const playerAnimation = scoreAnimations[player.id];
             const isChameleonPlayer = currentRoundData?.player?.id === player.id;
             
-            // Determine if player was correct when revealing
+            // Determine if player was correct when revealing (but don't show while overlay is visible)
             const playerResult = currentRoundData?.results?.playerResults?.[player.id];
-            const isCorrect = isRevealing && playerResult?.correct;
-            const isWrong = isRevealing && hasVoted && !playerResult?.correct && !playerResult?.isChameleon;
+            const showingRevealForPlayer = isRevealing && !showTimeUp;
+            const isCorrect = showingRevealForPlayer && playerResult?.correct;
+            const isWrong = showingRevealForPlayer && hasVoted && !playerResult?.correct && !playerResult?.isChameleon;
 
             return (
-              <div
-                key={player.id}
-                className={`player-card ${isSelected ? 'selected' : ''} ${hasVoted ? 'voted' : ''} ${isCorrect ? 'correct' : ''} ${isWrong ? 'wrong' : ''}`}
-                onClick={(e) => { e.stopPropagation(); handlePlayerSelect(player.id); }}
-              >
-                {isRevealing && isChameleonPlayer && (
+                    <div
+                      key={player.id}
+                      className={`player-card ${isSelected ? 'selected' : ''} ${hasVoted ? 'voted' : ''} ${isCorrect ? 'correct' : ''} ${isWrong ? 'wrong' : ''} ${showingRevealForPlayer && isChameleonPlayer ? 'chameleon' : ''}`}
+                      onClick={(e) => { e.stopPropagation(); handlePlayerSelect(player.id); }}
+                    >
+                {isRevealing && !showTimeUp && currentRoundData?.results?.playerResults && isChameleonPlayer && (
                   <div className="chameleon-label">Chameleon</div>
                 )}
 
                 {playerAnimation && (
-                  <div className={`score-float ${playerAnimation.total === 0 ? 'zero-score' : ''} ${isCorrect ? 'correct' : ''} ${isWrong ? 'wrong' : ''}`}>
+                        <div className={`score-float ${playerAnimation.total === 0 ? 'zero-score' : ''} ${isCorrect ? 'correct' : ''} ${isWrong ? 'wrong' : ''} ${playerAnimation.isChameleon ? 'chameleon-float' : ''}`}>
                     +{playerAnimation.total}
                   </div>
                 )}

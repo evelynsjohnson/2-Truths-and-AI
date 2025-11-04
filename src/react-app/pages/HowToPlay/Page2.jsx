@@ -25,7 +25,7 @@ export default function Page2() {
           muted
           playsInline
         >
-          <source src="/assets/mp4/truth-input-demo.mp4" type="video/mp4" />
+          <source src="/assets/mp4/voting-demo.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
       </div>
