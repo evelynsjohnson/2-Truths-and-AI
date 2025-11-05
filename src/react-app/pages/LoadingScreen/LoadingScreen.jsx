@@ -19,6 +19,20 @@ export default function LoadingScreen() {
   const [progress, setProgress] = useState('');
   const hasRunRef = useRef(false);
 
+  // Block navigation while generating lies
+  useEffect(() => {
+    if (isLoading && !error) {
+      const handleBeforeUnload = (e) => {
+        e.preventDefault();
+        e.returnValue = '';
+        return '';
+      };
+
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }
+  }, [isLoading, error]);
+
   // Function to generate lies via backend API
   const generateLies = async () => {
     setIsLoading(true);
@@ -142,7 +156,7 @@ export default function LoadingScreen() {
   useEffect(() => {
     // Validate that we have players and truths
     if (!gameState.players || gameState.players.length === 0) {
-      navigate('/lobby');
+      navigate('/lobby', { replace: true });
       return;
     }
 
@@ -152,7 +166,42 @@ export default function LoadingScreen() {
     );
 
     if (!hasAllTruths) {
-      navigate('/truth-inputs');
+      navigate('/truth-inputs', { replace: true });
+      return;
+    }
+
+    // If lies are already generated and rounds exist, redirect to appropriate page
+    if (gameState.isLiesGenerated && gameState.rounds && gameState.rounds.length > 0) {
+      const currentRound = gameState.currentRound ?? 0;
+      const totalRounds = gameState.rounds.length;
+      
+      // Check if game is over (all rounds completed)
+      const allRoundsCompleted = gameState.rounds.every(round => round.results !== null);
+      
+      if (allRoundsCompleted) {
+        // Game is over - redirect to game stats
+        navigate('/game-stats', { replace: true });
+      } else if (currentRound < totalRounds) {
+        // Game is in progress - check if current round is completed
+        const currentRoundData = gameState.rounds[currentRound];
+        
+        if (currentRoundData?.results) {
+          // Current round is done - redirect to leaderboard
+          if (currentRound + 1 >= totalRounds) {
+            // Last round was completed - go to game stats
+            navigate('/game-stats', { replace: true });
+          } else {
+            // Mid-game - go to round leaderboard
+            navigate('/round-leaderboard', { replace: true });
+          }
+        } else {
+          // Current round is in progress - redirect to round screen
+          navigate('/round', { replace: true });
+        }
+      } else {
+        // Edge case: currentRound >= totalRounds, game should be over
+        navigate('/game-stats', { replace: true });
+      }
       return;
     }
 

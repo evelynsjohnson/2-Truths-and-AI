@@ -1,13 +1,16 @@
 /* Scope all styles to AboutGame page only */
 .about-game-stage {
-  width: clamp(var(--container-min, 320px), 100vw, var(--container-max, 5000px));
+  width: 100%;
+  max-width: 100%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: clamp(12px, 2vh, 24px);
+  padding: clamp(0.75rem, 2vh, 1.5rem);
+  overflow-x: hidden;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .about-game-content {
@@ -25,7 +28,8 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 30px 0 32px 0;
+  padding: clamp(1.5rem, 3vh, 2rem) 0 clamp(1.75rem, 3.5vh, 2.25rem) 0;
+  min-height: clamp(2.5rem, 5vh, 3rem);
 }
 
 .about-game-home-btn {
@@ -34,14 +38,15 @@
   top: 0;
   background: var(--secondary);
   border: none;
-  border-radius: 10px;
-  padding: 10px;
-  height: 48px;
-  width: 48px;
+  border-radius: clamp(0.5rem, 1vw, 0.625rem);
+  padding: clamp(0.5rem, 1vh, 0.625rem);
+  height: clamp(2.5rem, 5vh, 3rem);
+  width: clamp(2.5rem, 5vw, 3rem);
   display: grid;
   place-items: center;
   cursor: pointer;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .about-game-home-btn:hover {
@@ -50,24 +55,25 @@
 }
 
 .about-game-home-btn img {
-  width: 22px;
+  width: clamp(1.125rem, 2.2vw, 1.375rem);
   height: auto;
 }
 
 .about-game-title {
   font-size: clamp(2.4rem, 4.2vh, 3.6rem);
-  letter-spacing: 1px;
+  letter-spacing: 0.0625rem;
   font-weight: 700;
   color: #fff;
   text-align: center;
+  padding: 0 clamp(3rem, 5vw, 4rem);
 }
 
 .about-game-divider {
-  width: 280px;
-  height: 6px;
+  width: clamp(12rem, 25vw, 17.5rem);
+  height: clamp(0.25rem, 0.5vh, 0.375rem);
   background: linear-gradient(90deg, var(--primary), var(--secondary-hover));
-  border-radius: 6px;
-  margin: 10px auto 0;
+  border-radius: clamp(0.25rem, 0.5vh, 0.375rem);
+  margin: clamp(0.5rem, 1vh, 0.625rem) auto 0;
 }
 
 .layout-grid {
@@ -76,16 +82,16 @@
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto;
   gap: 0;
-  margin-top: clamp(24px, 3vh, 40px);
+  margin-top: clamp(1.5rem, 3vh, 2.5rem);
 }
 
 .section {
-  padding: clamp(28px, 4vh, 56px) clamp(24px, 3vw, 56px);
+  padding: clamp(1.75rem, 4vh, 3.5rem) clamp(1.5rem, 3vw, 3.5rem);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  min-height: clamp(220px, 28vh, 360px);
+  min-height: clamp(13.75rem, 28vh, 22.5rem);
 }
 
 .section-purple {
@@ -127,9 +133,9 @@
   font-size: clamp(1.8rem, 3vh, 2.6rem);
   font-weight: 700;
   color: #fff;
-  margin-bottom: clamp(16px, 2vh, 24px);
+  margin-bottom: clamp(1rem, 2vh, 1.5rem);
   text-decoration: underline;
-  text-underline-offset: 8px;
+  text-underline-offset: clamp(0.375rem, 0.8vh, 0.5rem);
   text-decoration-thickness: 2px;
 }
 
@@ -160,7 +166,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding: clamp(20px, 3vh, 36px) clamp(24px, 3vw, 56px);
+  padding: clamp(1.25rem, 3vh, 2.25rem) clamp(1.5rem, 3vw, 3.5rem);
   margin-top: 0;
 }
 
@@ -174,7 +180,7 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: clamp(0.625rem, 1.2vw, 0.75rem);
   transition: all 0.2s ease;
 }
 
@@ -189,7 +195,7 @@
 }
 
 .about-us-btn:hover .arrow {
-  transform: translateX(-6px);
+  transform: translateX(-0.375rem);
 }
 
 @media (max-width: 920px) {
@@ -227,34 +233,47 @@
   }
 
   .section {
-    padding: clamp(24px, 3.5vh, 40px) clamp(20px, 4vw, 32px);
+    padding: clamp(1.5rem, 3.5vh, 2.5rem) clamp(1.25rem, 4vw, 2rem);
   }
 }
 
-@media (max-width: 520px) {
+@media (max-width: 32.5rem) {
   .about-game-content {
-    width: calc(100% - 20px);
+    width: calc(100% - 1.25rem);
+  }
+
+  .about-game-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: clamp(0.75rem, 2vh, 1rem) 0 clamp(1rem, 2vh, 1.25rem) 0;
+  }
+
+  .about-game-home-btn {
+    position: static;
   }
 
   .about-game-title {
     font-size: 2rem;
+    width: 100%;
+    padding: 0;
   }
 
   .about-game-divider {
-    width: 200px;
+    width: 12.5rem;
   }
 
   .section {
-    padding: 20px 16px;
-    min-height: 180px;
+    padding: 1.25rem 1rem;
+    min-height: 11.25rem;
   }
 
   .section h2 {
-    text-underline-offset: 6px;
+    text-underline-offset: 0.375rem;
   }
 
   .about-game-footer-link {
-    padding: 16px;
+    padding: 1rem;
     justify-content: center;
   }
 }

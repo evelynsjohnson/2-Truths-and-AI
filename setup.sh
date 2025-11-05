@@ -1,16 +1,16 @@
 #!/bin/bash
 
-# Setup script for 2 Truths and AI React App
-# This script copies assets from the original project and installs dependencies
+# Setup script for 2 Truths and AI (Cloudflare Workers + React)
+# This script installs dependencies for the project
 
 echo "=========================================="
-echo "2 Truths and AI - React App Setup"
+echo "2 Truths and AI - Project Setup"
 echo "=========================================="
 echo ""
 
-# Check if we're in the react-app directory
+# Check if we're in the project root
 if [ ! -f "package.json" ]; then
-    echo "Error: Please run this script from the react-app directory"
+    echo "Error: Please run this script from the project root directory"
     exit 1
 fi
 
@@ -26,21 +26,15 @@ fi
 echo "✓ Dependencies installed"
 echo ""
 
-# Copy assets if they exist
-if [ -d "../img" ]; then
-    echo "Copying image assets..."
-    cp -r ../img/* public/assets/img/ 2>/dev/null
-    echo "✓ Images copied"
+# Check if .dev.vars exists
+if [ ! -f ".dev.vars" ]; then
+    echo "⚠ Warning: .dev.vars file not found"
+    echo "  Create .dev.vars with your Azure OpenAI credentials:"
+    echo "  AZURE_OPENAI_API_KEY=your_key_here"
+    echo "  AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/"
+    echo ""
 else
-    echo "⚠ Warning: ../img directory not found. Skipping image copy."
-fi
-
-if [ -d "../mp3" ]; then
-    echo "Copying audio assets..."
-    cp -r ../mp3/* public/assets/mp3/ 2>/dev/null
-    echo "✓ Audio files copied"
-else
-    echo "⚠ Warning: ../mp3 directory not found. Skipping audio copy."
+    echo "✓ Environment variables configured"
 fi
 
 echo ""
@@ -52,4 +46,7 @@ echo "To start the development server, run:"
 echo "  npm run dev"
 echo ""
 echo "The app will be available at http://localhost:3000"
+echo ""
+echo "To deploy to Cloudflare Workers, run:"
+echo "  npm run build && npm run deploy"
 echo ""

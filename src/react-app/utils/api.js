@@ -114,9 +114,9 @@ export async function generateLiesForAllPlayers(players, aiModel = 'gpt-5-nano')
 
 /**
  * Export game statistics to PDF
- * @param gameStats - Game statistics object with players, rounds, scores, etc.
+ * @param gameState - Game state object with players, rounds, scores, etc.
  */
-export async function exportGameStatsToPDF(gameStats) {
+export async function exportGameStatsToPDF(gameState) {
   // Dynamically import jsPDF
   const { jsPDF } = await import('jspdf');
   
@@ -143,10 +143,23 @@ export async function exportGameStatsToPDF(gameStats) {
   yPosition += 5;
   
   // Game Info
-  addText(`Date: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`, 20, 11);
-  addText(`Total Rounds: ${gameStats.totalRounds || 0}`, 20, 11);
-  addText(`AI Model: ${gameStats.aiModel || 'gpt-4'}`, 20, 11);
+  addText(`Date: ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}`, 20, 11);
+  addText(`Total Rounds: ${gameState.rounds?.length || 0}`, 20, 11);
+  addText(`AI Model: ${gameState.aiModel || 'gpt-4'}`, 20, 11);
+  addText(`Total Players: ${gameState.players?.length || 0}`, 20, 11);
   yPosition += 5;
+  
+  // Helper function to calculate lie detection stats
+  const getLieDetectionStats = (player) => {
+    const totalRounds = gameState.rounds?.length || 0;
+    const detectedLies = gameState.rounds?.filter(round => {
+      const vote = round.votes?.[player.id];
+      const normalized = vote && typeof vote === 'object' && 'statementIndex' in vote ? vote.statementIndex : null;
+      const lieIndex = round.statements?.findIndex(s => s.type === 'lie');
+      return normalized === lieIndex;
+    }).length || 0;
+    return { detectedLies, totalRounds };
+  };
   
   // Leaderboard
   addText('FINAL LEADERBOARD', 20, 14, true);
@@ -154,10 +167,11 @@ export async function exportGameStatsToPDF(gameStats) {
   doc.line(20, yPosition, 190, yPosition);
   yPosition += 5;
   
-  if (gameStats.players && gameStats.players.length > 0) {
-    const sortedPlayers = [...gameStats.players].sort((a, b) => (b.score || 0) - (a.score || 0));
+  if (gameState.players && gameState.players.length > 0) {
+    const sortedPlayers = [...gameState.players].sort((a, b) => (b.score || 0) - (a.score || 0));
     sortedPlayers.forEach((player, index) => {
-      addText(`${index + 1}. ${player.name}: ${player.score || 0} points`, 25, 11);
+      const stats = getLieDetectionStats(player);
+      addText(`${index + 1}. ${player.name}: ${player.score || 0} points (${stats.detectedLies}/${stats.totalRounds} lies detected)`, 25, 11);
     });
   }
   yPosition += 5;
@@ -167,31 +181,53 @@ export async function exportGameStatsToPDF(gameStats) {
   doc.line(20, yPosition, 190, yPosition);
   yPosition += 5;
   
-  if (gameStats.rounds && gameStats.rounds.length > 0) {
-    gameStats.rounds.forEach((round, index) => {
-      addText(`Round ${index + 1}:`, 20, 12, true);
+  if (gameState.rounds && gameState.rounds.length > 0) {
+    gameState.rounds.forEach((round, roundIndex) => {
+      addText(`Round ${roundIndex + 1}:`, 20, 12, true);
       
       if (round.statements) {
-        round.statements.forEach(statement => {
-          const text = `${statement.player}: "${statement.text}"`;
-          const tag = statement.isLie ? '(LIE)' : '(TRUTH)';
-          
-          // Split long text to fit page width
+        // Group statements by type
+        const truths = round.statements.filter(s => s.type === 'truth');
+        const lie = round.statements.find(s => s.type === 'lie');
+        
+        // Display truths
+        truths.forEach((statement) => {
+          const playerName = statement.playerName || gameState.players.find(p => p.id === statement.playerId)?.name || 'Unknown';
+          const text = `${playerName}: "${statement.text}"`;
           const maxWidth = 150;
-          const lines = doc.splitTextToSize(`${text} ${tag}`, maxWidth);
+          const lines = doc.splitTextToSize(text, maxWidth);
           lines.forEach(line => {
             addText(line, 25, 10);
           });
         });
+        
+        // Display AI lie
+        if (lie) {
+          const text = `AI: "${lie.text}" (LIE)`;
+          const maxWidth = 150;
+          const lines = doc.splitTextToSize(text, maxWidth);
+          lines.forEach(line => {
+            addText(line, 25, 10);
+          });
+        }
       }
       
-      if (round.scores) {
-        addText(`Points awarded: ${JSON.stringify(round.scores)}`, 25, 10);
+      // Display votes
+      if (round.votes) {
+        const voteResults = Object.entries(round.votes).map(([playerId, vote]) => {
+          const player = gameState.players.find(p => p.id === parseInt(playerId));
+          const statementIndex = vote && typeof vote === 'object' ? vote.statementIndex : vote;
+          const lieIndex = round.statements?.findIndex(s => s.type === 'lie');
+          const correct = statementIndex === lieIndex ? '✓' : '✗';
+          return `${player?.name || 'Unknown'}: ${correct}`;
+        });
+        addText(`Votes: ${voteResults.join(', ')}`, 25, 9);
       }
+      
       yPosition += 3;
     });
   }
   
   // Save the PDF
-  doc.save(`2truths-ai-game-stats-${Date.now()}.pdf`);
+  doc.save(`2truths-ai-game-data-${Date.now()}.pdf`);
 }

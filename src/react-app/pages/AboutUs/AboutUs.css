@@ -1,13 +1,16 @@
 /* Scope all styles to AboutUs page only */
 .about-us-stage {
-  width: clamp(var(--container-min, 320px), 100vw, var(--container-max, 5000px));
+  width: 100%;
+  max-width: 100%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   padding: clamp(12px, 2vh, 24px);
+  overflow-x: hidden;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .about-us-content {

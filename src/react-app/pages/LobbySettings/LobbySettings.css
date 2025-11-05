@@ -4,19 +4,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 30px 20px;
+  padding: clamp(1.25rem, 3vh, 1.875rem) clamp(1rem, 2vw, 1.5rem);
   color: #eae9f7;
 }
 
 .home-btn {
   position: absolute;
-  left: 24px;
-  top: 24px;
+  left: clamp(1rem, 2vw, 1.5rem);
+  top: clamp(1rem, 2vh, 1.5rem);
   background: var(--secondary);
   border: none;
-  border-radius: 10px;
-  width: 44px;
-  height: 44px;
+  border-radius: clamp(0.5rem, 1vw, 0.625rem);
+  width: clamp(2.5rem, 4vw, 2.75rem);
+  height: clamp(2.5rem, 4vh, 2.75rem);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -27,31 +27,31 @@
 
 .home-btn:hover {
   background: var(--secondary-hover);
-  transform: translateY(-2px);
+  transform: translateY(-0.125rem);
 }
 
 .lobby-card {
-  width: 920px;
-  max-width: calc(100% - 40px);
+  width: clamp(20rem, 90vw, 57.5rem);
+  max-width: calc(100% - 2.5rem);
   background: transparent;
-  padding: 36px 48px 48px 48px;
+  padding: clamp(1.5rem, 3vh, 2.25rem) clamp(2rem, 4vw, 3rem) clamp(2rem, 4vh, 3rem);
   box-sizing: border-box;
-  border-radius: 12px;
+  border-radius: clamp(0.625rem, 1.2vw, 0.75rem);
 }
 
 .title {
-  font-size: 44px;
+  font-size: clamp(2rem, 4vw, 2.75rem);
   font-weight: 700;
   text-align: center;
-  margin: 0 0 18px 0;
+  margin: 0 0 clamp(0.75rem, 1.5vh, 1.125rem) 0;
 }
 
 .divider {
-  height: 4px;
-  width: 160px;
+  height: clamp(0.2rem, 0.4vh, 0.25rem);
+  width: clamp(8rem, 15vw, 10rem);
   background: linear-gradient(90deg, var(--primary), var(--secondary-hover));
-  margin: 0 auto 28px auto;
-  border-radius: 8px;
+  margin: 0 auto clamp(1.25rem, 2.5vh, 1.75rem) auto;
+  border-radius: clamp(0.375rem, 0.7vw, 0.5rem);
 }
 
 .setting-row {
@@ -59,26 +59,26 @@
   /* label | dots (flex) | control */
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 12px;
-  padding: 18px 0;
+  gap: clamp(0.625rem, 1.2vw, 0.75rem);
+  padding: clamp(0.875rem, 1.8vh, 1.125rem) 0;
   border-bottom: 1px dotted rgba(255,255,255,0.06);
 }
 
 .setting-label {
-  font-size: 20px;
+  font-size: clamp(1rem, 2vw, 1.25rem);
   font-weight: 600;
 }
 
 .muted {
   color: var(--primary);
-  font-size: 13px;
-  margin-left: 8px;
+  font-size: clamp(0.75rem, 1.5vw, 0.8125rem);
+  margin-left: 0.5rem;
 }
 
 .setting-control {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: clamp(0.625rem, 1.2vw, 0.75rem);
 }
 
 .dots {
@@ -86,12 +86,12 @@
   width: 100%;
   /* repeating dots to act as leader dots */
   background-image: radial-gradient(circle,var(--primary) 1px, transparent 1px);
-  background-size: 8px 2px;
+  background-size: clamp(0.4rem, 0.8vw, 0.5rem) 2px;
   background-repeat: repeat-x;
   background-position: left center;
   opacity: 0.16;
   /* leave a small gap before the controls so arrows don't sit on top of dots */
-  padding-right: 18px;
+  padding-right: clamp(0.875rem, 1.8vw, 1.125rem);
 }
 
 .chev {

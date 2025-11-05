@@ -180,9 +180,29 @@ export default function RoundScreen() {
   const overlayTimeoutRef = useRef(null);
   const countdownIntervalRef = useRef(null);
   const [isVotingHelpVisible, setIsVotingHelpVisible] = useState(false);
+  const lastTickTimeRef = useRef(null);
+  const hasInitializedRef = useRef(false);
 
   //Get current round data
   const currentRoundData = gameState.rounds?.[gameState.currentRound];
+
+  // Warn user before leaving page during active round (page refresh/close)
+  useEffect(() => {
+    const shouldWarn = !isRevealing && timeRemaining !== null && timeRemaining > 0;
+    
+    if (shouldWarn) {
+      const handleBeforeUnload = (e) => {
+        e.preventDefault();
+        e.returnValue = '';
+        return '';
+      };
+
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }
+  }, [isRevealing, timeRemaining]);
+
+
 
   // Animate score changes for a player
   const animateScore = useCallback((playerId, start, end) => {
@@ -233,22 +253,22 @@ export default function RoundScreen() {
     setSelectedPlayer(null);
     setPlaybackRate(1);
 
-    const previousScores = new Map(   //Get previous scores for all players
+    const previousScores = new Map(
       (gameState.players || []).map(player => [player.id, player.score || 0])
     );
 
     const { lieIndex, playerResults } = calculateRoundResults({
-      players: gameState.players,                   //Calculate round results
+      players: gameState.players,
       votes,
       statements: currentRoundData.statements || [],
       chameleonId: currentRoundData.player?.id
     });
 
-    setRevealedLieIndex(lieIndex);            //Reveal the lie among statements
+    setRevealedLieIndex(lieIndex);
     setIsRevealing(true);
     setTimeRemaining(0);
 
-    const updatedRounds = [...gameState.rounds];    //Update game state with round results
+    const updatedRounds = [...gameState.rounds];
     updatedRounds[gameState.currentRound] = {
       ...currentRoundData,
       votes,
@@ -259,7 +279,7 @@ export default function RoundScreen() {
       }
     };
 
-    const updatedPlayers = gameState.players.map(player => {    //Update player scores and streaks
+    const updatedPlayers = gameState.players.map(player => {
       const result = playerResults[player.id];
       if (!result) {
         return player;
@@ -278,7 +298,7 @@ export default function RoundScreen() {
 
     updateGameState({ rounds: updatedRounds, players: updatedPlayers });
 
-    const animatableResults = {};         //Prepare score animations
+    const animatableResults = {};
     Object.entries(playerResults).forEach(([id, result]) => {
       const playerId = Number(id);
       animatableResults[id] = {
@@ -289,15 +309,105 @@ export default function RoundScreen() {
     setScoreAnimations(animatableResults);
   }, [hasSubmitted, currentRoundData, gameState.rounds, gameState.currentRound, gameState.players, votes, updateGameState, setPlaybackRate]);
 
-  useEffect(() => {                       //Initialize time remaining at round start
-    if (gameState.roundLength) {
-      const asNumber = Number(gameState.roundLength);
-      setTimeRemaining(Number.isFinite(asNumber) ? asNumber : null);
-    } else {
-      setTimeRemaining(null);
+  useEffect(() => {
+    if (hasInitializedRef.current) return;
+    hasInitializedRef.current = true;
+
+    // Validate we have the necessary game state
+    if (!gameState.rounds || gameState.rounds.length === 0) {
+      console.error('No rounds available, redirecting to lobby');
+      navigate('/lobby', { replace: true });
+      return;
     }
-    // Clear any pending overlay timeout from previous round so we don't
-    // accidentally call beginReveal for the new round.
+
+    if (!currentRoundData) {
+      console.error('No current round data, redirecting to lobby');
+      navigate('/lobby', { replace: true });
+      return;
+    }
+
+    // Check if this round already has results (completed)
+    if (currentRoundData.results) {
+      const { lieIndex, playerResults } = currentRoundData.results;
+      
+      // Restore the completed state
+      setIsRevealing(true);
+      setRevealedLieIndex(lieIndex);
+      setHasSubmitted(true);
+      setTimeRemaining(0);
+      setVotes(currentRoundData.votes || {});
+      
+      // Prepare score animations
+      const previousScores = new Map(
+        (gameState.players || []).map(player => [
+          player.id, 
+          (player.score || 0) - (playerResults[player.id]?.total || 0)
+        ])
+      );
+      
+      const animatableResults = {};
+      Object.entries(playerResults).forEach(([id, result]) => {
+        const playerId = Number(id);
+        animatableResults[id] = {
+          ...result,
+          previousScore: previousScores.get(playerId) || 0
+        };
+      });
+      setScoreAnimations(animatableResults);
+      
+      return;
+    }
+
+    // Check if round is in progress (has start time but no results yet)
+    if (currentRoundData.startTime) {
+      console.log('Restoring round in progress');
+      
+      // Calculate elapsed time and remaining time
+      const now = Date.now();
+      const elapsedSeconds = Math.floor((now - currentRoundData.startTime) / 1000);
+      const roundLength = Number(gameState.roundLength) || 0;
+      const calculatedRemaining = Math.max(0, roundLength - elapsedSeconds);
+      
+      setTimeRemaining(calculatedRemaining);
+      lastTickTimeRef.current = now;
+      
+      // Load any existing votes
+      if (currentRoundData.votes) {
+        setVotes(currentRoundData.votes);
+      }
+    } else {
+      // Initialize fresh round
+      const now = Date.now();
+      
+      if (gameState.roundLength) {
+        const asNumber = Number(gameState.roundLength);
+        setTimeRemaining(Number.isFinite(asNumber) ? asNumber : null);
+        lastTickTimeRef.current = now;
+      } else {
+        setTimeRemaining(null);
+      }
+      
+      // Store start time for this round
+      const updatedRounds = [...gameState.rounds];
+      updatedRounds[gameState.currentRound] = {
+        ...currentRoundData,
+        startTime: now
+      };
+      updateGameState({ rounds: updatedRounds });
+    }
+    
+    setIsRevealing(false);
+    setRevealedLieIndex(null);
+    setScoreAnimations({});
+    setHasSubmitted(false);
+    setSelectedPlayer(null);
+    countdownPlayedRef.current = new Set();
+    finalPlayedRef.current = false;
+    setShowTimeUp(false);
+    setCountdownValue(null);
+    setPlaybackRate(1);
+    
+    // Clear any pending timeouts
     if (overlayTimeoutRef.current) {
       clearTimeout(overlayTimeoutRef.current);
       overlayTimeoutRef.current = null;
@@ -306,34 +416,36 @@ export default function RoundScreen() {
       clearInterval(countdownIntervalRef.current);
       countdownIntervalRef.current = null;
     }
+    
+    return () => {
+      setPlaybackRate(1);
+      hasInitializedRef.current = false;
+    };
+  }, [gameState.roundLength, gameState.currentRound, gameState.rounds, gameState.players, currentRoundData, setPlaybackRate, navigate]);
 
-    setIsRevealing(false);             //Reset state for new round
-    setRevealedLieIndex(null);
-    setScoreAnimations({});
-    setHasSubmitted(false);
-    setSelectedPlayer(null);
-    setVotes({});
-    countdownPlayedRef.current = new Set();
-    finalPlayedRef.current = false;
-    setShowTimeUp(false);
-    setCountdownValue(null);
-
-    setPlaybackRate(1);
-    return () => setPlaybackRate(1);
-  }, [gameState.roundLength, gameState.currentRound, setPlaybackRate]);
-
-  useEffect(() => {                   //Load existing votes if any
-    if (currentRoundData?.votes) {
-      setVotes(currentRoundData.votes);
+  // Fail-safe: If timer is 0 and we're not revealing, trigger reveal
+  useEffect(() => {
+    if (timeRemaining === 0 && !isRevealing && !showTimeUp && currentRoundData && !currentRoundData.results) {
+      const timer = setTimeout(() => {
+        if (!isRevealing) {
+          beginReveal('timer');
+        }
+      }, 500);
+      return () => clearTimeout(timer);
     }
-  }, [currentRoundData]);
+  }, [timeRemaining, isRevealing, showTimeUp, currentRoundData, beginReveal]);
 
   useEffect(() => {                 //Timer countdown effect
     if (isRevealing || hasSubmitted || timeRemaining === null || timeRemaining <= 0) return;
 
-    const timer = setInterval(() => {           //Decrement time remaining each second
+    // Use more accurate timing based on actual elapsed time
+    const timer = setInterval(() => {
+      const now = Date.now();
+      const elapsed = lastTickTimeRef.current ? (now - lastTickTimeRef.current) / 1000 : 1;
+      lastTickTimeRef.current = now;
+
       setTimeRemaining(prev => {
-        const newTime = prev - 1;
+        const newTime = Math.max(0, prev - Math.round(elapsed));
         
         if (newTime <= 0) {
           clearInterval(timer);
@@ -369,7 +481,15 @@ export default function RoundScreen() {
     }
 
     if (timeRemaining === 0 && !finalPlayedRef.current) {
+      console.log('Timer reached 0, finalPlayedRef:', finalPlayedRef.current);
       finalPlayedRef.current = true;
+      
+      // If results already exist (from reload), skip the overlay and go straight to reveal
+      if (currentRoundData?.results) {
+        beginReveal('timer');
+        return;
+      }
+      
       setShowTimeUp(true);
       
       // Natural timer expiry: play countdownFINAL and go straight to final message
@@ -384,8 +504,10 @@ export default function RoundScreen() {
       overlayTimeoutRef.current = setTimeout(() => {
         setShowTimeUp(false);
         setCountdownValue(null);
-        // Trigger reveal after overlay is gone
-        beginReveal('timer');
+        // Trigger reveal after overlay is gone - use setTimeout to ensure state updates
+        setTimeout(() => {
+          beginReveal('timer');
+        }, 50);
         overlayTimeoutRef.current = null;
       }, OVERLAY_DURATION);
       return () => {
@@ -399,7 +521,7 @@ export default function RoundScreen() {
         }
       };
     }
-  }, [timeRemaining, playSound, beginReveal]);
+  }, [timeRemaining, playSound, beginReveal, currentRoundData]);
 
   // Cleanup any pending overlay timeout when component unmounts
   useEffect(() => () => {
@@ -478,13 +600,23 @@ export default function RoundScreen() {
     if (!selectedPlayer || isRevealing || hasSubmitted) return;
 
     playClick();
-    setVotes(prev => ({
-      ...prev,
+    const newVotes = {
+      ...votes,
       [selectedPlayer]: {
         statementIndex,
         timeRemaining: typeof timeRemaining === 'number' ? timeRemaining : 0
       }
-    }));
+    };
+    
+    setVotes(newVotes);
+    
+    // Persist votes to GameContext
+    const updatedRounds = [...gameState.rounds];
+    updatedRounds[gameState.currentRound] = {
+      ...currentRoundData,
+      votes: newVotes
+    };
+    updateGameState({ rounds: updatedRounds });
 
     setSelectedPlayer(null);
   };
@@ -584,8 +716,11 @@ export default function RoundScreen() {
             <img src="/assets/img/button-icons/next.png" alt="Next" className="button-icon" />
           </Button>
         ) : (
-          <Button className="action-button leaderboard-btn" onClick={handleSeeRoundLeaderboard}>
-            <span className="button-label">See Round Leaderboard</span>
+          <Button 
+            className="action-button leaderboard-btn"
+            onClick={handleSeeRoundLeaderboard}
+          >
+            <span className="button-label">Current Leaderboard</span>
             <img src="/assets/img/button-icons/next.png" alt="Next" className="button-icon" />
           </Button>
         )}
@@ -617,6 +752,7 @@ export default function RoundScreen() {
           const voters = gameState.players.filter(p => voterIds.includes(p.id));
           const isLie = index === revealedLieIndex;
           const showingReveal = isRevealing && !showTimeUp;
+          
           const statementClasses = [
             'statement-box',
             selectedPlayer && !showingReveal ? 'votable' : '',
@@ -723,39 +859,4 @@ export default function RoundScreen() {
       </div>
     </div>
   );
-/*  return (
-    <div className="stage">
-      <Card className="round-card">
-        <h1>Round {gameState.currentRound + 1}</h1>
-        <p className="lead">Which statement is the AI-generated lie?</p>
-
-        <div className="player-info">
-          <h2>Current Player: {gameState.players[0]?.name || 'Player 1'}</h2>
-        </div>
-
-        <div className="statements-container">
-          {mockStatements.map((statement) => (
-            <button
-              key={statement.id}
-              className={`statement-card ${selectedStatement === statement.id ? 'selected' : ''}`}
-              onClick={() => handleSelectStatement(statement.id)}
-            >
-              {statement.text}
-            </button>
-          ))}
-        </div>
-
-        <div className="controls">
-          <Button 
-            variant="primary" 
-            size="large"
-            onClick={handleSubmit}
-            disabled={!selectedStatement}
-          >
-            Submit Answer
-          </Button>
-        </div>
-      </Card>
-    </div>
-  );*/
 }
