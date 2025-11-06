@@ -22,11 +22,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
-    rollupOptions: {
-      input: {
-        main: path.resolve(__dirname, 'index.html'),
-      },
-    },
+    ssr: 'src/worker/index.js', // Specify the SSR entry point for Cloudflare Worker
   },
   server: {
     port: 3000,

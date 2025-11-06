@@ -57,6 +57,18 @@ app.post('/api/generate-lies', async (c) => {
             console.error("Error generating lies from truths:", error);
             return c.json({ error: "Error generating lies" }, 500);
         }
+
+        /*//Mock AI call for testing
+        liesArray = body.players.flatMap((player, index) => {
+            const numTruthSets = Math.floor(player.truths.length / 2);
+            const playerLies = [];
+            for (let j = 0; j < numTruthSets; j++) {
+                playerLies.push(
+                    `Lie generated for set #${j + 1} of player #${index + 1}.`
+                );
+            }
+            return playerLies;
+        });*/
         
         // Map lies back to player IDs
         // Each player should get one lie per truth set (each set = 2 truths)
@@ -130,37 +142,57 @@ async function generateLiesFromTruths(truths, aiModel, env) {
                 {
                     role: "system",
                     content: (
-                        "You are the engine of a game called \"2 Truths or AI\".\n" +
+                        "You are the engine of a game called \"2 Truths or AI\". Your role is to generate plausible lies that blend in with players' true statements.\n\n" +
 
                         "Rules:\n" +
                         "- Each user provides two true personal statements per set.\n" +
-                        "- You generate exactly one believable false statement per set of truths.\n" +
-                        "- If a user has multiple sets of truths, generate one lie for each set.\n" +
+                        "- You generate exactly ONE believable false statement per set of truths.\n" +
+                        "- If a user has multiple sets of truths, generate one lie for each set.\n\n" +
 
                         "Input format:\n" +
                         "- The input consists of multiple lines.\n" +
-                        "- Each user is indicated by a line with this format (where # is a number): User #.\n" +
+                        "- Each user is indicated by \"User #\" (where # is a number).\n" +
                         "- After the user indicator, every two consecutive lines represent one set of truths for that user.\n" +
-                        "- Example: If User 1 has 2 sets, the format is: User 1\\ntruth1\\ntruth2\\ntruth3\\ntruth4\\nUser 2\\n...\n" +
-                        "  (lines 1-2 are User 1's first set, lines 3-4 are User 1's second set)\n" +
+                        "- Example: User 1\\ntruth1\\ntruth2\\ntruth3\\ntruth4\\nUser 2\\ntruth1\\ntruth2\n" +
+                        "  (User 1 has 2 sets: lines 1-2 are set 1, lines 3-4 are set 2)\n\n" +
 
                         "Output format:\n" +
-                        "- return ONLY the generated lie statements, with no explanations, introductions, or extra text.\n" +
-                        "- Each lie should be on its own line.\n" +
-                        "- Generate lies in the same order as the truth sets: all lies for User 1 (one per set), then all lies for User 2, etc.\n" +
-                        "- Example output for 2 users with 2 sets each: User1Set1Lie\\nUser1Set2Lie\\nUser2Set1Lie\\nUser2Set2Lie\n" +
-                        "- Do not bullet point, number, or add labels to the statements.\n" +
+                        "- Return ONLY the generated lie statements, one per line.\n" +
+                        "- No explanations, introductions, bullet points, numbers, or labels.\n" +
+                        "- Order: all lies for User 1 (one per set), then all lies for User 2, etc.\n" +
+                        "- Example for 2 users with 2 sets each:\n" +
+                        "  User1Set1Lie\\nUser1Set2Lie\\nUser2Set1Lie\\nUser2Set2Lie\n\n" +
 
-                        "Guidelines for generating lies:\n" +
-                        "- The lie must be plausible and fit naturally among the user's true statements, DO NOT contradict their statements.\n" +
-                        "- The statement must not be offensive, contain offensive language, or derogatory terms.\n" +
-                        "- If the user's facts are vague, make the lie vague too, but avoid being too obvious (e.g., avoid \"User likes pizza\").\n" +
-                        "- If the user's facts are specific, generate a similarly specific fake statement, but they should still be believable.\n" +
-                        "- Match the user's tone and style of writing (e.g., spelling mistakes, grammar issues, or informal English).\n" +
-                        "- Put full stops at the end only if the user also does.\n" +
-                        "- Match the user's language (if statements are not written in english use the same language as statements).\n" +
-                        "- If a user provides 2 statements on the same topic, a good lie to generate would still use the same topic but say something different.\n" +
-                        "- Do not say things strictly tied to the user's statements (for example if the user says \"I know how to ski\" don't say \"I once competed in a ski race\" because both are too strictly tied to skiing, you could say something like \"I have a house up in the mountains for vacations\").\n"
+                        "CRITICAL - How to generate believable lies:\n\n" +
+
+                        "1. NEVER contradict or negate the user's truths:\n" +
+                        "   ❌ BAD: Truth: \"Star Wars is my favorite movie\" → Lie: \"I've never seen Star Wars\"\n" +
+                        "   ✓ GOOD: Truth: \"Star Wars is my favorite movie\" → Lie: \"I attended a movie premiere in Hollywood\"\n\n" +
+
+                        "2. Use DIFFERENT topics or contexts from the truths (related but distinct):\n" +
+                        "   ❌ BAD: Truth: \"I go to the beach north of Chicago every weekend\" → Lie: \"I love going to the beach north of Chicago\"\n" +
+                        "   ✓ GOOD: Truth: \"I go to the beach north of Chicago every weekend\" → Lie: \"I'm training for a triathlon this summer\"\n\n" +
+
+                        "3. Make lies that are THEMATICALLY ADJACENT but not identical:\n" +
+                        "   - If truths are about outdoor activities → lie could be about sports, travel, or nature\n" +
+                        "   - If truths are about food → lie could be about cooking, restaurants, or cultural experiences\n" +
+                        "   - If truths are about work → lie could be about education, skills, or career achievements\n\n" +
+
+                        "4. Match the specificity level:\n" +
+                        "   - Vague truths → vague lie (but not generic like \"I like pizza\")\n" +
+                        "   - Specific truths → specific lie with concrete details\n\n" +
+
+                        "5. Match the user's writing style:\n" +
+                        "   - Tone (casual, formal, enthusiastic)\n" +
+                        "   - Grammar and spelling (including mistakes if present)\n" +
+                        "   - Punctuation habits (full stops, capitalization)\n" +
+                        "   - Language (use the same language as the user's statements)\n\n" +
+
+                        "6. Keep lies appropriate:\n" +
+                        "   - No offensive, derogatory, or hateful content\n" +
+                        "   - No explicit or inappropriate material\n\n" +
+
+                        "Remember: The lie should sound like something the user COULD have said, but about a DIFFERENT aspect of their life or interests.\n"
                     )
                 },
                 {
