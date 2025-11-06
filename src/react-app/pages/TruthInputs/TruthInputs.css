@@ -6,7 +6,7 @@
   margin: 0 auto;
   padding: clamp(1rem, 2vh, 2.5rem) clamp(1rem, 2vw, 1.5rem);
   align-items: center;
-  min-height: 100vh;
+  min-height: 90vh;
   box-sizing: border-box;
 }
 
