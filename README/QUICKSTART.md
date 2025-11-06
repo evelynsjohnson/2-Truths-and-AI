@@ -1,213 +1,96 @@
 # Quick Start Guide
 
-Get up and running with the React app in 5 minutes!
+Get "2 Truths and AI" running in 5 minutes.
 
 ## Prerequisites
 
-- Node.js (v14+)
-- npm or yarn
+- Node.js (v16+)
+- npm (v8+)
 
 ## Installation
 
-### Option 1: Automated Setup (Recommended)
-
 ```bash
-cd react-app
-./setup.sh
-```
-
-This will:
-- Install all dependencies
-- Copy assets from the original project
-- Set up the project structure
-
-### Option 2: Manual Setup
-
-```bash
-# Navigate to react-app
-cd react-app
+# Clone repository
+git clone https://github.com/evelynsjohnson/2-Truths-and-AI.git
+cd 2-Truths-and-AI
 
 # Install dependencies
-npm install
-
-# Copy assets manually
-cp -r ../img/* public/assets/img/
-cp -r ../mp3/* public/assets/mp3/
+./setup.sh
 ```
 
 ## Running the App
 
 ```bash
-npm start
+# Development server (with hot reload)
+npm run dev
 ```
 
-The app will open at [http://localhost:3000](http://localhost:3000)
+App opens at [http://localhost:3000](http://localhost:3000)
+
+## Note
+
+Since you will not have access to the API key and endpoint for AI-generated lies, the app will run in demo mode with placeholder lies. To enable full functionality, you will need to set up your own backend with access to a large language model API (e.g., OpenAI GPT) and create a .dev.vars file with the necessary environment variables.
 
 ## First Run
 
-1. **Consent Page** - Check all boxes and click Continue
-2. **Start Screen** - Click "Start" or explore info pages
-3. **Lobby Settings** - Configure number of players and AI model
-4. **Truth Inputs** - Each player enters their name and two truths
-5. **Round Screen** - Guess which statement is the AI-generated lie
-6. **Leaderboard** - View scores and continue
-
-## Testing Features
-
-### Theme System
-1. Click "Settings" from Start Screen
-2. Try different themes (Default, Coral, Pink, Green, Gray)
-3. Adjust volumes
-4. Changes persist on refresh
-
-### Game Flow
-1. Set up a 2-player game
-2. Enter truths for both players
-3. Play through a round
-4. Check the leaderboard
+1. **Consent Page** - Accept terms to proceed
+2. **Start Screen** - Main menu with options
+3. **Lobby Settings** - Configure players (2-6) and AI model
+4. **Truth Inputs** - Each player enters name + 2 truths
+5. **Loading** - AI generates lies
+6. **Round Screen** - Vote to identify the lie
+7. **Leaderboard** - View scores, continue to next round
+8. **Final Results** - Winner announcement & game stats
 
 ## Common Issues
 
-### "Module not found" errors
+### Module errors
 ```bash
-# Delete node_modules and reinstall
 rm -rf node_modules package-lock.json
-npm install
+./setup.sh
 ```
 
-### Assets not loading
+### Port 3000 in use
 ```bash
-# Ensure assets are copied
-ls public/assets/img/
-ls public/assets/mp3/
-
-# If empty, copy manually
-cp -r ../img/* public/assets/img/
-cp -r ../mp3/* public/assets/mp3/
+PORT=3001 npm run dev
 ```
 
-### Port 3000 already in use
+### Build errors
 ```bash
-# Use a different port
-PORT=3001 npm start
+npm run build
+# Check terminal output for specific errors
 ```
 
-## Development Tips
+## Development
 
 ### Hot Reload
-- Edit any file in `src/`
-- Browser automatically refreshes
-- Changes appear instantly
+Edit files in `src/` - browser auto-refreshes
 
 ### React DevTools
-1. Install React DevTools browser extension
-2. Open browser DevTools
-3. Use "Components" and "Profiler" tabs
+Install browser extension for component inspection: [https://react.dev/tools](https://chromewebstore.google.com/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en)
 
 ### Debugging
-- Open browser console (F12)
-- Check for errors and warnings
-- Use `console.log()` as needed
-
-## Project Structure
-
-```
-react-app/
-├── src/
-│   ├── components/     # Reusable UI components
-│   ├── pages/          # Page components
-│   ├── context/        # State management
-│   ├── hooks/          # Custom hooks
-│   ├── utils/          # Helper functions
-│   └── App.js          # Main app with routing
-├── public/
-│   └── assets/         # Images, sounds, etc.
-└── package.json        # Dependencies
-```
-
-## Next Steps
-
-1. **Explore the code**
-   - Start with `src/App.js` to see routing
-   - Check `src/pages/` for page components
-   - Review `src/context/` for state management
-
-2. **Customize**
-   - Add new themes in `SettingsContext.js`
-   - Create new pages in `src/pages/`
-   - Add components in `src/components/`
-
-3. **Connect to Backend**
-   - Implement LLM API in `src/utils/api.js`
-   - Update `generateAILie()` function
-   - Test with real AI-generated lies
-
-## Documentation
-
-- **Full Structure**: See `PROJECT_STRUCTURE.md`
-- **Migration Guide**: See `MIGRATION_GUIDE.md`
-- **Component API**: See `COMPONENT_INDEX.md`
+- Browser console (F12) for errors
+- React DevTools for state inspection
 
 ## Building for Production
 
 ```bash
-# Create optimized build
+# Build optimized files
 npm run build
 
-# Test production build locally
-npx serve -s build
+# Preview production build
+npm run preview
 ```
-
-The `build/` folder contains production-ready files.
 
 ## Deployment
 
-### Deploy to Netlify
+### Cloudflare Workers (Recommended)
 ```bash
-# Install Netlify CLI
-npm install -g netlify-cli
-
-# Deploy
-cd react-app
-npm run build
-netlify deploy --prod --dir=build
-```
-
-### Deploy to Vercel
-```bash
-# Install Vercel CLI
-npm install -g vercel
-
-# Deploy
-cd react-app
-vercel
-```
-
-### Deploy to GitHub Pages
-```bash
-# Add to package.json
-"homepage": "https://yourusername.github.io/2-truths-ai"
-
-# Install gh-pages
-npm install --save-dev gh-pages
-
-# Add deploy scripts to package.json
-"predeploy": "npm run build",
-"deploy": "gh-pages -d build"
-
-# Deploy
 npm run deploy
 ```
+Then follow command line prompts to deploy to Cloudflare Pages.
 
-## Getting Help
-
-1. Check the documentation files
-2. Review error messages in console
-3. Use React DevTools to inspect state
-4. Check the original HTML/JS files for reference
-
-## Happy Coding! 🚀
-
-You now have a fully functional React version of "2 Truths and AI"!
-
-Start customizing and building new features.
+### Manual Deploy
+1. `npm run build`
+2. Upload `dist/` folder to hosting provider

@@ -1,11 +1,13 @@
 /* Main layout: two column design */
 .truth-inputs-layout {
   display: flex;
-  gap: 40px;
-  max-width: 1400px;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  max-width: 87.5rem;
   margin: 0 auto;
-  padding: 40px 20px;
-  align-items: flex-start;
+  padding: clamp(1rem, 2vh, 2.5rem) clamp(1rem, 2vw, 1.5rem);
+  align-items: center;
+  min-height: 90vh;
+  box-sizing: border-box;
 }
 
 /* Left column */
@@ -14,24 +16,24 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 24px;
+  gap: clamp(1rem, 2vh, 1.5rem);
   position: relative;
 }
 
 .player-header h1 {
-  font-size: 4rem;
+  font-size: clamp(2.5rem, 5vw, 4rem);
   font-weight: 700;
   margin: 0;
   color: white;
   text-decoration: underline;
   text-decoration-thickness: 4px;
   text-underline-offset: 8px;
-  line-height: 1;
+  line-height: 1.1;
 }
 
 .player-header p {
   font-size: 1.3rem;
-  margin: 8px 0 0 0;
+  margin: 0.5rem 0 0 0;
   color: rgba(255, 255, 255, 0.7);
 }
 
@@ -40,14 +42,14 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 400px;
-  margin-bottom: 0px;
+  gap: 0.625rem;
+  margin-top: clamp(2rem, 4vh, 4rem);
+  margin-bottom: 0;
 }
 
 .help-bubble {
-  width: 25px;
-  height: 25px;
+  width: clamp(1.375rem, 2vw, 1.75rem);
+  height: clamp(1.375rem, 2vw, 1.75rem);
   border-radius: 50%;
   background: var(--primary);
   color: white;
@@ -69,14 +71,17 @@
 .help-video {
   display: none;
   position: fixed;
-  left: 45%;
-  top: 35%;
+  left: 50%;
+  top: 50%;
   transform: translate(-50%, -50%);
-  width: 600px;
-  max-width: 80vw;
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(255, 255, 255, 0.6);
+  width: auto;
+  height: auto;
+  max-width: min(60vw, 37.5rem);
+  max-height: 80vh;
+  border-radius: clamp(0.75rem, 1vw, 1rem);
+  box-shadow: 0 0.5rem 1.875rem rgba(255, 255, 255, 0.6);
   z-index: 1100;
+  object-fit: contain;
 }
 
 .help-video.visible {
@@ -87,16 +92,16 @@
 .left-buttons {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-top: 20px;
+  gap: clamp(0.75rem, 1.5vh, 1rem);
+  margin-top: clamp(1rem, 2vh, 1.5rem);
 }
 
 .confirm-button {
   background: var(--primary);
   color: white;
   border: none;
-  border-radius: 16px;
-  padding: 20px 60px;
+  border-radius: clamp(0.75rem, 1.2vw, 1rem);
+  padding: clamp(1rem, 2vh, 1.25rem) clamp(2.5rem, 5vw, 3.75rem);
   font-size: 2rem;
   font-weight: 700;
   cursor: pointer;
@@ -116,7 +121,7 @@
   color: rgba(255, 255, 255, 0.7);
   font-size: 1rem;
   text-align: center;
-  margin-top: 8px;
+  margin-top: 0.5rem;
   text-decoration: underline;
   cursor: pointer;
   background: transparent;
@@ -134,22 +139,22 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: clamp(1rem, 2vh, 1.5rem);
   min-width: 0;
 }
 
 /* Card styling for both boxes */
 .input-card {
   background: var(--primary);
-  border-radius: 20px;
-  padding: 32px;
+  border-radius: clamp(1rem, 1.5vw, 1.25rem);
+  padding: clamp(1.5rem, 3vw, 2rem);
   color: white;
 }
 
 /* Top card - Name and Icon */
 .name-icon-card {
   display: flex;
-  gap: 24px;
+  gap: clamp(1rem, 2vw, 1.5rem);
   align-items: flex-start;
 }
 
@@ -160,7 +165,7 @@
 
 .name-section label {
   display: block;
-  margin-bottom: 12px;
+  margin-bottom: clamp(0.625rem, 1.2vh, 0.75rem);
   font-size: 1.1rem;
   font-weight: 600;
   color: white;
@@ -168,10 +173,10 @@
 
 .text-input {
   width: 100%;
-  padding: 14px 18px;
+  padding: clamp(0.75rem, 1.5vh, 1rem) clamp(1rem, 1.8vw, 1.25rem);
   background: color-mix(in srgb, var(--primary) 60%, transparent);
   border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
+  border-radius: clamp(0.625rem, 1vw, 0.75rem);
   color: white;
   font-size: 1.1rem;
   font-family: inherit;
@@ -194,14 +199,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: clamp(0.625rem, 1.2vh, 0.875rem);
 }
 
 .icon-selector-box {
   background: white;
   border-radius: 50%;
-  width: 140px;
-  height: 140px;
+  width: clamp(7rem, 12vw, 8.75rem);
+  height: clamp(7rem, 12vw, 8.75rem);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -217,7 +222,7 @@
 
 .icon-arrows {
   display: flex;
-  gap: 16px;
+  gap: clamp(0.75rem, 1.5vw, 1rem);
   align-items: center;
 }
 
@@ -226,8 +231,8 @@
   border: none;
   color: white;
   font-size: 3rem;
-  width: 50px;
-  height: 50px;
+  width: clamp(2.5rem, 4vw, 3.125rem);
+  height: clamp(2.5rem, 4vw, 3.125rem);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -249,25 +254,25 @@
   text-align: center;
   font-size: 1rem;
   color: white;
-  margin-top: 8px;
+  margin-top: 0.5rem;
 }
 
 /* Bottom card - Truth inputs */
 .truth-card h3 {
   font-size: 1.5rem;
-  margin: 0 0 24px 0;
+  margin: 0 0 clamp(1rem, 2vh, 1.5rem) 0;
   text-decoration: underline;
   text-decoration-thickness: 2px;
-  text-underline-offset: 6px;
+  text-underline-offset: clamp(0.25rem, 0.5vh, 0.375rem);
 }
 
 .truth-input-group {
-  margin-bottom: 20px;
+  margin-bottom: clamp(1rem, 2vh, 1.5rem);
 }
 
 .truth-input-group label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
   color: white;
@@ -279,12 +284,12 @@
 
 .truth-textarea {
   width: 100%;
-  min-height: 100px;
-  padding: 14px 18px;
-  padding-bottom: 32px;
+  min-height: clamp(5rem, 10vh, 6.25rem);
+  padding: clamp(0.75rem, 1.5vh, 1rem) clamp(1rem, 1.8vw, 1.25rem);
+  padding-bottom: clamp(1.5rem, 3vh, 2rem);
   background: color-mix(in srgb, var(--primary) 60%, transparent);
   border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
+  border-radius: clamp(0.625rem, 1vw, 0.75rem);
   color: white;
   font-size: 1rem;
   font-family: inherit;
@@ -304,8 +309,8 @@
 
 .char-counter {
   position: absolute;
-  bottom: 8px;
-  right: 12px;
+  bottom: 0.5rem;
+  right: clamp(0.625rem, 1.2vw, 0.75rem);
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.7);
 }
@@ -315,8 +320,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 24px;
-  gap: 16px;
+  margin-top: clamp(1rem, 2vh, 1.5rem);
+  gap: clamp(0.75rem, 1.5vw, 1rem);
 }
 
 .set-nav-button {
@@ -325,10 +330,10 @@
   color: white;
   font-size: 1rem;
   cursor: pointer;
-  padding: 8px 16px;
+  padding: 0.5rem 1rem;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .set-nav-button:hover:not(:disabled) {
@@ -342,7 +347,7 @@
 
 .set-pagination {
   display: flex;
-  gap: 12px;
+  gap: clamp(0.625rem, 1.2vw, 0.75rem);
   align-items: center;
 }
 
@@ -351,7 +356,7 @@
   font-weight: 700;
   color: white;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 0.25rem 0.5rem;
 }
 
 .set-number.active {
@@ -368,7 +373,7 @@
   justify-content: center;
   background: rgba(0, 0, 0, 0.92);
   z-index: 1300;
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(clamp(0.5rem, 1vw, 0.75rem));
   animation: fadeIn 0.3s ease;
 }
 
@@ -381,9 +386,9 @@
   background: linear-gradient(135deg, var(--primary), var(--secondary));
   color: white;
   text-align: center;
-  padding: 60px 80px;
-  border-radius: 24px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 100px rgba(107, 99, 255, 0.3);
+  padding: clamp(2.5rem, 5vw, 3.75rem) clamp(3rem, 6vw, 5rem);
+  border-radius: clamp(1rem, 2vw, 1.5rem);
+  box-shadow: 0 1.25rem 3.75rem rgba(0, 0, 0, 0.8), 0 0 6.25rem rgba(107, 99, 255, 0.3);
   border: 2px solid rgba(255, 255, 255, 0.1);
   max-width: 90%;
   animation: slideUp 0.4s ease;
@@ -392,7 +397,7 @@
 @keyframes slideUp {
   from { 
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(clamp(1.25rem, 2.5vh, 1.875rem));
   }
   to { 
     opacity: 1;
@@ -401,32 +406,154 @@
 }
 
 .thankyou-card h1 {
-  font-size: 3.2rem;
-  margin-bottom: 24px;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  margin-bottom: clamp(1rem, 2vh, 1.5rem);
   font-weight: 800;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 0.25rem 1.25rem rgba(0, 0, 0, 0.3);
   line-height: 1.2;
 }
 
 .thankyou-card .player-number {
-  font-size: 1.8rem;
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: clamp(0.75rem, 1.5vh, 1rem);
   opacity: 0.95;
 }
 
 .thankyou-card .uploading-text {
-  font-size: 1.5rem;
-  margin-bottom: 12px;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  margin-bottom: clamp(0.625rem, 1.2vh, 0.75rem);
   font-weight: 500;
   opacity: 0.9;
 }
 
 .thankyou-card .pass-text {
-  font-size: 1.6rem;
+  font-size: clamp(1.1rem, 2.2vw, 1.6rem);
   font-weight: 600;
-  margin-top: 20px;
-  padding-top: 20px;
+  margin-top: clamp(1rem, 2vh, 1.25rem);
+  padding-top: clamp(1rem, 2vh, 1.25rem);
   border-top: 2px solid rgba(255, 255, 255, 0.2);
   line-height: 1.4;
 }
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+/* Keep two-column layout, make content scrollable */
+@media (max-width: 1024px) {
+  .truth-inputs-layout {
+    min-width: 800px; /* Prevent collapse, enable horizontal scroll */
+    gap: 1.5rem;
+    padding: 1.5rem 1rem;
+  }
+
+  .left-column {
+    min-width: 280px;
+  }
+
+  .right-column {
+    min-width: 450px;
+  }
+}
+
+/* Smaller screens - reduce min-width but keep two-column */
+@media (max-width: 768px) {
+  .truth-inputs-layout {
+    min-width: 700px;
+    padding: 1rem;
+  }
+
+  .player-header h1 {
+    font-size: 3rem;
+  }
+
+  .left-column {
+    min-width: 240px;
+  }
+
+  .right-column {
+    min-width: 400px;
+  }
+
+  .help-hover {
+    margin-top: clamp(1.5rem, 3vh, 3rem);
+  }
+
+  .icon-selector-box {
+    width: 6rem;
+    height: 6rem;
+  }
+
+  .input-card {
+    padding: 1.25rem;
+  }
+}
+
+/* Very small screens - minimal but keep layout */
+@media (max-width: 480px) {
+  .truth-inputs-layout {
+    min-width: 600px;
+    padding: 0.75rem;
+    gap: 1rem;
+  }
+
+  .player-header h1 {
+    font-size: 2.5rem;
+  }
+
+  .player-header p {
+    font-size: 1.1rem;
+  }
+
+  .left-column {
+    min-width: 200px;
+  }
+
+  .right-column {
+    min-width: 350px;
+  }
+
+  .help-hover {
+    margin-top: clamp(1.5rem, 3vh, 2.5rem);
+  }
+
+  .icon-selector-box {
+    width: 5rem;
+    height: 5rem;
+  }
+
+  .input-card {
+    padding: 1rem;
+  }
+
+  .confirm-button {
+    font-size: 1.5rem;
+    padding: 0.875rem 1.5rem;
+  }
+}
+
+/* Short height displays - compact vertical spacing */
+@media (max-height: 700px) {
+  .truth-inputs-layout {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .player-header h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+
+  .help-hover {
+    margin-top: 1.5rem;
+  }
+
+  .left-buttons {
+    margin-top: 1rem;
+  }
+
+  .input-card {
+    padding: 1rem;
+  }
+}
+

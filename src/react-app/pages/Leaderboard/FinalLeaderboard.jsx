@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGame } from '../../context/GameContext';
 import Button from '../../components/Button/Button';
 import html2canvas from 'html2canvas';
+import { exportGameStatsToPDF } from '../../utils/api';
 import './Leaderboard.css';
 
 // Import button icons
@@ -167,6 +168,16 @@ export default function FinalLeaderboard() {
     URL.revokeObjectURL(url);
   };
 
+  // Download game data as PDF
+  const handleDownloadGameDataPDF = async () => {
+    try {
+      await exportGameStatsToPDF(gameState);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Failed to generate PDF. Please try again.');
+    }
+  };
+
   // Export leaderboard as PNG
   const handleExportLeaderboard = async () => {
     if (!leaderboardRef.current) return;
@@ -261,7 +272,14 @@ export default function FinalLeaderboard() {
               <img src={downloadIcon} alt="Download" className="btn-img" />
               <div>
                 <div className="btn-label">DOWNLOAD</div>
-                <span className="subtitle">Game Data</span>
+                <span className="subtitle">Game Data (JSON)</span>
+              </div>
+            </Button>
+            <Button className="download-btn pdf-btn" onClick={handleDownloadGameDataPDF}>
+              <img src={downloadIcon} alt="Download PDF" className="btn-img" />
+              <div>
+                <div className="btn-label">DOWNLOAD</div>
+                <span className="subtitle">Game Data (PDF)</span>
               </div>
             </Button>
             <Button className="export-btn" onClick={handleExportLeaderboard}>

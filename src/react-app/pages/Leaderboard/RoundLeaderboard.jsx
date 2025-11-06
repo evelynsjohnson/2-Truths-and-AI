@@ -2,7 +2,7 @@
  * @fileoverview RoundLeaderboard component displays the leaderboard after each round, showing player rankings and scores.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGame } from '../../context/GameContext';
 import Card from '../../components/Card/Card';
@@ -12,6 +12,30 @@ import './Leaderboard.css';
 export default function RoundLeaderboard() {
   const navigate = useNavigate();
   const { gameState, nextRound } = useGame();
+  
+  // Validate that we should be on this screen
+  useEffect(() => {
+    const currentRound = gameState.currentRound ?? 0;
+    const currentRoundData = gameState.rounds?.[currentRound];
+    
+    // If no rounds or no results for current round, we shouldn't be here
+    if (!gameState.rounds || gameState.rounds.length === 0) {
+      navigate('/lobby', { replace: true });
+      return;
+    }
+    
+    // If current round doesn't have results yet, go back to round screen
+    if (!currentRoundData?.results) {
+      navigate('/round', { replace: true });
+      return;
+    }
+    
+    // If all rounds are completed, go to game stats
+    const allRoundsCompleted = gameState.rounds.every(round => round.results !== null);
+    if (allRoundsCompleted) {
+      navigate('/game-stats', { replace: true });
+    }
+  }, [gameState.rounds, gameState.currentRound, navigate]);
 
   // Sort players by score to determine current standings
   const sortedPlayers = [...gameState.players].sort((a, b) => (b.score || 0) - (a.score || 0));

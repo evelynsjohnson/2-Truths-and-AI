@@ -1,75 +1,61 @@
-# 2 Truths and AI - React App
+# 2 Truths and AI
 
-This is a React version of the "2 Truths and A Lie" game with AI integration.
+A multiplayer party game where players try to identify AI-generated lies among real statements.
 
-## Getting Started
+## Overview
 
-### Prerequisites
+**2 Truths and AI** is a modern twist on the classic "2 Truths and a Lie" game. Players submit true statements about themselves, and an AI generates a convincing lie. Everyone votes to identify the fake statement, earning points for correct guesses.
 
-- Node.js (v14 or higher)
-- npm or yarn
-
-### Installation
-
-1. Navigate to the react-app directory:
-```bash
-cd react-app
-```
-
-2. Install dependencies:
-```bash
-npm install
-# or
-yarn install
-```
-
-### Running the App
-
-Start the development server:
-```bash
-npm start
-# or
-yarn start
-```
-
-The app will open at [http://localhost:3000](http://localhost:3000)
-
-### Building for Production
+## Quick Start
 
 ```bash
-npm run build
-# or
-yarn build
+# Install dependencies
+./setup.sh
+
+# Run development server
+npm run dev
 ```
 
-## Project Structure
-
-```
-react-app/
-├── public/             # Static files
-├── src/
-│   ├── components/     # Reusable components
-│   ├── pages/          # Page components
-│   ├── context/        # Context providers
-│   ├── hooks/          # Custom hooks
-│   ├── utils/          # Utility functions
-│   ├── assets/         # Images, sounds, etc.
-│   ├── styles/         # Global styles
-│   ├── App.js          # Main app component
-│   └── index.js        # Entry point
-└── package.json
-```
+The app runs at [http://localhost:3000](http://localhost:3000)
 
 ## Features
 
-- Theme customization
-- Background music and sound effects
-- Multiple game screens with routing
-- Local storage for settings and game state
-- Responsive design
+### Game Mechanics
+- 2-6 player support
+- Multiple rounds with configurable timer
+- AI-generated lies using GPT models
+- Real-time scoring and leaderboards
+- Vote and timer persistence across refreshes (anti-cheat)
+
+### User Experience
+- 5 theme options
+- Background music & sound effects
+- Responsive design (mobile & desktop)
+- Smooth animations
+- Loading states & error handling
+
+### Data Export
+- JSON game data export
+- PDF statistics report
+- PNG leaderboard screenshot
+
+## Technology
+
+- **React** 18.3 + **Vite** 5.4
+- **React Router** 6.26
+- **Cloudflare Workers** API backend
+- **sessionStorage** (game state)
+- **localStorage** (user preferences)
+- **jsPDF** + **html2canvas** (exports)
 
 ## Credits
 
-Music and sound effects: https://pixabay.com/  
-Icons: https://www.flaticon.com  
-Logo(s): Hand designed by Evelyn in Adobe Illustrator
+- **Idea**: Riccardo Bonfanti
+- **Music & SFX**: [Pixabay](https://pixabay.com/)
+- **Icons**: [Flaticon](https://www.flaticon.com)
+- **Logo**: Hand-designed by Evelyn Johnson in Adobe Illustrator
+- **Research Project**: CS422 - Fall 2025 @ University of Illinois Chicago
+
+---
+
+**Status:** ✅ Production-ready | **License:** Educational Use

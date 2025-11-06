@@ -1,12 +1,16 @@
 .stage {
-  width: clamp(320px, 100vw, 5000px);
-  height: clamp(420px, 74vh, 5000px);
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 1rem;
   padding: clamp(6px, 1vh, 20px);
+  box-sizing: border-box;
+  position: relative;
 }
 
 .content {

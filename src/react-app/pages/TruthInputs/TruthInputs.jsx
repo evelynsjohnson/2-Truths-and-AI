@@ -11,22 +11,72 @@ import './TruthInputs.css';
 
 export default function TruthInputs() {
   const navigate = useNavigate();
-  const { gameState, updatePlayerName, updateGameState } = useGame();
+  const { 
+    gameState, 
+    updatePlayerName, 
+    updateGameState,
+    loadTruthInputData,
+    saveTruthInputData,
+    clearTruthInputData,
+    loadCurrentPlayerIndex,
+    saveCurrentPlayerIndex,
+    clearCurrentPlayerIndex
+  } = useGame();
   const { playClick } = useSoundEffect();
-  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
-  // store per-player data including name, chosen icon index, and an object of sets
-  // Initialize from localStorage if available
-  const [playerData, setPlayerData] = useState(() => {
-    try {
-      const saved = localStorage.getItem('truthInputsPlayerData');
-      if (saved) {
-        return JSON.parse(saved);
+  
+  // Initialize from sessionStorage if available
+  const [playerData, setPlayerData] = useState(() => loadTruthInputData());
+  
+  // Find first player who hasn't completed their inputs
+  const findFirstIncompletePlayer = (data, players, numSetsPerPlayer) => {
+    for (let i = 0; i < players.length; i++) {
+      const player = players[i];
+      const pdata = data[player.id];
+      
+      // Check if this player's data is incomplete
+      if (!pdata?.name || !pdata?.icon) {
+        return i;
       }
-    } catch (error) {
-      console.error('Error loading player data from localStorage:', error);
+      
+      // Check if all truth sets are complete
+      let allSetsComplete = true;
+      for (let setNum = 1; setNum <= numSetsPerPlayer; setNum++) {
+        const set = pdata.sets?.[setNum];
+        if (!set?.truth1?.trim() || !set?.truth2?.trim()) {
+          allSetsComplete = false;
+          break;
+        }
+      }
+      
+      if (!allSetsComplete) {
+        return i;
+      }
     }
-    return {};
+    return 0; // Default to first player if all are complete (shouldn't happen)
+  };
+  
+  // Calculate numSetsPerPlayer early so we can use it in initialization
+  const numPlayers = gameState.players?.length || 0;
+  const numRounds = (typeof gameState.numRounds === 'number') ? gameState.numRounds : null;
+  const numSetsPerPlayer = (() => {
+    if (numRounds === null || numPlayers === 0) return 1;
+    return Math.ceil(numRounds / numPlayers);
+  })();
+  
+  // Initialize currentPlayerIndex - check saved index, validate it, or find first incomplete
+  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(() => {
+    const savedIndex = loadCurrentPlayerIndex();
+    const loadedData = loadTruthInputData();
+    
+    // If we have a saved index, validate it's still valid
+    if (savedIndex >= 0 && savedIndex < numPlayers) {
+      return savedIndex;
+    }
+    
+    // Otherwise find first incomplete player
+    return findFirstIncompletePlayer(loadedData, gameState.players || [], numSetsPerPlayer);
   });
+  
   const [currentSet, setCurrentSet] = useState(1);
   const [showThankYou, setShowThankYou] = useState(false);
   const [exportedJsonUrl, setExportedJsonUrl] = useState(null);
@@ -40,20 +90,42 @@ export default function TruthInputs() {
 
 
   // If no players are configured, redirect back to lobby to set them up
+  // If lies are already generated, redirect to appropriate game screen
   useEffect(() => {
     if (!currentPlayer) {
-      navigate('/lobby');
+      navigate('/lobby', { replace: true });
+      return;
     }
-  }, [currentPlayer, navigate]);
 
-  // Save playerData to localStorage whenever it changes
-  useEffect(() => {
-    try {
-      localStorage.setItem('truthInputsPlayerData', JSON.stringify(playerData));
-    } catch (error) {
-      console.error('Error saving player data to localStorage:', error);
+    // If the game has already started (lies generated), redirect to current game state
+    if (gameState.isLiesGenerated && gameState.rounds && gameState.rounds.length > 0) {
+      const currentRound = gameState.currentRound ?? 0;
+      const currentRoundData = gameState.rounds[currentRound];
+      
+      // Check if all rounds are completed
+      const allRoundsCompleted = gameState.rounds.every(round => round.results !== null);
+      
+      if (allRoundsCompleted) {
+        navigate('/game-stats', { replace: true });
+      } else if (currentRoundData?.results) {
+        // Current round completed, go to leaderboard
+        navigate('/round-leaderboard', { replace: true });
+      } else {
+        // Round in progress
+        navigate('/round', { replace: true });
+      }
     }
-  }, [playerData]);
+  }, [currentPlayer, navigate, gameState.isLiesGenerated, gameState.rounds, gameState.currentRound]);
+
+  // Save playerData to sessionStorage whenever it changes
+  useEffect(() => {
+    saveTruthInputData(playerData);
+  }, [playerData, saveTruthInputData]);
+
+  // Save current player index to sessionStorage whenever it changes
+  useEffect(() => {
+    saveCurrentPlayerIndex(currentPlayerIndex);
+  }, [currentPlayerIndex, saveCurrentPlayerIndex]);
 
   // Probe the public tamagotchi icons to build a list of available image URLs
   useEffect(() => {
@@ -155,20 +227,15 @@ export default function TruthInputs() {
 
   // Proceed to next player or finish collecting truths
   const handleNext = () => {
-    console.log("Proceeding to next player or finishing truths");
-    console.log("Current player data:", playerData);
-    console.log("Current player index:", currentPlayerIndex);
-    console.log("Current player:", currentPlayer);
-    console.log("Player data for current player:", playerData[currentPlayer?.id]);
-    console.log("Total number of players:", gameState.players.length);
     if (currentPlayerIndex < gameState.players.length - 1) {
       setCurrentPlayerIndex(currentPlayerIndex + 1);
       setCurrentSet(1);
     } else {
       // All players done, prepare data and navigate to loading screen
       prepareGameData();
-      // Clear the localStorage data since we're done collecting truths
-      localStorage.removeItem('truthInputsPlayerData');
+      // Clear the sessionStorage data since we're done collecting truths
+      clearTruthInputData();
+      clearCurrentPlayerIndex();
       setTimeout(() => navigate('/loading'), 600);
     }
   };
@@ -187,16 +254,6 @@ export default function TruthInputs() {
     }
     return true;
   };
-
-  // Number of truth sets per player depends on lobby settings (numRounds and numPlayers)
-  const numPlayers = gameState.players?.length || 0;
-  const numRounds = (typeof gameState.numRounds === 'number') ? gameState.numRounds : null;
-  const numSetsPerPlayer = (() => {
-    if (numRounds && numPlayers) return Math.max(1, Math.ceil(numRounds / numPlayers));
-    // fallback: if lobby provided truths per player in settings, use that
-    if (gameState.numTruthsPerPlayer) return Math.max(1, Math.ceil(gameState.numTruthsPerPlayer / 2));
-    return 1;
-  })();
 
   // Compute available icons for the current player (exclude icons taken by other players)
   const takenIcons = new Set(Object.entries(playerData)

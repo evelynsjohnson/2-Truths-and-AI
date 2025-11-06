@@ -24,7 +24,25 @@ const ChevronRight = ({ className = '' }) => (
 
 export default function LobbySettings() {
   const navigate = useNavigate();
-  const { initializeGame } = useGame();
+  const { initializeGame, gameState } = useGame();
+
+  // Prevent returning to lobby if game has already started
+  useEffect(() => {
+    if (gameState.isLiesGenerated && gameState.rounds && gameState.rounds.length > 0) {
+      const currentRound = gameState.currentRound ?? 0;
+      const currentRoundData = gameState.rounds[currentRound];
+      
+      const allRoundsCompleted = gameState.rounds.every(round => round.results !== null);
+      
+      if (allRoundsCompleted) {
+        navigate('/game-stats', { replace: true });
+      } else if (currentRoundData?.results) {
+        navigate('/round-leaderboard', { replace: true });
+      } else {
+        navigate('/round', { replace: true });
+      }
+    }
+  }, [gameState.isLiesGenerated, gameState.rounds, gameState.currentRound, navigate]);
 
   // Wireframe ranges and defaults
   const MIN_PLAYERS = 2;

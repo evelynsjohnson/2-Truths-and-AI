@@ -15,7 +15,8 @@ export function GameProvider({ children }) {
     try {
       const saved = sessionStorage.getItem(GAME_STATE_KEY);
       if (saved) {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        return parsed;
       }
     } catch (e) {
       console.warn('Could not load game state', e);
@@ -151,7 +152,7 @@ export function GameProvider({ children }) {
 
   // Reset game state to initial values
   const resetGame = () => {
-    setGameState({
+    const newState = {
       players: [],
       currentRound: 0,
       currentSet: 1,
@@ -160,7 +161,20 @@ export function GameProvider({ children }) {
       aiModel: 'gpt-5-nano',
       numAIStatements: 4,
       consentGiven: gameState.consentGiven // Keep consent status
-    });
+    };
+    
+    setGameState(newState);
+    
+    // Clear game-related sessionStorage (keep app settings like music/sound preferences in localStorage)
+    try {
+      clearTruthInputData();
+      clearCurrentPlayerIndex();
+      sessionStorage.setItem(GAME_STATE_KEY, JSON.stringify(newState)); // Save reset state immediately
+      // Note: We keep 'lobbySettings' in localStorage so users don't have to reconfigure every time
+      // Note: We keep 'appSettings' in localStorage for music/sound preferences
+    } catch (error) {
+      console.error('Error resetting game state:', error);
+    }
   };
 
   // Record that user has given consent (It will not be asked again for this session)
@@ -171,6 +185,119 @@ export function GameProvider({ children }) {
   // Generic update function to update any part of game state
   const updateGameState = (updates) => {
     setGameState(prev => ({ ...prev, ...updates }));
+  };
+
+  // Initialize round state when a round starts
+  const initializeRoundState = (roundIndex) => {
+    setGameState(prev => {
+      const rounds = [...(prev.rounds || [])];
+      if (rounds[roundIndex]) {
+        rounds[roundIndex] = {
+          ...rounds[roundIndex],
+          state: {
+            startTime: Date.now(),
+            isRevealing: false,
+            revealedLieIndex: null,
+            timeIsUp: false,
+            completedAt: null
+          }
+        };
+      }
+      return { ...prev, rounds };
+    });
+  };
+
+  // Update round state (e.g., votes, revealing, timeIsUp)
+  const updateRoundState = (roundIndex, stateUpdates) => {
+    setGameState(prev => {
+      const rounds = [...(prev.rounds || [])];
+      if (rounds[roundIndex]) {
+        rounds[roundIndex] = {
+          ...rounds[roundIndex],
+          state: {
+            ...rounds[roundIndex].state,
+            ...stateUpdates
+          }
+        };
+      }
+      return { ...prev, rounds };
+    });
+  };
+
+  // Update votes for current round
+  const updateRoundVotes = (roundIndex, votes) => {
+    setGameState(prev => {
+      const rounds = [...(prev.rounds || [])];
+      if (rounds[roundIndex]) {
+        rounds[roundIndex] = {
+          ...rounds[roundIndex],
+          votes
+        };
+      }
+      return { ...prev, rounds };
+    });
+  };
+
+  // Save truth input data to sessionStorage
+  const saveTruthInputData = (data) => {
+    try {
+      sessionStorage.setItem('truthInputsPlayerData', JSON.stringify(data));
+    } catch (error) {
+      console.error('Error saving truth input data:', error);
+    }
+  };
+
+  // Load truth input data from sessionStorage
+  const loadTruthInputData = () => {
+    try {
+      const saved = sessionStorage.getItem('truthInputsPlayerData');
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (error) {
+      console.error('Error loading truth input data:', error);
+    }
+    return {};
+  };
+
+  // Clear truth input data from sessionStorage
+  const clearTruthInputData = () => {
+    try {
+      sessionStorage.removeItem('truthInputsPlayerData');
+    } catch (error) {
+      console.error('Error clearing truth input data:', error);
+    }
+  };
+
+  // Save current player index for truth inputs
+  const saveCurrentPlayerIndex = (index) => {
+    try {
+      sessionStorage.setItem('truthInputsCurrentPlayer', String(index));
+    } catch (error) {
+      console.error('Error saving current player index:', error);
+    }
+  };
+
+  // Load current player index for truth inputs
+  const loadCurrentPlayerIndex = () => {
+    try {
+      const saved = sessionStorage.getItem('truthInputsCurrentPlayer');
+      if (saved !== null) {
+        return parseInt(saved, 10);
+      }
+    } catch (error) {
+      console.error('Error loading current player index:', error);
+    }
+    return 0;
+  };
+
+  // Clear current player index
+  const clearCurrentPlayerIndex = () => {
+    try {
+      sessionStorage.removeItem('truthInputsCurrentPlayer');
+    } catch (error) {
+      console.error('Error clearing current player index:', error);
+    }
   };
 
   return (
@@ -185,7 +312,16 @@ export function GameProvider({ children }) {
       loadGameData,
       resetGame,
       giveConsent,
-      updateGameState
+      updateGameState,
+      initializeRoundState,
+      updateRoundState,
+      updateRoundVotes,
+      saveTruthInputData,
+      loadTruthInputData,
+      clearTruthInputData,
+      saveCurrentPlayerIndex,
+      loadCurrentPlayerIndex,
+      clearCurrentPlayerIndex
     }}>
       {children}
     </GameContext.Provider>
