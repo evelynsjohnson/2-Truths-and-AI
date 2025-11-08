@@ -10,10 +10,24 @@ export default function Page1() {
     <div className="howto-page two-column">
       <div className="howto-left">
         <ol className="howto-list">
-          <li><span className="howto-link">Enter Your Name.</span></li>
+          <li><span className="howto-link">Enter your name.</span></li>
           <li><span className="howto-link">Choose your icon!</span></li>
           <li><span className="howto-link">Enter your truths.</span></li>
         </ol>
+
+        {/* Hover Tooltip */}
+        <div className="help-hover" onMouseEnter={() => setShowShortcuts(true)}>
+          <div className="help-bub">?</div>
+          <div className="help-text">Tip: Toggle fullscreen for an immersive view!</div>
+
+          <div className="shortcut-tooltip">
+            <h4>Shortcut Commands</h4>
+            <ul>
+              <li><b>Mac: </b><kbd>Command ⌘ + Shift + F</kbd></li>
+              <li><b>Windows: </b><kbd>Fn + F11</kbd></li>
+            </ul>
+          </div>
+        </div>
       </div>
 
       <div className="howto-right" aria-hidden="true">
