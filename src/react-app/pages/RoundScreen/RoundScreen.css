@@ -40,7 +40,7 @@
 
 .timer-box.urgent {
   color: #ef4444;
-  animation: timer-pulse 0.75s ease-in-out infinite alternate;
+  animation: timer-pulse 0.5s ease-in-out infinite alternate;
 }
 
 @keyframes timer-pulse {
@@ -208,12 +208,17 @@
   font-weight: 900;
   letter-spacing: 0.025rem;
   box-shadow: 0 clamp(1.5rem, 3vh, 1.875rem) clamp(3.5rem, 7vh, 5rem) rgba(0,0,0,0.6), 0 clamp(0.5rem, 1vh, 0.625rem) clamp(1.5rem, 3vh, 1.875rem) rgba(0,0,0,0.4);
-  transform: scale(0.98);
-  opacity: 0;
-  animation: timeup-fade-large 4s cubic-bezier(.22,.9,.33,1) forwards;
+  transform: scale(1);
+  opacity: 1;
+  animation: timeup-pop-in 0.3s cubic-bezier(.22,.9,.33,1) forwards;
   display: flex;
   flex-direction: column;
   gap: clamp(0.875rem, 2vh, 1rem);
+}
+
+@keyframes timeup-pop-in {
+  0% { opacity: 0; transform: translateY(8px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .overlay-title {
@@ -237,17 +242,15 @@
   animation: countdown-pulse 1s ease-in-out;
 }
 
+@keyframes timeup-pop-in {
+  0% { opacity: 0; transform: translateY(8px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 @keyframes countdown-pulse {
   0% { transform: scale(0.8); opacity: 0; }
   50% { transform: scale(1.1); opacity: 1; }
   100% { transform: scale(1); opacity: 1; }
-}
-
-@keyframes timeup-fade-large {
-  0% { opacity: 0; transform: translateY(8px) scale(0.96); }
-  10% { opacity: 1; transform: translateY(0) scale(1); }
-  80% { opacity: 1; transform: translateY(0) scale(1); }
-  100% { opacity: 0; transform: translateY(-8px) scale(0.98); }
 }
 
 @keyframes timeup-fade {
@@ -420,6 +423,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  border-radius: clamp(0.75rem, 1.5vw, 1rem);
 }
 
 .voting-help-popup::before {
@@ -461,6 +466,7 @@
   display: block;
   border: clamp(0.25rem, 0.5vw, 0.375rem) solid var(--primary);
   box-shadow: 0 clamp(0.5rem, 1vh, 0.75rem) clamp(1.5rem, 3vh, 2rem) rgba(107, 99, 255, 0.4);
+  overflow: hidden;
 }
 
 /* Players Section */

@@ -10,6 +10,8 @@ import Button from '../../components/Button/Button';
 import './TruthInputs.css';
 
 export default function TruthInputs() {
+  const NEXT_PLAYER_OVERLAY_DURATION = 3000;
+  
   const navigate = useNavigate();
   const { 
     gameState, 
@@ -314,11 +316,10 @@ export default function TruthInputs() {
               onClick={() => {
                 // confirm this player's data, show thank you overlay, then advance
                 setShowThankYou(true);
-                // hide after 5s and advance
                 setTimeout(() => {
                   setShowThankYou(false);
                   handleNext();
-                }, 5000);
+                }, NEXT_PLAYER_OVERLAY_DURATION);
               }}
               disabled={!canProceed()}
             >

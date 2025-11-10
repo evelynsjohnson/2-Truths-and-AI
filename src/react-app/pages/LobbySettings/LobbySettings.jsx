@@ -172,9 +172,9 @@ export default function LobbySettings() {
 
   // Reset all settings to defaults
   const resetDefaults = () => {
-    setNumPlayers(2);
+    setNumPlayers(4);
     setNumRounds(2);
-    setRoundLength(30);
+    setRoundLength(150);
     setAiModel('gpt-5-nano');
   };
 

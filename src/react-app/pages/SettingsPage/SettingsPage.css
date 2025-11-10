@@ -23,7 +23,7 @@
 
 .settings-home-btn {
   position: absolute;
-  left: 24px;
+  left: 0px;
   top: 24px;
   background: var(--secondary);
   border: none;

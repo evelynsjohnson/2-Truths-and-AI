@@ -19,7 +19,8 @@ const STREAK_STEP = 10;
 const SPEED_DIVISOR = 2;
 const SCORE_ANIMATION_DURATION = 1200;
 // Duration to show the time-up overlay before revealing results (ms)
-const OVERLAY_DURATION = 7000;
+const NATURAL_OVERLAY_DURATION = 2000;
+const EARLY_OVERLAY_DURATION = 3000;
 
 const toHalfPoints = (seconds) => {
   const safeSeconds = Number.isFinite(seconds) ? seconds : 0;
@@ -509,7 +510,7 @@ export default function RoundScreen() {
           beginReveal('timer');
         }, 50);
         overlayTimeoutRef.current = null;
-      }, OVERLAY_DURATION);
+      }, NATURAL_OVERLAY_DURATION);
       return () => {
         if (overlayTimeoutRef.current) {
           clearTimeout(overlayTimeoutRef.current);
@@ -650,19 +651,18 @@ export default function RoundScreen() {
       } else if (currentCount === 0) {
         playSound('countdownFINAL.mp3');
         setCountdownValue(0);
-      } else if (currentCount < 0) {
+        // Clear the interval when we reach 0
         clearInterval(countdownIntervalRef.current);
         countdownIntervalRef.current = null;
       }
     }, 1000);
 
-    // Keep the overlay visible 2 seconds longer for manual end
     overlayTimeoutRef.current = setTimeout(() => {
       setShowTimeUp(false);
       setCountdownValue(null);
       overlayTimeoutRef.current = null;
       beginReveal('manual');
-    }, OVERLAY_DURATION + 2000);
+    }, EARLY_OVERLAY_DURATION + 1500);
   };
 
   const handleSeeRoundLeaderboard = () => {
