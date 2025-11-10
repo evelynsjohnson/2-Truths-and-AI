@@ -38,6 +38,12 @@ export function useBackgroundMusic() {
     const expectedSrc = `/assets/mp3/bg-music/${settings.bgMusic}`;
     if (!audioRef.current.src.endsWith(expectedSrc)) {
       const wasPlaying = !audioRef.current.paused;
+      
+      // Pause and stop the old music first
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      
+      // Update to new source
       audioRef.current.src = expectedSrc;
       audioRef.current.load();
       isPlayingRef.current = false;
