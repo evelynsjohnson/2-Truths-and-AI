@@ -10,9 +10,10 @@ export default function Page1() {
     <div className="howto-page two-column">
       <div className="howto-left">
         <ol className="howto-list">
-          <li><span className="howto-link">Enter your name.</span></li>
-          <li><span className="howto-link">Choose your icon!</span></li>
-          <li><span className="howto-link">Enter your truths.</span></li>
+          <li><span className="howto-link">Enter your player name.</span><span className='howto-text'> This will show up on your player card and the leaderboard.</span></li>
+          <li><span className="howto-link">Choose your icon!</span><span className='howto-text'> Flip through 10+ available icons, and choose the one that best suites you. Are you Kuchipatchi (the green little guy)?</span></li>
+          <li><span className="howto-link">Enter your truths.</span><span className="howto-text"> This is what our AI will use to create the lies. Make sure to properly
+            format your truths with full capitalization, grammar, and punctuation to help the AI create the most believable lie.</span></li>
         </ol>
 
         {/* Hover Tooltip */}
