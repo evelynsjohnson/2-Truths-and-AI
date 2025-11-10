@@ -605,7 +605,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: left;
   gap: clamp(0.625rem, 1.25vw, 0.875rem);
   letter-spacing: 0.03em;
   min-width: clamp(15rem, 30vw, 20rem);
