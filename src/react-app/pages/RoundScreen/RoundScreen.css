@@ -108,7 +108,9 @@
 }
 
 .action-button.leaderboard-btn {
-  min-width: clamp(10rem, 20vw, 12.5rem);
+  min-width: clamp(11rem, 22vw, 14rem);
+  padding: clamp(0.75rem, 1.6vh, 0.875rem) clamp(1.5rem, 3vw, 1.75rem);
+  font-size: clamp(1rem, 2vh, 1.125rem);
 }
 
 .action-button:hover {
@@ -338,7 +340,7 @@
   flex: 1;
   color: white;
   font-weight: 600;
-  font-size: clamp(1.125rem, 2.2vh, 1.8rem);
+  font-size: clamp(1.5rem, 3vh, 2.25rem);
   line-height: 1.5;
   word-wrap: break-word;
   overflow-wrap: break-word;

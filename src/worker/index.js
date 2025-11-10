@@ -1,26 +1,9 @@
 import { Hono } from 'hono';
-import { cors } from 'hono/cors';
 
 const app = new Hono();
 
-// Enable Cross Origin Resource Sharing (CORS)
-// In development: allows localhost
-// In production: only allows your deployed domain
-app.use('/*', cors({
-  origin: (origin) => {
-    // Allow localhost for development
-    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
-      return origin;
-    }
-    // Allow your production domain
-    if (origin === 'https://2-truths-and-ai.riloda897.workers.dev' /*|| origin === 'https://yourdomain.com'*/) {
-      return origin;
-    }
-    // Reject all others
-    return null;
-  },
-  credentials: true,
-}));
+// CORS is not needed since the frontend and backend are served from the same origin
+// (both through Cloudflare Workers).
 
 /**
  * Backend API endpoint to generate AI lies based on player truths
