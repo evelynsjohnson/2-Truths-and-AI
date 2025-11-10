@@ -9,7 +9,7 @@
   },
   "upload_source_maps": true,
   "assets": {
-    "directory": "./dist",
+    "directory": "./dist/client/client",
     "binding": "ASSETS",
     "not_found_handling": "single-page-application"
   }

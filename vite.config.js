@@ -14,15 +14,18 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src/react-app'),
-      '/assets': path.resolve(__dirname, './src/react-app/assets'),
     },
   },
   root: './',
-  publicDir: false, // Assets are handled via alias
+  publicDir: 'public',
   build: {
-    outDir: 'dist',
-    emptyOutDir: true,
-    ssr: 'src/worker/index.js', // Specify the SSR entry point for Cloudflare Worker
+    outDir: 'dist/client',
+    emptyOutDir: false,
+    rollupOptions: {
+      input: './index.html',
+    },
+    assetsDir: 'assets',
+    copyPublicDir: true,
   },
   server: {
     port: 3000,
