@@ -17,7 +17,7 @@ export default function Page1() {
         </ol>
 
         {/* Hover Tooltip */}
-        <div className="help-hover" onMouseEnter={() => setShowShortcuts(true)}>
+        <div className="help-hover">
           <div className="help-bub">?</div>
           <div className="help-text">Tip: Toggle fullscreen for an immersive view!</div>
 

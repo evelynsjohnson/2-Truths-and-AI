@@ -188,7 +188,9 @@ async function generateLiesFromTruths(truths, aiModel, env) {
     );
 
     if (!response.ok) {
-        throw new Error(`OpenAI API error: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        console.error("OpenAI API error details:", errorData);
+        throw new Error(`OpenAI API error: ${response.status} - ${JSON.stringify(errorData)}`);
     }
 
     const data = await response.json();
