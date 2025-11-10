@@ -551,6 +551,7 @@
   background: linear-gradient(#2a2a2a, #2a2a2a) padding-box,
               linear-gradient(90deg, #ff6b6b, #ffd166, #8bd36a, #4dd0e1, #7b5cff, #ff79c6) border-box;
   box-shadow: 0 clamp(0.375rem, 0.8vh, 0.5rem) clamp(1.125rem, 2.4vh, 1.5rem) rgba(0,0,0,0.18);
+  border-image-width: 0px;
 }
 
 .player-icon {
