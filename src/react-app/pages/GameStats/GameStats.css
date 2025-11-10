@@ -22,6 +22,7 @@
 
 .stats-card .loading-spinner {
   margin-top: 25px;
+    border-top-color: var(--primary, #7c5cff);
 }
 
 .stats-title {
@@ -58,7 +59,7 @@
   display: block;
   width: 220px;
   height: 6px;
-  background: var(--primary-color, #7c5cff);
+  background: var(--primary, #7c5cff);
   margin: 8px auto 0;
   border-radius: 4px;
 }

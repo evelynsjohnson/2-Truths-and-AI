@@ -25,7 +25,7 @@
   width: 60px;
   height: 60px;
   border: 5px solid rgba(255, 255, 255, 0.1);
-  border-top-color: var(--primary-color, #9333ea);
+  border-top-color: var(--primary, #7c5cff);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -52,7 +52,7 @@
 
 .progress-text {
   font-size: 0.95rem;
-  color: var(--primary-color, #9333ea);
+  color: var(--primary, #7c5cff);
   font-weight: 500;
   margin-top: 1rem;
   font-style: italic;
