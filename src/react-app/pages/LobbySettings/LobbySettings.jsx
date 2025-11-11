@@ -58,12 +58,12 @@ export default function LobbySettings() {
       const saved = localStorage.getItem('lobbySettings');
       if (saved) {
         const parsed = JSON.parse(saved);
-        return parsed.numPlayers || 2;
+        return parsed.numPlayers || 4;
       }
     } catch (error) {
       console.error('Error loading lobby settings:', error);
     }
-    return 2;
+    return 4;
   });
   
   const [numRounds, setNumRounds] = useState(() => {
@@ -84,12 +84,12 @@ export default function LobbySettings() {
       const saved = localStorage.getItem('lobbySettings');
       if (saved) {
         const parsed = JSON.parse(saved);
-        return parsed.roundLength || 30;
+        return parsed.roundLength || 150;
       }
     } catch (error) {
       console.error('Error loading lobby settings:', error);
     }
-    return 30;
+    return 150;
   });
   
   const [aiModel, setAiModel] = useState(() => {
@@ -213,7 +213,7 @@ export default function LobbySettings() {
         </div>
 
         <div className="setting-row">
-          <div className="setting-label">Round Length</div>
+          <div className="setting-label">Round Length <span className="muted">(30-600)</span></div>
           <div className="dots" aria-hidden />
           <div className="setting-control">
             <Button className="chev" onClick={decLength} aria-label="Decrease round length" disabled={roundLength <= MIN_ROUND_LENGTH}><ChevronLeft /></Button>

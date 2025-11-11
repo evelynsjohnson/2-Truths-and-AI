@@ -1,7 +1,7 @@
 {
   "name": "2-truths-and-ai",
   "version": "1.0.0",
-  "description": "2 Truths and A Lie game with AI integration - Cloudflare Workers + Vite",
+  "description": "2 Truths and A AI - A fun group game with AI integration - Cloudflare Workers + Vite",
   "private": true,
   "type": "module",
   "scripts": {

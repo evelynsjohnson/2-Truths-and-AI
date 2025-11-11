@@ -802,7 +802,7 @@ export default function RoundScreen() {
         {isVotingHelpVisible && (
           <div className="voting-help-popup">
             <video 
-              src="/src/react-app/assets/mp4/voting-demo.mp4" 
+              src="/assets/mp4/voting-demo.mp4" 
               autoPlay 
               loop 
               muted 
