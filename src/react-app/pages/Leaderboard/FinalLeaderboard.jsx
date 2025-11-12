@@ -306,7 +306,9 @@ export default function FinalLeaderboard() {
                   <div className="rank-badge-top" style={{ backgroundColor: rank.color }}>
                     {rank.emoji || getOrdinal(group.rank)}
                   </div>
-                  <img src={player.icon} alt={player.name} className="rank-player-icon" />
+                  <div className="rank-player-icon-frame">
+                    <img src={player.icon} alt={player.name} className="rank-player-icon" />
+                  </div>
                   <div className="rank-player-name">{player.name}</div>
                   <div className="rank-player-label">Player {gameState.players.findIndex(p => p.id === player.id) + 1}</div>
                   <div className="rank-player-score">{player.score || 0} points</div>

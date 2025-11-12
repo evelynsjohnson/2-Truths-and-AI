@@ -110,7 +110,9 @@ export default function RoundLeaderboard() {
           return (
             <div key={player.id} className={`podium-card ${position}`} style={{ order: displayIndex }}>
               <div className="podium-rank">{getRankDisplay(index)}</div>
-              <img src={player.icon} alt={player.name} className="podium-icon" />
+              <div className="podium-icon-frame">
+                <img src={player.icon} alt={player.name} className="podium-icon" />
+              </div>
               <div className="podium-name">{player.name}</div>
               <div className="podium-score">{player.score || 0} Points</div>
             </div>
