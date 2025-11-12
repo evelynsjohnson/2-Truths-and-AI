@@ -5,52 +5,62 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useSettings } from '../context/SettingsContext';
 
+// Singleton audio element shared across all hook instances
+let sharedAudioElement = null;
+let isPlayingShared = false;
+
 export function useBackgroundMusic() {
   const { settings } = useSettings();
-  const audioRef = useRef(null);
-  const isPlayingRef = useRef(false);
+  const audioRef = useRef(sharedAudioElement);
+  const isPlayingRef = useRef(isPlayingShared);
 
   // Effect to initialize and update background music audio element
   useEffect(() => {
     if (!settings.bgMusic) return;
 
-    // Create audio element if it doesn't exist
-    if (!audioRef.current) {
-      audioRef.current = new Audio(`/assets/mp3/bg-music/${settings.bgMusic}`);
-      audioRef.current.loop = true;
-      audioRef.current.preload = 'auto';
+    // Create audio element if it doesn't exist (singleton)
+    if (!sharedAudioElement) {
+      sharedAudioElement = new Audio();
+      sharedAudioElement.loop = true;
+      sharedAudioElement.preload = 'auto';
       
       // Track when audio actually starts/stops playing
-      audioRef.current.addEventListener('play', () => {
-        isPlayingRef.current = true;
+      sharedAudioElement.addEventListener('play', () => {
+        isPlayingShared = true;
       });
       
-      audioRef.current.addEventListener('pause', () => {
-        isPlayingRef.current = false;
+      sharedAudioElement.addEventListener('pause', () => {
+        isPlayingShared = false;
       });
+      
+      audioRef.current = sharedAudioElement;
     }
 
     // Update volume
     const volume = (settings.masterVolume ?? 0.5) * (settings.bgMusicVolume ?? 0.8);
-    audioRef.current.volume = volume;
+    sharedAudioElement.volume = volume;
 
     // Update source if bgMusic changed
     const expectedSrc = `/assets/mp3/bg-music/${settings.bgMusic}`;
-    if (!audioRef.current.src.endsWith(expectedSrc)) {
-      const wasPlaying = !audioRef.current.paused;
+    const currentSrc = sharedAudioElement.src;
+    
+    // Check if source needs updating (compare the filename part)
+    if (!currentSrc || !currentSrc.endsWith(expectedSrc)) {
+      const wasPlaying = !sharedAudioElement.paused;
       
       // Pause and stop the old music first
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
+      sharedAudioElement.pause();
+      sharedAudioElement.currentTime = 0;
       
       // Update to new source
-      audioRef.current.src = expectedSrc;
-      audioRef.current.load();
+      sharedAudioElement.src = expectedSrc;
+      sharedAudioElement.load();
+      isPlayingShared = false;
       isPlayingRef.current = false;
       
       // Resume playing if it was playing before
       if (wasPlaying) {
-        audioRef.current.play().catch(e => console.warn('Could not resume music:', e));
+        sharedAudioElement.play().catch(e => console.warn('Could not resume music:', e));
       }
     }
 
@@ -60,15 +70,16 @@ export function useBackgroundMusic() {
 
   // Function to play the background music
   const play = useCallback(async () => {
-    if (!audioRef.current) return;
+    if (!sharedAudioElement) return;
 
     // Check if audio is already playing using the element's paused property
-    if (!audioRef.current.paused) {
+    if (!sharedAudioElement.paused) {
       return; // Already playing, don't try again
     }
 
     try {
-      await audioRef.current.play();
+      await sharedAudioElement.play();
+      isPlayingShared = true;
       isPlayingRef.current = true;
     } catch (e) {
       console.warn('Could not play background music:', e);
@@ -78,16 +89,17 @@ export function useBackgroundMusic() {
 
   // Function to pause the background music
   const pause = useCallback(() => {
-      if (audioRef.current && isPlayingRef.current) {
-        audioRef.current.pause();
+      if (sharedAudioElement && isPlayingShared) {
+        sharedAudioElement.pause();
+      isPlayingShared = false;
       isPlayingRef.current = false;
     }
   }, []);
 
   // Allow callers to control playback rate (e.g., speed up under 15s)
   const setPlaybackRate = useCallback((rate) => {
-    if (audioRef.current) {
-      audioRef.current.playbackRate = rate;
+    if (sharedAudioElement) {
+      sharedAudioElement.playbackRate = rate;
     }
   }, []);
 
