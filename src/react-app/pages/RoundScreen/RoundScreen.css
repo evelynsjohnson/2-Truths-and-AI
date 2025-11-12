@@ -493,6 +493,10 @@
   cursor: pointer;
   transition: all 0.2s;
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 .player-card:hover {
@@ -556,11 +560,15 @@
   border-image-width: 0px;
 }
 
-.player-icon {
+.player-icon-frame {
   width: clamp(4rem, 8vh, 5rem);
   height: clamp(4rem, 8vh, 5rem);
   border-radius: 50%;
   object-fit: cover;
+  display: flex;
+  overflow: hidden;
+  padding: 4px;
+  background-color: white;
   margin-bottom: clamp(0.375rem, 0.8vh, 0.5rem);
   border: clamp(0.0875rem, 0.2vw, 0.125rem) solid #404040;
 }

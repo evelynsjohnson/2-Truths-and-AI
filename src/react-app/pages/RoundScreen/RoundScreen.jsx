@@ -848,8 +848,9 @@ export default function RoundScreen() {
                 {hasVoted && !isRevealing && (
                   <div className="vote-checkmark">✓</div>
                 )}
-
-                <img src={player.icon} alt={player.name} className="player-icon" />
+                <div className="player-icon-frame">
+                  <img src={player.icon} alt={player.name} className="player-icon" />
+                </div>
                 <div className="player-name">{player.name}</div>
                 <div className="player-score">{displayScore} pts</div>
               </div>
