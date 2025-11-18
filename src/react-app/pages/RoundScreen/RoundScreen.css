@@ -111,6 +111,7 @@
   min-width: clamp(11rem, 22vw, 14rem);
   padding: clamp(0.75rem, 1.6vh, 0.875rem) clamp(1.5rem, 3vw, 1.75rem);
   font-size: clamp(1rem, 2vh, 1.125rem);
+  border: 2px white solid;
 }
 
 .action-button:hover {

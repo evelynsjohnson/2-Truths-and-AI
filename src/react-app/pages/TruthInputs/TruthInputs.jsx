@@ -494,7 +494,7 @@ export default function TruthInputs() {
       {showThankYou && (
         <div className="thankyou-overlay">
           <div className="thankyou-card">
-            <h1>Thank you {playerData[currentPlayer.id]?.name || `Player ${currentPlayerIndex + 1}`}!</h1>
+            <h1>Thank you, {playerData[currentPlayer.id]?.name || `Player ${currentPlayerIndex + 1}`}!</h1>
             <p className="player-number">You are Player {currentPlayerIndex + 1}.</p>
             <p className="uploading-text">Uploading your truths...</p>
             {currentPlayerIndex < gameState.players.length - 1 && (

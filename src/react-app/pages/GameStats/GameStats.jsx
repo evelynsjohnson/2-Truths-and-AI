@@ -40,12 +40,21 @@ export default function GameStats() {
     // Fastest Guesser: smallest guess time (roundLength - timeRemaining) among correct guesses
     let fastestGuess = null; // {playerId, playerName, guessTime, roundIndex, statement}
 
+    // Completed Rounds: not skipped over, at least 1 vote recorded
+    let completedRounds = 0;
+
     const defaultRoundLength = Number(gameState.roundLength) || null;
 
     rounds.forEach((round, rIndex) => {
       const statements = Array.isArray(round.statements) ? round.statements : [];
       const votes = round.votes || {};
       const results = round.results || {};
+
+      // Completed Rounds, where there is at least 1 vote.
+      const hasVotes = round?.votes && Object.keys(round.votes).length > 0;
+      if (hasVotes) {
+        completedRounds += 1;
+      }
 
       // Determine lie index
       const lieIndex = statements.findIndex(s => s.type === 'lie');
@@ -127,15 +136,15 @@ export default function GameStats() {
     let sneakiest = null;
     for (const [playerId, info] of chameleonFooledCounts.entries()) {
       if (!sneakiest || info.count > sneakiest.count) {
-        sneakiest = { playerId, name: info.name, count: info.count };
+        sneakiest = { playerId, name: info.name, count: info.count};
       }
     }
-
     return {
       mostBelievable,
       truthThatTricked,
       sneakiest,
-      fastestGuess
+      fastestGuess, 
+      completedRounds
     };
   }, [gameState.rounds, gameState.players, gameState.roundLength]);
 
@@ -146,6 +155,10 @@ export default function GameStats() {
   }, []);
 
   const goToLeaderboard = () => navigate('/final-leaderboard');
+  // look up full player info for sneakiest player avi based on id
+  const sneakiestPlayer = stats.sneakiest
+    ? gameState.players.find(p => p.id === stats.sneakiest.playerId)
+    : null;
 
   return (
     <div className="stage stats-stage">
@@ -163,48 +176,99 @@ export default function GameStats() {
         ) : (
           <>
             <h1 className="stats-title">Game Stats</h1>
+            <p className='stats-subtitle'>Here's a breakdown of the game based on {stats.completedRounds}/{gameState.numRounds} rounds completed.</p>
+            <div className="stat-grid">
+              {/* <section className="stat-block"> */}
+                {stats.sneakiest ? (
+                  <>
+                    <div className='title-stat-card'>
+                      <div className='stat-card-text'>
+                        <p className='winning-player'>{sneakiestPlayer?.name}</p>
+                        <p className='winning-title'>Sneakiest Chameleon</p>
+                        <p className='title-desc'>Tricked a total of {stats.sneakiest.count} players.</p>
+                      </div>
+                      <div className='icon-frame'>
+                        <img src={sneakiestPlayer?.icon} alt={sneakiestPlayer?.name} className="player-icon"></img>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                  <div className='title-stat-card'>
+                    <p className='stat-card-blank'>No chameleons managed to trick anyone.</p>
+                  </div>
+                  </>
+                )}
+              {/* </section> */}
 
+              {/* <section className="stat-block"> */}
+                {stats.fastestGuess ? (
+                  <>
+                    <div className='title-stat-card'>
+                      <div className='stat-card-text'>
+                        <p className='winning-player'>{stats.fastestGuess.playerName}</p>
+                        <p className='winning-title'>Fastest Guesser</p>
+                        <p className='title-desc'>Got it right in {Math.max(0, Math.round(stats.fastestGuess.guessTime * 100) / 100)}s! (Round {stats.fastestGuess.roundIndex})</p>
+                      </div>
+                      <div className='icon-frame'>
+                        <img src={sneakiestPlayer?.icon} alt={sneakiestPlayer?.name} className="player-icon"></img>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                  <div className='title-stat-card'>
+                    <p className='stat-card-blank'>No correct guesses with timing information were recorded.</p>
+                  </div>
+                  </>
+                )}
+              {/* </section> */}
+            </div>
             <section className="stat-block">
               <h2>Most Believable AI Lie:</h2>
               {stats.mostBelievable ? (
-                <p>
-                  {stats.mostBelievable.count} Players were fooled by "{safeText(stats.mostBelievable.text)}" — based off of {stats.mostBelievable.player?.name || 'a player'}'s truths in Round {stats.mostBelievable.roundIndex}.
-                </p>
+                <>
+                <div className='quote-stat'>
+                  <div className="stat-num-card">
+                    <p className="stat-num">{stats.mostBelievable.count}</p>
+                    <p className='stat-cap'>players successfully <br></br> guessed</p>
+                  </div>
+                  <div className="stat-quote-card">
+                    <p><span className='quotation-mark'>" </span><span className='quote'>{safeText(stats.mostBelievable.text)}</span><span className='quotation-mark'> "</span></p>
+                    <p className='quote-details'>{stats.mostBelievable.player?.name || 'a player'}'s truth in Round {stats.mostBelievable.roundIndex}</p>
+                  </div>
+                </div>
+                </>
               ) : (
-                <p>No AI lies fooled any players this game.</p>
+                <>
+                <div className='quote-card-blank'>
+                  <p>No AI lies fooled any players this game.</p>
+                </div>
+                </>
               )}
             </section>
 
             <section className="stat-block">
               <h2>Truth That Tricked the Most:</h2>
               {stats.truthThatTricked && stats.truthThatTricked.count > 0 ? (
-                <p>
-                  {stats.truthThatTricked.count} Players incorrectly guessed "{safeText(stats.truthThatTricked.text)}" was an AI lie — it came from Round {stats.truthThatTricked.roundIndex}.
-                </p>
+                <>
+                <div className='quote-stat'>
+                  <div className="stat-num-card">
+                    <p className="stat-num">{stats.truthThatTricked.count}</p>
+                    <p className='stat-cap'>players incorrectly<br></br>guessed</p>
+                  </div>
+                  <div className="stat-quote-card">
+                    <p><span className='quotation-mark'>" </span><span className='quote'>{safeText(stats.truthThatTricked.text)}</span><span className='quotation-mark'> "</span></p>
+                    <p className='quote-details'>{stats.mostBelievable.player?.name || 'a player'}'s truth in Round {stats.truthThatTricked.roundIndex}</p>
+                  </div>
+                </div>
+                </>
               ) : (
-                <p>No truths were commonly mistaken for AI lies.</p>
-              )}
-            </section>
-
-            <section className="stat-block">
-              <h2>Sneakiest Chameleon:</h2>
-              {stats.sneakiest ? (
-                <p>
-                  {stats.sneakiest.name || `Player ${stats.sneakiest.playerId}`}, who tricked {stats.sneakiest.count} total players!
-                </p>
-              ) : (
-                <p>No chameleons managed to trick anyone.</p>
-              )}
-            </section>
-
-            <section className="stat-block">
-              <h2>Fastest Guesser:</h2>
-              {stats.fastestGuess ? (
-                <p>
-                  {stats.fastestGuess.playerName}, who got it right in Round {stats.fastestGuess.roundIndex} in {Math.max(0, Math.round(stats.fastestGuess.guessTime * 100) / 100)} seconds!
-                </p>
-              ) : (
-                <p>No correct guesses with timing information were recorded.</p>
+                <>
+                  <div className='quote-card-blank'>
+                    <p>No truths were commonly mistaken for AI lies.</p>
+                  </div>
+                </>
               )}
             </section>
 

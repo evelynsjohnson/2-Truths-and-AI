@@ -30,6 +30,22 @@
   margin-bottom: 12px;
 }
 
+.stats-subtitle {
+  margin: 0px 0px;
+  text-align: center;
+  font-size: 13px;
+  color: #d0d0d0;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: auto auto;
+  padding: 20px; 
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+}
+
 .stat-block {
   margin: 20px 0;
 }
@@ -37,6 +53,109 @@
 .stat-block h2 {
   font-size: 22px;
   margin-bottom: 8px;
+}
+
+/* quoted stats containers */
+.quote-stat {
+  display: flex;
+  flex-direction: row;
+  margin: 8px;
+}
+
+.stat-num-card {
+  width: 20%;
+  background: var(--primary, #7c5cff);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+  padding: 3px;
+}
+
+.stat-num {
+  font-size: 40px;
+  font-weight: 900;
+}
+
+.stat-quote-card {
+  width: 80%;
+  border-radius: 10px;
+  border: 2px solid var(--primary, #7c5cff);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.quotation-mark {
+  font-size: 30px;
+  color: var(--primary, #7c5cff);
+  font-weight: 900;
+}
+
+.quote {
+  font-size: 22px;
+}
+
+.quote-details {
+  color: #949494;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+
+/* superlative card */
+.title-stat-card {
+  width: clamp(18rem, 8vh, 5rem);
+  height: clamp(7rem, 8vh, 5rem);
+  border: 3px solid var(--primary, #7c5cff);
+  border-radius: 25px;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-card-blank {
+  padding: 10px;
+  text-align: center;
+}
+
+.stat-card-text {
+  /* width: 82%; */
+  margin-left: 10px;
+}
+
+.icon-frame {
+  width: clamp(4.8rem, 8vh, 5rem);
+  height: clamp(4.8rem, 8vh, 5rem);
+  border-radius: 50%;
+  object-fit: cover;
+  display: flex;
+  overflow: hidden;
+  padding: 4px;
+  background-color: white;
+  /* margin-bottom: clamp(0.375rem, 0.8vh, 0.5rem); */
+  border: clamp(0.2rem, 0.2vw, 0.125rem) solid var(--primary, #7c5cff);
+  margin-right: 10px;
+}
+
+.winning-player {
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.winning-title {
+  font-size: 20px;
+  color: var(--primary, #7c5cff);
+  font-weight: 600;
+}
+
+.title-desc {
+  color: #949494;
 }
 
 .stats-controls {
@@ -47,10 +166,10 @@
 
 .stats-title {
   font-size: 50px;
-  margin-bottom: 12px;
+  margin-bottom: 0px;
   text-align: center;
   position: relative;
-  padding-bottom: 18px; /* space for divider */
+  padding-bottom: 10px; /* space for divider */
 }
 
 /* Purple divider under the title */
@@ -60,6 +179,6 @@
   width: 220px;
   height: 6px;
   background: var(--primary, #7c5cff);
-  margin: 8px auto 0;
+  margin: 8px auto 0px;
   border-radius: 4px;
 }
