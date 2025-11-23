@@ -30,6 +30,17 @@ export default function AboutUs() {
           </div>
         </header>
 
+        <div className="about-us-nav" aria-label="Page navigation">
+          <Button                                                   // Button to navigate to About Our Game page
+            className="about-game-btn"
+            onClick={() => navigate('/about-game')}
+            variant="icon"
+          >
+            <span>About Our Game</span>
+            <span className="arrow">→</span>
+          </Button>
+        </div>
+
         <section className="team-grid" aria-label="Team members">                      {/* Team members section */}
           <div className="team-member">
             <img src="/assets/img/about-us/evelyn.png" alt="Evelyn Johnson" className="avatar" />
@@ -125,16 +136,7 @@ export default function AboutUs() {
           </p>
         </section>
 
-        <div className="footer-link">
-          <Button                                                   // Button to navigate to About Our Game page
-            className="about-game-btn"
-            onClick={() => navigate('/about-game')}
-            variant="icon"
-          >
-            <span>About Our Game</span>
-            <span className="arrow">→</span>
-          </Button>
-        </div>
+        {/* footer navigation removed (now in `.about-us-nav` below header) */}
       </div>
     </main>
   );

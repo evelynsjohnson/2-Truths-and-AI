@@ -36,25 +36,26 @@
 .how-to-play-home-btn {
   position: absolute;
   left: 0;
-  top: 0;
+  top: 24px;
   background: var(--secondary);
   border: none;
-  border-radius: clamp(0.5rem, 1vw, 0.625rem);
-  padding: clamp(0.5rem, 1vh, 0.625rem);
-  height: clamp(2.375rem, 4.4vh, 2.75rem);
-  width: clamp(2.375rem, 4.4vw, 2.75rem);
+  border-radius: 10px;
+  padding: 10px;
+  height: 44px;
+  width: 44px;
   display: grid;
   place-items: center;
   cursor: pointer;
-  flex-shrink: 0;
+  transition: all 0.2s ease;
 }
 
 .how-to-play-home-btn:hover {
   background: var(--secondary-hover);
+  transform: translateY(-2px);
 }
 
 .how-to-play-home-btn img {
-  width: clamp(1.125rem, 2.2vw, 1.375rem);
+  width: 22px;
   height: auto;
 }
 
@@ -175,22 +176,40 @@
 
 .howto-list li {
   counter-increment: step-counter;
-  font-size: clamp(1.5rem, 3vh, 1.95rem);
   font-weight: 800;
   color: #fff;
   margin-bottom: clamp(1.5rem, 3vh, 2rem);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: clamp(0.5rem, 1vw, 0.75rem);
+  align-items: baseline; /* align titles and numbers on same text baseline */
 }
 
 .howto-list li:before {
   content: counter(step-counter) ". ";
-  margin-right: clamp(0.25rem, 0.6vw, 0.375rem);
-  /* text-decoration: underline; */
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+  font-size: clamp(1.75rem, 3.6vh, 2.2rem);
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  vertical-align: baseline;
 }
 
 .howto-link {
-  text-decoration: None;
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+  display: inline-block;
+  text-decoration: none;
+  font-size: clamp(1.25rem, 2.8vh, 1.5rem); /* reverted to previous (smaller) title size */
+  font-weight: 800; /* keep bold weight so titles remain prominent */
   text-decoration-thickness: clamp(0.125rem, 0.3vw, 0.1875rem);
   text-underline-offset: clamp(0.25rem, 0.6vw, 0.375rem);
+  white-space: normal; /* allow wrapping to multiple lines */
+  overflow: visible;
+  text-overflow: clip;
+  line-height: 1.15;
+  vertical-align: baseline; /* ensure title baseline lines up with the number */
 }
 
 .howto-link-inline {
@@ -201,9 +220,13 @@
 }
 
 .howto-text {
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  display: block; /* force description to the next line after the title */
   font-weight: normal;
   color: #fff;
-  font-size: clamp(1.0rem, 3vh, 1.0rem);
+  font-size: clamp(1.125rem, 2.6vh, 1.25rem);
+  margin-top: clamp(0.25rem, 0.6vh, 0.375rem);
 }
 
 /* tooltip hover */
@@ -216,9 +239,10 @@
 }
 
 .help-text {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 1rem;
-  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: clamp(1.25rem, 2.8vh, 1.5rem); /* match reverted title size */
+  font-weight: 800;
+  white-space: normal;
 }
 
 .help-bub {
@@ -348,12 +372,44 @@
   background: var(--primary);
   border: none;
   color: #fff;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  font-size: clamp(0.875rem, 1.7vh, 0.98rem);
-  padding: clamp(0.625rem, 1.2vh, 0.75rem) clamp(1rem, 2vw, 1.25rem);
-  border-radius: clamp(0.375rem, 0.8vw, 0.5rem);
-  transition: all 0.2s ease;
+  font-size: clamp(1.125rem, 2.4vh, 1.25rem);
+  padding: clamp(0.875rem, 1.8vh, 1rem) clamp(1.25rem, 2.6vw, 1.5rem);
+  border-radius: clamp(0.5rem, 1vw, 0.75rem);
+  transition: all 0.18s ease;
+}
+
+/* Nav moved under the title and above the page content */
+.how-to-play-nav {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: clamp(0.75rem, 1.6vh, 0.875rem);
+}
+
+.how-to-play-nav-left,
+.how-to-play-nav-right {
+  display: flex;
+  gap: clamp(0.5rem, 1vw, 0.75rem);
+}
+
+.how-to-play-nav-link {
+  background: var(--primary);
+  border: none;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: clamp(1.05rem, 2.2vh, 1.1rem);
+  padding: clamp(0.5rem, 1vh, 0.625rem) clamp(0.875rem, 1.8vw, 1rem);
+  border-radius: clamp(0.4rem, 0.8vw, 0.5rem);
+  transition: all 0.18s ease;
+}
+
+.how-to-play-nav-link:hover {
+  background: var(--secondary-hover);
+  transform: translateY(-0.08rem);
 }
 
 .how-to-play-footer-link:hover {

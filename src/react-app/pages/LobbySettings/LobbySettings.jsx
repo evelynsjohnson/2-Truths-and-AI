@@ -181,13 +181,19 @@ export default function LobbySettings() {
   //Render the lobby settings
     return (
     <div className="lobby-stage">
-      <Button variant="icon" className="home-btn" aria-label="Home" onClick={() => navigate('/')}>
-        <img src="/assets/img/button-icons/home.png" alt="Home" style={{width: '22px'}} />
-      </Button>
+
+      <header className="lobby-header" role="banner">
+        <Button variant="icon" className="home-btn" aria-label="Home" onClick={() => navigate('/')}>
+          <img src="/assets/img/button-icons/home.png" alt="Home" style={{width: '22px'}} />
+        </Button>
+
+        <div>
+          <h1 className="title">Lobby Creation Settings</h1>
+          <div className="divider" />
+        </div>
+      </header>
 
       <Card className="lobby-card">
-        <h1 className="title">Lobby Creation Settings</h1>
-        <div className="divider" />
 
         <div className="setting-row">
           <div className="setting-label">Number of Players <span className="muted">(2-6)</span></div>
@@ -242,14 +248,19 @@ export default function LobbySettings() {
         </div>
 
         <div className="unchangeable">
-          <div className="small-muted">(Unchangeable)</div>
-          <div className="truths-label">Number of Truths Per Player: <span className="truths-value">{truthsPerPlayer}</span></div>
-          <div className="help-text">Calculated so that there are enough truths to cover all rounds.</div>
+          <div className="truths-label">Number of Truths Per Player: <span className="truths-value">{truthsPerPlayer}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span className="small-muted">(Unchangeable)</span></div>
+          <div className="help-text">Automatically calculated so that there are enough truths to cover all rounds.</div>
         </div>
 
         <div className="confirm-row">
           <Button className="confirm-btn" onClick={handleStart}>Confirm Settings and Start!</Button>
-          <Button className="reset-link" variant="outline" onClick={resetDefaults}>Reset to Default Settings</Button>
+          <Button
+            className="reset-link"
+            variant="outline"
+            onClick={resetDefaults}
+          >
+            Reset to Default Settings
+          </Button>
         </div>
       </Card>
     </div>

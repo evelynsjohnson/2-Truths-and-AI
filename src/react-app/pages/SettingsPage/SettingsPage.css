@@ -46,6 +46,29 @@
   height: auto;
 }
 
+/* Return button shown when navigating back to the leaderboard
+   Align it to the left like the home icon and make it primary-colored */
+.settings-return-btn {
+  position: absolute;
+  left: 0px;
+  top: 24px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-size: 1.12rem;
+  height: 44px;
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.settings-return-btn:hover {
+  background: var(--primary-hover);
+}
+
 .settings-title {
   font-size: 2.6rem;
   color: #fff;

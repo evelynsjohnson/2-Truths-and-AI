@@ -30,6 +30,17 @@ export default function AboutGame() {
           </div>
         </header>
 
+        <div className="about-game-nav" aria-label="Page navigation">
+          <Button                                               // Button to navigate to About Us page
+            className="about-us-btn"
+            onClick={() => navigate('/about-us')}
+            variant="icon"
+          >
+            <span className="arrow">←</span>
+            <span>About Us</span>
+          </Button>
+        </div>
+
         <div className="layout-grid">
           <section className="section section-purple idea-section" aria-labelledby="idea-title">
             <h2 id="idea-title">Our Inspiration</h2>                                                        {/* Game idea and description */}
@@ -58,7 +69,7 @@ export default function AboutGame() {
           <section className="section section-black text-block-2">
             <p>
               Our process is centered on a core gameplay loop: players submit truths, our system sends them to
-              a free AI API (gpt-35-turbo, gpt-5-nano, and gpt-4.1-mini) to generate a convincing lie, and
+              an AI API (gpt-35-turbo, gpt-5-nano, and gpt-4.1-mini) to generate a convincing lie, and
               then having players vote to identify which statement is the AI.
             </p>
           </section>
@@ -73,16 +84,7 @@ export default function AboutGame() {
           </section>
         </div>
 
-        <div className="about-game-footer-link">
-          <Button                                               // Button to navigate to About Us page
-            className="about-us-btn" 
-            onClick={() => navigate('/about-us')}
-            variant="icon"
-          >
-            <span className="arrow">←</span>
-            <span>About Us</span>
-          </Button>
-        </div>
+        {/* navigation moved above page content */}
       </div>
     </main>
   );

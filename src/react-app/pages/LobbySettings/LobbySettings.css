@@ -1,25 +1,39 @@
 .lobby-stage {
-  min-height: 100vh;
+  /* lock the stage to the viewport and prevent page-level scrollbars */
+  height: 100vh;
+  overflow: hidden;
   background: #0f0f10;
   display: flex;
+  flex-direction: column; /* stack header above card */
   align-items: center;
   justify-content: center;
   padding: clamp(1.25rem, 3vh, 1.875rem) clamp(1rem, 2vw, 1.5rem);
   color: #eae9f7;
 }
 
-.home-btn {
-  position: absolute;
-  left: clamp(1rem, 2vw, 1.5rem);
-  top: clamp(1rem, 2vh, 1.5rem);
-  background: var(--secondary);
-  border: none;
-  border-radius: clamp(0.5rem, 1vw, 0.625rem);
-  width: clamp(2.5rem, 4vw, 2.75rem);
-  height: clamp(2.5rem, 4vh, 2.75rem);
+/* Header containing home button (absolute) and centered page title */
+.lobby-header {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  padding: 0 0 24px 0; /* match other page headers */
+  min-height: clamp(2.5rem, 5vh, 3rem);
+}
+
+.home-btn {
+  position: absolute;
+  left: clamp(1rem, 2vw, 1.5rem); /* align with page horizontal padding */
+  top: 24px;
+  background: var(--secondary);
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  height: 44px;
+  width: 44px;
+  display: grid;
+  place-items: center;
   color: white;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -27,16 +41,22 @@
 
 .home-btn:hover {
   background: var(--secondary-hover);
-  transform: translateY(-0.125rem);
+  transform: translateY(-2px);
 }
 
 .lobby-card {
-  width: clamp(20rem, 90vw, 57.5rem);
-  max-width: calc(100% - 2.5rem);
+  width: clamp(24rem, 95vw, 70rem);
+  max-width: calc(100% - 4rem);
   background: transparent;
   padding: clamp(1.5rem, 3vh, 2.25rem) clamp(2rem, 4vw, 3rem) clamp(2rem, 4vh, 3rem);
   box-sizing: border-box;
   border-radius: clamp(0.625rem, 1.2vw, 0.75rem);
+  /* limit height so card never exceeds the viewport and create an internal scroll when needed */
+  /* subtract a modest amount to allow room for the header and page chrome */
+  max-height: calc(100vh - 6.5rem);
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .title {
@@ -65,8 +85,8 @@
 }
 
 .setting-label {
-  font-size: clamp(1rem, 2vw, 1.25rem);
-  font-weight: 600;
+  font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+  font-weight: 700;
 }
 
 .muted {
@@ -98,8 +118,8 @@
   background: transparent;
   border: 1px solid rgba(255,255,255,0.06);
   color: var(--primary);
-  padding: 8px;
-  border-radius: 8px;
+  padding: 10px;
+  border-radius: 10px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -112,9 +132,9 @@
 }
 
 .setting-value {
-  font-size: 20px;
-  font-weight: 700;
-  min-width: 120px;
+  font-size: clamp(1.15rem, 2.6vw, 1.6rem);
+  font-weight: 800;
+  min-width: 140px;
   text-align: center;
 }
 
@@ -129,14 +149,18 @@
 .help-text {
   width: 100%;
   color: var(--primary);
-  font-size: 13px;
-  margin-top: 6px;
+  /* slightly smaller and more muted than controls */
+  font-size: clamp(0.75rem, 1.1vh, 0.9rem);
+  opacity: 0.65;
+  margin-top: 4px;
   grid-column: 1 / -1;
 }
 
 .unchangeable {
-  margin-top: 22px;
-  padding: 18px 0 6px 0;
+  /* visually match other setting rows so this looks like an option (even if unchangeable) */
+  margin-top: 6px;
+  padding: clamp(0.875rem, 1.8vh, 1.125rem) 0;
+  border-bottom: 1px dotted rgba(255,255,255,0.06);
 }
 
 .small-muted {
@@ -145,35 +169,47 @@
 }
 
 .truths-label {
-  font-size: 20px;
-  margin-top: 6px;
+  /* use same sizing as other setting labels to make this read as an option */
+  font-size: clamp(1.15rem, 2.4vw, 1.5rem);
   font-weight: 700;
+  display: inline-flex;
+  align-items: center;
 }
 
 .truths-value {
+  /* match the visual weight of setting values */
+  font-size: clamp(1.15rem, 2.6vw, 1.6rem);
+  font-weight: 800;
   color: var(--primary);
   margin-left: 8px;
 }
 
-.confirm-row {
-  margin-top: 28px;
+ .confirm-row {
+  /* remove space above and make the row use the full width */
+  margin-top: 0;
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* side-by-side on wide screens */
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
+  gap: 0;
 }
 
-.confirm-btn {
+ .confirm-btn {
   background: var(--primary);
   color: white;
   border: none;
-  padding: 18px 36px;
+  padding: 18px 24px;
   border-radius: 24px;
   font-size: 22px;
   font-weight: 700;
-  width: 80%;
   cursor: pointer;
   transition: all 0.2s ease;
+  /* occupy half the card */
+  flex: 0 0 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  order: 2; /* ensure confirm sits on the right */
 }
 
 .confirm-btn:hover {
@@ -181,14 +217,24 @@
   transform: translateY(-2px);
 }
 
-.reset-link {
+ .reset-link {
   background: transparent;
   color: var(--primary);
   border: none;
   cursor: pointer;
-  text-decoration: underline;
-  font-size: 14px;
+  text-decoration: none;
+  font-size: 22px;
+  font-weight: 700;
   transition: color 0.2s ease;
+  padding: 18px 24px;
+  text-align: center;
+  border-radius: 24px;
+  /* occupy half the card */
+  flex: 0 0 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  order: 1; /* ensure reset sits on the left */
 }
 
 .reset-link:hover {
@@ -197,8 +243,11 @@
 }
 
 @media (max-width: 760px) {
-  .lobby-card { padding: 20px; }
+  /* On small screens allow card to scroll internally to avoid layout break */
+  .lobby-card { padding: 20px; height: auto; max-height: calc(100vh - 5rem); overflow: auto; }
   .title { font-size: 28px; }
   .setting-value { min-width: 100px; font-size: 18px }
-  .confirm-btn { width: 100%; font-size: 18px }
+  .confirm-row { flex-direction: column; gap: 12px; }
+  .confirm-btn { width: 100%; font-size: 18px; flex: none; order: 2; }
+  .reset-link { width: 100%; flex: none; order: 1; font-size: 18px; }
 }

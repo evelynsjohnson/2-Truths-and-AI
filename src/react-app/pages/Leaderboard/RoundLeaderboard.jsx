@@ -86,8 +86,17 @@ export default function RoundLeaderboard() {
   return (
     <div className="stage round-leaderboard-stage">
       <div className="round-leaderboard-header">
-        <div className="round-info-label">
-          Round {roundNumber} (out of {totalRounds})
+        <div className="header-left">
+          <div className="round-info-label">
+            Round {roundNumber} (out of {totalRounds})
+          </div>
+
+          <Button
+            className="settings-btn end-game-btn"
+            onClick={() => navigate('/settings', { state: { returnTo: '/round-leaderboard' } })}
+          >
+            Settings
+          </Button>
         </div>
 
         <h1 className="leaderboard-title">Round Leaderboard</h1>

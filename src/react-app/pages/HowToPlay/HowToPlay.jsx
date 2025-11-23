@@ -55,27 +55,27 @@ export default function HowToPlay() {
           </div>
         </header>
 
-        <section className="how-to-play-page-area">     {/* Render the current subpage component */}
-          <Current />
-        </section>
-
-        <footer className="how-to-play-footer">
-          <div className="how-to-play-footer-left">
+        <nav className="how-to-play-nav" aria-label="How To Play navigation">{/* Prev/Next buttons placed under title */}
+          <div className="how-to-play-nav-left">
             {index > 0 && (
-              <button className="how-to-play-footer-link" onClick={goPrev} aria-label="Previous">
+              <button className="how-to-play-nav-link" onClick={goPrev} aria-label="Previous">
                 ← {PAGES[index - 1].title}
               </button>
             )}
           </div>
 
-          <div className="how-to-play-footer-right">
+          <div className="how-to-play-nav-right">
             {index < PAGES.length - 1 && (
-              <button className="how-to-play-footer-link" onClick={goNext} aria-label="Next">
+              <button className="how-to-play-nav-link" onClick={goNext} aria-label="Next">
                 {PAGES[index + 1].title} →
               </button>
             )}
           </div>
-        </footer>
+        </nav>
+
+        <section className="how-to-play-page-area">     {/* Render the current subpage component */}
+          <Current />
+        </section>
       </div>
     </main>
   );

@@ -25,6 +25,31 @@
   font-weight: 600;
 }
 
+/* Header left column (round pill + settings) */
+.round-leaderboard-header .header-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+/* Make the round counter larger and pill-shaped in the header */
+.round-leaderboard-header .round-info-label {
+  font-size: 1.25rem;
+  font-weight: 700;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  min-width: 12rem;
+}
+
+/* Settings button should visually match the end-game button but maintain pill shape */
+.round-leaderboard-header .settings-btn {
+  min-width: 12rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  text-decoration: none;
+}
+
 .leaderboard-title {
   font-size: 2.5rem;
   color: white;
@@ -55,16 +80,18 @@
   background: var(--primary);
   color: white;
   border: none;
-  padding: 16px 32px;
-  border-radius: 16px;
-  font-size: 1.125rem;
-  font-weight: 600;
+  padding: clamp(0.9rem, 2.2vh, 1.25rem) clamp(1.25rem, 3.5vw, 2.5rem);
+  border-radius: 18px;
+  /* larger, more prominent label */
+  font-size: clamp(1.25rem, 2.8vh, 1.6rem);
+  font-weight: 800;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 12px;
+  min-width: clamp(10rem, 22vw, 13rem);
 }
 
 .next-round-btn:hover {
@@ -76,16 +103,18 @@
   background: rgba(255, 255, 255, 0.1);
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: 500;
+  padding: clamp(0.75rem, 1.8vh, 1rem) clamp(1rem, 2.5vw, 1.75rem);
+  border-radius: 14px;
+  /* slightly larger label without changing box much */
+  font-size: clamp(1.15rem, 2.4vh, 1.35rem);
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 10px;
+  min-width: clamp(9rem, 20vw, 11.5rem);
 }
 
 .end-game-btn:hover {
@@ -161,7 +190,8 @@
 }
 
 .podium-name {
-  font-size: clamp(0.9rem, 1.1rem, 1.3rem);
+  /* make player names match the visual weight of the points */
+  font-size: 1.5rem;
   font-weight: 700;
   color: white;
   text-align: center;
@@ -178,6 +208,10 @@
 }
 
 .podium-card.first .podium-score {
+  font-size: 1.8rem;
+}
+
+.podium-card.first .podium-name {
   font-size: 1.8rem;
 }
 
@@ -224,7 +258,8 @@
 
 .lower-rank-name {
   flex: 1;
-  font-size: clamp(0.9rem, 1rem, 1.2rem);
+  /* make lower-rank names closer in size to the points for visual parity */
+  font-size: clamp(1.1rem, 1.8vh, 1.4rem);
   font-weight: 600;
   color: white;
   min-width: 0;

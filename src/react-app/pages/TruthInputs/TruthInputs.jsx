@@ -238,7 +238,8 @@ export default function TruthInputs() {
       // Clear the sessionStorage data since we're done collecting truths
       clearTruthInputData();
       clearCurrentPlayerIndex();
-      setTimeout(() => navigate('/loading'), 600);
+      // navigate immediately — overlay timing is handled by the caller
+      navigate('/loading');
     }
   };
 
@@ -314,11 +315,21 @@ export default function TruthInputs() {
             <Button
               className="confirm-button"
               onClick={() => {
-                // confirm this player's data, show thank you overlay, then advance
+                // confirm this player's data, show thank you overlay
+                // For non-final players: hide overlay then advance to next player.
+                // For final player: keep overlay visible and navigate directly to loading.
                 setShowThankYou(true);
                 setTimeout(() => {
-                  setShowThankYou(false);
-                  handleNext();
+                  if (currentPlayerIndex < (gameState.players.length - 1)) {
+                    setShowThankYou(false);
+                    handleNext();
+                  } else {
+                    // final player: prepare data and navigate while overlay remains visible
+                    prepareGameData();
+                    clearTruthInputData();
+                    clearCurrentPlayerIndex();
+                    navigate('/loading');
+                  }
                 }, NEXT_PLAYER_OVERLAY_DURATION);
               }}
               disabled={!canProceed()}

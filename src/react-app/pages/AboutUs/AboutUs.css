@@ -28,19 +28,19 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 30px 0 18px 0;
+  padding: 0 0 24px 0; /* match Settings header spacing so title and home button align */
 }
 
 .about-us-home-btn {
   position: absolute;
   left: 0;
-  top: 0;
+  top: 24px;
   background: var(--secondary);
   border: none;
   border-radius: 10px;
   padding: 10px;
-  height: 48px;
-  width: 48px;
+  height: 44px;
+  width: 44px;
   display: grid;
   place-items: center;
   cursor: pointer;
@@ -152,15 +152,15 @@
 }
 
 .statement-section h2 {
-  font-size: clamp(1.6rem, 2.8vh, 2.2rem);
+  font-size: clamp(2rem, 3.6vh, 2.8rem); /* make the heading noticeably larger */
   font-weight: 700;
   color: #fff;
   margin-bottom: clamp(12px, 1.5vh, 20px);
 }
 
 .statement-section p {
-  font-size: clamp(0.95rem, 1.75vh, 1.15rem);
-  line-height: 1.6;
+  font-size: clamp(1.20rem, 2.5vh, 1.6rem); /* larger body text */
+  line-height: 1.2; /* slightly tighter line-height to fit more text */
   color: #e6e6e6;
   width: 100%;
   margin: 0;
@@ -176,22 +176,26 @@
 }
 
 .about-game-btn {
-  background: none;
+  background: var(--primary);
   border: none;
   color: #fff;
-  font-size: clamp(1.1rem, 2vh, 1.4rem);
+  font-size: clamp(1.3rem, 2.8vh, 1.8rem);
   font-family: "Afacad", sans-serif;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
-  transition: all 0.2s ease;
+  gap: clamp(0.75rem, 1.6vw, 1rem);
+  padding: clamp(0.6rem, 1.4vh, 0.9rem) clamp(1rem, 2.5vw, 1.4rem);
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.22);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
 }
 
 .about-game-btn:hover {
-  color: var(--primary);
-  transform: translateX(10px);
+  background: var(--primary-hover);
+  transform: translateX(6px);
+  box-shadow: 0 12px 26px rgba(0,0,0,0.26);
 }
 
 .arrow {
@@ -240,6 +244,23 @@
     padding: 16px;
     justify-content: center;
   }
+
+  .about-us-nav {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem 1rem 0;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Navigation area immediately below the header */
+.about-us-nav {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end; /* right-aligned on wider screens */
+  padding: clamp(0.75rem, 1.8vh, 1.25rem) clamp(1rem, 2.5vw, 2rem);
+  margin-bottom: clamp(0.75rem, 1.8vh, 1.5rem);
 }
 
 @media (max-width: 380px) {

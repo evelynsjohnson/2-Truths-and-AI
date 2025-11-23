@@ -3,7 +3,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useSettings } from '../../context/SettingsContext';
 import { useSoundEffect } from '../../hooks/useSoundEffect';
 import Button from '../../components/Button/Button';
@@ -11,6 +11,8 @@ import './SettingsPage.css';
 
 export default function SettingsPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const returnTo = location?.state?.returnTo;
   const { settings, updateSettings, resetSettings } = useSettings();
   const { playClick } = useSoundEffect();
   
@@ -83,14 +85,24 @@ export default function SettingsPage() {
     <div className="settings-page-wrapper">
       <main className="settings-stage">
       <header className="settings-header">
-        <Button                                 // Button to navigate back to home/start screen
-          className="settings-home-btn" 
-          aria-label="Home" 
-          onClick={() => navigate('/start')}
-          variant="icon"
-        >
-          <img src="/assets/img/button-icons/home.png" alt="Home" style={{width: '22px'}} />
-        </Button>
+        {returnTo === '/round-leaderboard' ? (
+          <Button
+            className="settings-return-btn"
+            onClick={() => navigate(returnTo)}
+            variant="solid"
+          >
+            Return to Current Leaderboard
+          </Button>
+        ) : (
+          <Button                                 // Button to navigate back to home/start screen (or returnTo)
+            className="settings-home-btn" 
+            aria-label="Home" 
+            onClick={() => navigate('/start')}
+            variant="icon"
+          >
+            <img src="/assets/img/button-icons/home.png" alt="Home" style={{width: '22px'}} />
+          </Button>
+        )}
         <div>
           <h1 className="settings-title">App Settings</h1>
           <div className="settings-divider" aria-hidden="true"></div>
