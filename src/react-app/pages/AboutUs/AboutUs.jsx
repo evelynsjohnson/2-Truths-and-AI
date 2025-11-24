@@ -2,7 +2,7 @@
  * @fileoverview About Us page displaying team members and mission statement.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/Button/Button';
 import { useSoundEffect } from '../../hooks/useSoundEffect';
@@ -11,6 +11,13 @@ import './AboutUs.css';
 export default function AboutUs() {
   const navigate = useNavigate();
   const { playClick } = useSoundEffect();
+  const [evelynHover, setEvelynHover] = useState(false);
+
+  // Preload hover image for smooth transition
+  React.useEffect(() => {
+    const img = new Image();
+    img.src = '/assets/img/about-us/evelyn_hover.png';
+  }, []);
 
   // Render the About Us page
   return (
@@ -43,7 +50,13 @@ export default function AboutUs() {
 
         <section className="team-grid" aria-label="Team members">                      {/* Team members section */}
           <div className="team-member">
-            <img src="/assets/img/about-us/evelyn.png" alt="Evelyn Johnson" className="avatar" />
+            <div
+              className={`avatar evelyn-avatar ${evelynHover ? 'hover' : ''}`}
+              onMouseEnter={() => setEvelynHover(true)}
+              onMouseLeave={() => setEvelynHover(false)}
+              role="img"
+              aria-label="Evelyn Johnson"
+            />
             <div className="name-row">
               <h3 className="member-name">Evelyn Johnson</h3>
               <a 
