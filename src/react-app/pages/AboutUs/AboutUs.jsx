@@ -5,17 +5,19 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/Button/Button';
+import { useSoundEffect } from '../../hooks/useSoundEffect';
 import './AboutUs.css';
 
 export default function AboutUs() {
   const navigate = useNavigate();
+  const { playClick } = useSoundEffect();
 
   // Render the About Us page
   return (
     <main className="about-us-stage" role="main" aria-labelledby="about-title">
       <div className="about-us-content">
         <header className="about-us-header">
-          <Button                                         // Home button to navigate back to start page
+          <Button
             className="about-us-home-btn" 
             aria-label="Go home"
             onClick={() => navigate('/start')}
@@ -28,18 +30,16 @@ export default function AboutUs() {
             <h1 id="about-title" className="about-us-title">Meet The Team!</h1>
             <div className="about-us-divider" aria-hidden="true"></div>
           </div>
-        </header>
 
-        <div className="about-us-nav" aria-label="Page navigation">
-          <Button                                                   // Button to navigate to About Our Game page
-            className="about-game-btn"
-            onClick={() => navigate('/about-game')}
-            variant="icon"
+          <button
+            className="how-to-play-header-nav-btn right"
+            onClick={() => { playClick(); navigate('/about-game'); }}
+            aria-label="Go to About Our Game"
           >
-            <span>About Our Game</span>
-            <span className="arrow">→</span>
-          </Button>
-        </div>
+            <span className="how-to-play-header-nav-label">About Our Game</span>
+            <img src="/assets/img/button-icons/right-arrow.png" alt="" aria-hidden="true" className="nav-arrow right" />
+          </button>
+        </header>
 
         <section className="team-grid" aria-label="Team members">                      {/* Team members section */}
           <div className="team-member">

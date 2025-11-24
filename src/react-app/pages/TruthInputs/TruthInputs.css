@@ -130,8 +130,9 @@
 }
 
 .back-link:hover {
+  
   color: white;
-  background: transparent;
+  background: transparent !important;
 }
 
 /* Right column */

@@ -49,6 +49,51 @@
   transition: all 0.2s ease;
 }
 
+/* Header navigation buttons (previous/next) */
+.how-to-play-header-nav-btn {
+  position: absolute;
+  top: 24px;
+  background: var(--primary);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  min-height: 44px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: clamp(0.85rem, 1.6vh, 1rem);
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.how-to-play-header-nav-label {
+  white-space: pre-line;
+  line-height: 1.05;
+}
+
+.nav-arrow {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+.nav-arrow.left {
+  transform: scaleX(-1);
+}
+
+.how-to-play-header-nav-btn.left { left: 0; }
+.how-to-play-header-nav-btn.right { right: 0; }
+
+.how-to-play-header-nav-btn:hover {
+  background: var(--secondary-hover);
+  transform: translateY(-2px);
+}
+
 .how-to-play-home-btn:hover {
   background: var(--secondary-hover);
   transform: translateY(-2px);
@@ -231,7 +276,7 @@
 
 /* tooltip hover */
 .help-hover {
-  position: realtive;
+  position: relative; /* fix spelling for positioning context */
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -263,7 +308,7 @@
 .shortcut-tooltip {
   display: none;
   position: absolute;
-  top: 120%;
+  bottom: 120%; /* place tooltip above trigger */
   left: 0;
   background-color: rgba(20, 20, 20, 0.95);
   border: 2px solid rgba(255, 255, 255, 0.2);

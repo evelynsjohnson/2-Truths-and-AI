@@ -5,41 +5,32 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/Button/Button';
+import { useSoundEffect } from '../../hooks/useSoundEffect';
 import './AboutGame.css';
 
 export default function AboutGame() {
-  const navigate = useNavigate();   // Navigation hook to switch pages
+  const navigate = useNavigate();
+  const { playClick } = useSoundEffect();
 
   // This component renders the About Game page
   return (
     <main className="about-game-stage" role="main" aria-labelledby="game-title">
       <div className="about-game-content">
         <header className="about-game-header">
-          <Button                                                                                         // Home button to navigate back to start page
-            className="about-game-home-btn" 
-            aria-label="Go home" 
-            onClick={() => navigate('/start')}
-            variant="icon"
+          <button
+            className="how-to-play-header-nav-btn left"
+            onClick={() => { playClick(); navigate('/about-us'); }}
+            aria-label="Go to Meet The Team"
           >
-            <img src="/assets/img/button-icons/home.png" alt="Home" />
-          </Button>
-          
+            <img src="/assets/img/button-icons/right-arrow.png" alt="" aria-hidden="true" className="nav-arrow left" />
+            <span className="how-to-play-header-nav-label">Meet The Team!</span>
+          </button>
+
           <div>
-            <h1 id="game-title" className="about-game-title">About Our Game</h1>                             {/* Page title */}
+            <h1 id="game-title" className="about-game-title">About Our Game</h1>
             <div className="about-game-divider" aria-hidden="true"></div>
           </div>
         </header>
-
-        <div className="about-game-nav" aria-label="Page navigation">
-          <Button                                               // Button to navigate to About Us page
-            className="about-us-btn"
-            onClick={() => navigate('/about-us')}
-            variant="icon"
-          >
-            <span className="arrow">←</span>
-            <span>About Us</span>
-          </Button>
-        </div>
 
         <div className="layout-grid">
           <section className="section section-purple idea-section" aria-labelledby="idea-title">

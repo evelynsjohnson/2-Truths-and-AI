@@ -24,8 +24,8 @@
 
 .home-btn {
   position: absolute;
-  left: clamp(1rem, 2vw, 1.5rem); /* align with page horizontal padding */
-  top: 24px;
+  left: 0;
+  top: clamp(1rem, 2vh, 1.5rem);
   background: var(--secondary);
   border: none;
   border-radius: 10px;
@@ -76,6 +76,7 @@
 
 .setting-row {
   display: grid;
+  margin-top: -5px;
   /* label | dots (flex) | control */
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -209,7 +210,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  order: 2; /* ensure confirm sits on the right */
+  margin-top: 10px;
+  order: 1; /* ensure confirm sits on the left */
 }
 
 .confirm-btn:hover {
@@ -218,14 +220,14 @@
 }
 
  .reset-link {
-  background: transparent;
+  background: transparent !important;
   color: var(--primary);
   border: none;
   cursor: pointer;
   text-decoration: none;
   font-size: 22px;
   font-weight: 700;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, text-decoration 0.2s ease;
   padding: 18px 24px;
   text-align: center;
   border-radius: 24px;
@@ -234,12 +236,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  order: 1; /* ensure reset sits on the left */
+  order: 2; /* ensure reset sits on the right */
 }
 
 .reset-link:hover {
   color: var(--secondary-hover);
-  background: transparent;
+  text-decoration: underline;
 }
 
 @media (max-width: 760px) {
@@ -248,6 +250,6 @@
   .title { font-size: 28px; }
   .setting-value { min-width: 100px; font-size: 18px }
   .confirm-row { flex-direction: column; gap: 12px; }
-  .confirm-btn { width: 100%; font-size: 18px; flex: none; order: 2; }
-  .reset-link { width: 100%; flex: none; order: 1; font-size: 18px; }
+  .confirm-btn { width: 100%; font-size: 18px; flex: none; order: 1; }
+  .reset-link { width: 100%; flex: none; order: 2; font-size: 18px; }
 }

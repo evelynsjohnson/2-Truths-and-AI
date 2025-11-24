@@ -28,13 +28,13 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 0 0 24px 0; /* match Settings header spacing so title and home button align */
-  min-height: clamp(2.5rem, 5vh, 3rem);
+  padding: 0 0 clamp(0.875rem, 1.8vh, 1.125rem) 0;
+  min-height: clamp(2.375rem, 4.4vh, 2.75rem);
 }
 
 .about-game-home-btn {
   position: absolute;
-  left: 0;
+  right: 0;
   top: 24px;
   background: var(--secondary);
   border: none;
@@ -47,6 +47,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   flex-shrink: 0;
+  z-index: 10;
 }
 
 .about-game-home-btn:hover {
@@ -171,37 +172,7 @@
   margin-top: 0;
 }
 
-.about-us-btn {
-  background: var(--primary);
-  border: none;
-  color: #fff;
-  font-size: clamp(1.3rem, 2.8vh, 1.8rem);
-  font-family: "Afacad", sans-serif;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: clamp(0.75rem, 1.6vw, 1rem);
-  padding: clamp(0.6rem, 1.4vh, 0.9rem) clamp(1rem, 2.5vw, 1.4rem);
-  border-radius: 12px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.22);
-  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-}
 
-.about-us-btn:hover {
-  background: var(--primary-hover);
-  transform: translateX(-6px);
-  box-shadow: 0 12px 26px rgba(0,0,0,0.26);
-}
-
-.about-us-btn .arrow {
-  font-size: clamp(1.4rem, 2.4vh, 1.8rem);
-  transition: transform 0.2s ease;
-}
-
-.about-us-btn:hover .arrow {
-  transform: translateX(-0.375rem);
-}
 
 @media (max-width: 920px) {
   .layout-grid {
@@ -282,20 +253,48 @@
     justify-content: center;
   }
 
-  .about-game-nav {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 0.5rem 1rem 0;
-    margin-bottom: 0.5rem;
-  }
 }
 
-/* Navigation area immediately below the header */
-.about-game-nav {
-  width: 100%;
+/* Header navigation buttons */
+.about-game-stage .how-to-play-header-nav-btn {
+  position: absolute;
+  top: 24px;
+  background: var(--primary);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  min-height: 44px;
   display: flex;
-  justify-content: flex-start; /* left-aligned on wider screens */
-  padding: clamp(0.75rem, 1.8vh, 1.25rem) clamp(1rem, 2.5vw, 2rem);
-  margin-bottom: clamp(0.75rem, 1.8vh, 1.5rem);
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: clamp(0.85rem, 1.6vh, 1rem);
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.about-game-stage .how-to-play-header-nav-btn.left { left: 0; }
+
+.about-game-stage .how-to-play-header-nav-btn:hover {
+  background: var(--secondary-hover);
+  transform: translateY(-2px);
+}
+
+.about-game-stage .how-to-play-header-nav-label {
+  white-space: pre-line;
+  line-height: 1.05;
+}
+
+.about-game-stage .nav-arrow {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+.about-game-stage .nav-arrow.left {
+  transform: scaleX(-1);
 }
