@@ -56,14 +56,13 @@
   background: var(--primary);
   border: none;
   border-radius: 10px;
-  padding: 10px 14px;
+  padding: 12px 16px;
   min-height: 44px;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
-  font-size: clamp(0.85rem, 1.6vh, 1rem);
   font-weight: 700;
   color: #fff;
   cursor: pointer;
@@ -74,6 +73,7 @@
 .how-to-play-header-nav-label {
   white-space: pre-line;
   line-height: 1.05;
+  font-size: clamp(1rem, 2.2vh, 1.12rem); /* increased label size */
 }
 
 .nav-arrow {

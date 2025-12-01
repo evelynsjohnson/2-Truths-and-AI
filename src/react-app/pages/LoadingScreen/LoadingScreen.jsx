@@ -46,8 +46,8 @@ export default function LoadingScreen() {
       updateGameState({ isGeneratingLies: true });
 
 
-      // Call API to generate lies for all players
-      const liesData = await generateLiesForAllPlayers(gameState.players);
+      // Call API to generate lies for all players, passing the selected AI model
+      const liesData = await generateLiesForAllPlayers(gameState.players, gameState.aiModel || 'gpt-5-nano');
       
       setProgress('Building game rounds...');
 
@@ -233,6 +233,9 @@ export default function LoadingScreen() {
               This may take a moment.
             </p>
             {progress && <p className="progress-text">{progress}</p>}
+            <p className="loading-message">
+              One player per round may be the <strong>Chameleon</strong> — their truths are shown alongside an AI lie and they must pretend to be a normal player.
+            </p>
           </>
         ) : error ? (
           <>

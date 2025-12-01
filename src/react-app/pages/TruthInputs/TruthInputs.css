@@ -37,6 +37,14 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
+.player-header .privacy-note {
+  font-size: 1.3rem;
+  margin: 0.35rem 0 0 0;
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 24rem;
+  line-height: 1.25;
+}
+
 /* Help hover demo */
 .help-hover {
   position: relative;

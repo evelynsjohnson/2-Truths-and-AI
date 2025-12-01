@@ -60,9 +60,8 @@ export default function RoundLeaderboard() {
   };
   
   const handleEndGameEarly = () => {
-    if (window.confirm('Are you sure you want to end the game early?')) {
-      navigate('/game-stats');
-    }
+    // Immediately navigate to the final game stats (remove confirmation)
+    navigate('/game-stats');
   };
 
   // Get medal/rank display for top 3 players

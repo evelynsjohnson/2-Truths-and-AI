@@ -24,7 +24,11 @@
 
 .home-btn {
   position: absolute;
-  left: 0;
+  /* Align the home button with the left edge of the centered card. The
+     expression computes the stage's left padding plus half of the remaining
+     horizontal space (viewport minus card width), matching the card's offset.
+     This keeps the button aligned across viewport sizes responsively. */
+  left: calc(clamp(1rem, 2vw, 1.5rem) + (100% - clamp(24rem, 95vw, 70rem)) / 2);
   top: clamp(1rem, 2vh, 1.5rem);
   background: var(--secondary);
   border: none;

@@ -293,6 +293,7 @@ export default function TruthInputs() {
           <div className="player-header">
             <h1>Player {currentPlayerIndex + 1}</h1>
             <p>out of {gameState.players.length}</p>
+            <p className="privacy-note">Please enter your truths privately — other players should not look at the screen.</p>
           </div>
 
           {/* Help hover demo */}

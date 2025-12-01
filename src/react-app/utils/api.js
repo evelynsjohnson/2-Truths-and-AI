@@ -119,115 +119,226 @@ export async function generateLiesForAllPlayers(players, aiModel = 'gpt-5-nano')
 export async function exportGameStatsToPDF(gameState) {
   // Dynamically import jsPDF
   const { jsPDF } = await import('jspdf');
-  
+
   const doc = new jsPDF();
-  let yPosition = 20;
-  const lineHeight = 7;
-  const pageHeight = doc.internal.pageSize.height;
+  const pageWidth = doc.internal.pageSize.getWidth ? doc.internal.pageSize.getWidth() : doc.internal.pageSize.width;
+  const pageHeight = doc.internal.pageSize.getHeight ? doc.internal.pageSize.getHeight() : doc.internal.pageSize.height;
   const margin = 20;
-  
-  // Helper function to add text and handle page breaks
-  const addText = (text, x = 20, fontSize = 12, isBold = false) => {
-    if (yPosition > pageHeight - margin) {
-      doc.addPage();
-      yPosition = 20;
-    }
+  let yPosition = margin + 2;
+  const lineHeight = 7;
+
+  // Helper that splits long text and handles page breaks
+  // Accepts an optional `fontFamily` so different sections (like votes)
+  // can be rendered in a different font (e.g., monospace) without affecting others.
+  const addText = (text, x = margin, fontSize = 12, isBold = false, fontFamily = 'helvetica') => {
+    const maxWidth = pageWidth - margin - x;
     doc.setFontSize(fontSize);
-    doc.setFont(undefined, isBold ? 'bold' : 'normal');
-    doc.text(text, x, yPosition);
-    yPosition += lineHeight;
+    // Use the requested font family and style. jsPDF supports built-in
+    // fonts like 'helvetica', 'times', and 'courier'.
+    try {
+      doc.setFont(fontFamily, isBold ? 'bold' : 'normal');
+    } catch (e) {
+      // Fallback to default if the font name isn't recognized
+      doc.setFont('helvetica', isBold ? 'bold' : 'normal');
+    }
+
+    const lines = doc.splitTextToSize(String(text), maxWidth);
+
+    lines.forEach((line) => {
+      if (yPosition > pageHeight - margin) {
+        doc.addPage();
+        yPosition = margin;
+      }
+      doc.text(line, x, yPosition);
+      yPosition += lineHeight;
+    });
   };
-  
-  // Title
-  addText('2 TRUTHS AND AI - GAME STATISTICS', 20, 18, true);
-  yPosition += 5;
-  
-  // Game Info
-  addText(`Date: ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}`, 20, 11);
-  addText(`Total Rounds: ${gameState.rounds?.length || 0}`, 20, 11);
-  addText(`AI Model: ${gameState.aiModel || 'gpt-4'}`, 20, 11);
-  addText(`Total Players: ${gameState.players?.length || 0}`, 20, 11);
-  yPosition += 5;
-  
+
   // Helper function to calculate lie detection stats
   const getLieDetectionStats = (player) => {
     const totalRounds = gameState.rounds?.length || 0;
     const detectedLies = gameState.rounds?.filter(round => {
       const vote = round.votes?.[player.id];
-      const normalized = vote && typeof vote === 'object' && 'statementIndex' in vote ? vote.statementIndex : null;
+      const normalized = vote && typeof vote === 'object' && 'statementIndex' in vote ? vote.statementIndex : (typeof vote === 'number' ? vote : null);
       const lieIndex = round.statements?.findIndex(s => s.type === 'lie');
       return normalized === lieIndex;
     }).length || 0;
     return { detectedLies, totalRounds };
   };
-  
+
+  // If a logo asset exists, try to load it and draw at the top of the first page
+  try {
+    let logoUrl;
+    try {
+      logoUrl = (await import('../assets/img/logos/logo.png')).default;
+    } catch (e) {
+      logoUrl = null;
+    }
+
+    if (logoUrl) {
+      const img = await new Promise((resolve, reject) => {
+        const i = new Image();
+        i.crossOrigin = 'anonymous';
+        i.onload = () => resolve(i);
+        i.onerror = reject;
+        i.src = logoUrl;
+      });
+
+      const logoMaxWidth = pageWidth - margin * 2;
+      const logoWidth = Math.min(logoMaxWidth, 50);
+      const logoHeight = (img.naturalHeight / img.naturalWidth) * logoWidth;
+      const logoX = (pageWidth - logoWidth) / 2;
+
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+
+        // Recolor the logo so white/colored pixels become black while
+        // preserving transparency. This makes white logos visible on
+        // white PDF backgrounds.
+        try {
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const d = imageData.data;
+          for (let i = 0; i < d.length; i += 4) {
+            const alpha = d[i + 3];
+            // If pixel is transparent, leave it. Otherwise set to black.
+            if (alpha > 8) {
+              // set RGB to 0 (black). Keep alpha unchanged.
+              d[i] = 0;
+              d[i + 1] = 0;
+              d[i + 2] = 0;
+            }
+          }
+          ctx.putImageData(imageData, 0, 0);
+        } catch (procErr) {
+          // getImageData may fail if canvas is tainted; fall back to original
+          console.warn('Logo recolor skipped (canvas tainted):', procErr);
+        }
+
+        const dataUrl = canvas.toDataURL('image/png');
+        doc.addImage(dataUrl, 'PNG', logoX, yPosition, logoWidth, logoHeight);
+        yPosition += logoHeight + 6;
+      } catch (err) {
+        console.warn('Unable to add logo to PDF:', err);
+      }
+    }
+  } catch (err) {
+    console.warn('Logo load skipped:', err);
+  }
+
+  // Title
+  addText('2 TRUTHS AND AI - GAME STATISTICS', margin, 18, true);
+  yPosition += 2;
+
+  // (debugging removed)
+
+  // Game Info
+  addText(`Date: ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}`, margin, 11);
+  addText(`Total Rounds: ${gameState.rounds?.length || 0}`, margin, 11);
+  addText(`AI Model: ${gameState.aiModel || 'gpt-4'}`, margin, 11);
+  addText(`Total Players: ${gameState.players?.length || 0}`, margin, 11);
+  yPosition += 2;
+
   // Leaderboard
-  addText('FINAL LEADERBOARD', 20, 14, true);
+  addText('FINAL LEADERBOARD', margin, 14, true);
+  if (yPosition > pageHeight - margin) { doc.addPage(); yPosition = margin; }
   doc.setLineWidth(0.5);
-  doc.line(20, yPosition, 190, yPosition);
+  doc.line(margin, yPosition, pageWidth - margin, yPosition);
   yPosition += 5;
-  
+
   if (gameState.players && gameState.players.length > 0) {
     const sortedPlayers = [...gameState.players].sort((a, b) => (b.score || 0) - (a.score || 0));
     sortedPlayers.forEach((player, index) => {
       const stats = getLieDetectionStats(player);
-      addText(`${index + 1}. ${player.name}: ${player.score || 0} points (${stats.detectedLies}/${stats.totalRounds} lies detected)`, 25, 11);
+      addText(`${index + 1}. ${player.name}: ${player.score || 0} points (${stats.detectedLies}/${stats.totalRounds} lies detected)`, margin + 5, 11);
     });
   }
-  yPosition += 5;
-  
+  yPosition += 4;
+
   // Round Details
-  addText('ROUND DETAILS', 20, 14, true);
-  doc.line(20, yPosition, 190, yPosition);
+  addText('ROUND DETAILS', margin, 14, true);
+  if (yPosition > pageHeight - margin) { doc.addPage(); yPosition = margin; }
+  doc.line(margin, yPosition, pageWidth - margin, yPosition);
   yPosition += 5;
-  
+
   if (gameState.rounds && gameState.rounds.length > 0) {
     gameState.rounds.forEach((round, roundIndex) => {
-      addText(`Round ${roundIndex + 1}:`, 20, 12, true);
-      
+      addText(`Round ${roundIndex + 1}:`, margin, 12, true);
+
       if (round.statements) {
-        // Group statements by type
         const truths = round.statements.filter(s => s.type === 'truth');
-        const lie = round.statements.find(s => s.type === 'lie');
-        
-        // Display truths
         truths.forEach((statement) => {
           const playerName = statement.playerName || gameState.players.find(p => p.id === statement.playerId)?.name || 'Unknown';
           const text = `${playerName}: "${statement.text}"`;
-          const maxWidth = 150;
-          const lines = doc.splitTextToSize(text, maxWidth);
-          lines.forEach(line => {
-            addText(line, 25, 10);
-          });
+          addText(text, margin + 5, 10);
         });
-        
-        // Display AI lie
+
+        const lie = round.statements.find(s => s.type === 'lie');
         if (lie) {
-          const text = `AI: "${lie.text}" (LIE)`;
-          const maxWidth = 150;
-          const lines = doc.splitTextToSize(text, maxWidth);
-          lines.forEach(line => {
-            addText(line, 25, 10);
-          });
+          addText(`AI: "${lie.text}" (LIE)`, margin + 5, 10);
         }
       }
-      
-      // Display votes
-      if (round.votes) {
-        const voteResults = Object.entries(round.votes).map(([playerId, vote]) => {
-          const player = gameState.players.find(p => p.id === parseInt(playerId));
-          const statementIndex = vote && typeof vote === 'object' ? vote.statementIndex : vote;
-          const lieIndex = round.statements?.findIndex(s => s.type === 'lie');
-          const correct = statementIndex === lieIndex ? '✓' : '✗';
-          return `${player?.name || 'Unknown'}: ${correct}`;
-        });
-        addText(`Votes: ${voteResults.join(', ')}`, 25, 9);
-      }
-      
+
+      // Display votes in readable form
+        if (round.votes && Object.keys(round.votes).length > 0) {
+          // Robust sanitizer: remove control/invisible characters and collapse whitespace.
+          // Uses Unicode property escapes when available (modern browsers),
+          // with a fallback for older engines.
+          function sanitize(s) {
+            let str = String(s ?? '');
+            // First, remove NULLs, control ranges and common zero-width / invisible
+            // characters that often cause glyph spacing issues when embedded.
+            str = str.replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200F\u2028\u2029\uFEFF\u2060-\u206F]+/g, '');
+            // Best-effort: also remove any Unicode "Other" category chars if supported.
+            try {
+              str = str.replace(/\p{C}+/gu, '');
+            } catch (e) {
+              // ignore if Unicode property escapes aren't supported
+            }
+            // Replace a few common punctuation/glyphs with ASCII equivalents
+            const map = {
+              '\u2014': '-', '\u2013': '-', '\u2010': '-', '\u2011': '-',
+              '\u2018': "'", '\u2019': "'", '\u201C': '"', '\u201D': '"',
+              '\u00A0': ' ', '\uFEFF': '',
+              '\u2713': '(correct)', '\u2717': '(wrong)'
+            };
+            for (const k in map) {
+              str = str.split(k).join(map[k]);
+            }
+            // Collapse runs of whitespace to a single space and trim
+            return str.replace(/\s+/g, ' ').trim();
+          }
+
+          addText('Votes:', margin + 5, 11, true);
+
+          Object.entries(round.votes).forEach(([playerId, vote]) => {
+            const player = gameState.players.find(p => p.id === parseInt(playerId));
+            let statementIndex = null;
+            if (vote && typeof vote === 'object' && 'statementIndex' in vote) statementIndex = vote.statementIndex;
+            else if (typeof vote === 'number') statementIndex = vote;
+
+            const lieIndex = round.statements?.findIndex(s => s.type === 'lie');
+            const correct = (statementIndex != null && statementIndex === lieIndex) ? '✓' : '✗';
+            const chosen = statementIndex != null ? `statement ${statementIndex + 1}` : 'no vote';
+            const chosenText = (statementIndex != null && round.statements && round.statements[statementIndex]) ? round.statements[statementIndex].text : '';
+
+            // Render votes the same way we render statements: playerName: "statement text"
+            const playerName = player?.name || gameState.players.find(p => p.id === (vote && vote.playerId) || playerId)?.name || 'Unknown';
+            const statementText = chosenText ? sanitize(chosenText) : 'no vote';
+            const voteRow = `${sanitize(playerName)}: "${statementText}"`;
+            // no debug logging
+            // Use the same indentation and font size as statements
+            addText(voteRow, margin + 5, 10);
+          });
+        }
+
       yPosition += 3;
     });
   }
-  
+
   // Save the PDF
   doc.save(`2truths-ai-game-data-${Date.now()}.pdf`);
 }

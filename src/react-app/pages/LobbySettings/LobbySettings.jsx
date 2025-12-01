@@ -143,7 +143,7 @@ export default function LobbySettings() {
   const decLength = () => { setRoundLength(l => Math.max(MIN_ROUND_LENGTH, l - 30)); };
   const incLength = () => { setRoundLength(l => Math.min(MAX_ROUND_LENGTH, l + 30)); };
 
-  const AI_MODELS = ['gpt-5-nano', 'gpt-4.1-mini', 'gpt-35-turbo'];
+  const AI_MODELS = ['gpt-5-nano', 'gpt-5-mini', 'gpt-5-chat', 'gpt-4.1-mini', 'gpt-35-turbo'];
   const decAiModel = () => {
     setAiModel(prev => {
       const idx = AI_MODELS.indexOf(prev);
@@ -241,6 +241,10 @@ export default function LobbySettings() {
           <div className="help-text">
             {aiModel === 'gpt-5-nano' ?
               '"Normal" difficulty. Generates highly convincing lies. Slower than mini. Recommended for first time players.' :
+              aiModel === 'gpt-5-mini' ?
+                '"Balanced" difficulty. Fast and produces believable lies with slightly more detail than nano.' :
+              aiModel === 'gpt-5-chat' ?
+                '"Chat-optimized" model. Produces conversational, varied lies — good for interactive rounds.' :
               aiModel === 'gpt-4.1-mini' ?
                 '"Easy" difficulty. Generates fairly believable lies. Fastest model.' :
                 '"Extremely Easy" difficulty. Generates poorly conceived lies. Not recommended for first time players.'}

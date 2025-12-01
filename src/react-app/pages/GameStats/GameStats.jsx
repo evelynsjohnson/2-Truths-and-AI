@@ -7,7 +7,7 @@
  */
 
 import React, { useMemo, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useGame } from '../../context/GameContext';
 import Card from '../../components/Card/Card';
 import Button from '../../components/Button/Button';
@@ -21,7 +21,17 @@ function safeText(str) {
 export default function GameStats() {
   const navigate = useNavigate();
   const { gameState } = useGame();
-  const [isLoading, setIsLoading] = useState(true);
+  const location = useLocation();
+
+  // If navigated here with `state.skipLoading === true` (for example when
+  // coming back from the final leaderboard), skip the initial loading delay.
+  const [isLoading, setIsLoading] = useState(() => {
+    try {
+      return !(location && location.state && location.state.skipLoading);
+    } catch (e) {
+      return true;
+    }
+  });
 
   // Compute stats from gameState.rounds and gameState.players
   const stats = useMemo(() => {
@@ -149,7 +159,8 @@ export default function GameStats() {
   }, [gameState.rounds, gameState.players, gameState.roundLength]);
 
   useEffect(() => {
-    // Keep loading message visible for 4 seconds so players have time to read it
+    // Only run the loading timeout when we actually want to show loading.
+    if (!isLoading) return;
     const t = setTimeout(() => setIsLoading(false), 4000);
     return () => clearTimeout(t);
   }, []);

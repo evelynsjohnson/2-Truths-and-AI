@@ -623,25 +623,23 @@ export default function RoundScreen() {
   };
 
   const handleEndEarly = () => {
-    if (!window.confirm('Are you sure you want to end this round early?')) return;
-
     // If overlay is already playing, do nothing — beginReveal will run when it completes
     if (overlayTimeoutRef.current || showTimeUp) return;
 
-    // Freeze the timer by marking as submitted
+    // Freeze the timer by marking as submitted and start the existing
+    // early-end countdown/overlay flow (no confirmation prompt).
     setHasSubmitted(true);
-    
     finalPlayedRef.current = true;
     setShowTimeUp(true);
 
     // Start countdown at 3 (same as timer expiry)
     setCountdownValue(3);
     playSound('countdown1.mp3');
-    
+
     let currentCount = 3;
     countdownIntervalRef.current = setInterval(() => {
       currentCount--;
-      
+
       if (currentCount === 2) {
         playSound('countdown2.mp3');
         setCountdownValue(2);

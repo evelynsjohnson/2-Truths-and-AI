@@ -96,7 +96,9 @@ export default function FinalLeaderboard() {
   };
   
   const handleBackToGameStats = () => {
-    navigate('/game-stats');
+    // When returning from the final leaderboard, skip the initial loading
+    // animation on the Game Stats page since stats were already computed.
+    navigate('/game-stats', { state: { skipLoading: true } });
   };
 
   // Download game data as JSON
@@ -189,7 +191,10 @@ export default function FinalLeaderboard() {
 
       const canvas = await html2canvas(leaderboardRef.current, {
         backgroundColor: '#0f0f10',
-        scale: 2,
+        // Use devicePixelRatio for crisper captures on high-DPI screens
+        scale: window.devicePixelRatio || 2,
+        // Allow cross-origin images to be used if they provide proper CORS headers
+        useCORS: true,
         logging: false
       });
 
@@ -240,7 +245,7 @@ export default function FinalLeaderboard() {
 
         <div className="final-leaderboard-header">
           <div className="header-title-row">
-            <img src={logoIcon} alt="Logo" className="header-logo" />
+            <img src={logoIcon} alt="Logo" className="header-logo" crossOrigin="anonymous" />
             <h1 className="final-title">Leaderboard</h1>
           </div>
           <div className="title-underline"></div>
@@ -268,25 +273,25 @@ export default function FinalLeaderboard() {
             </Button>
           </div>
           <div className="leaderboard-actions secondary-actions">
-            <Button className="download-btn" onClick={handleDownloadGameData}>
-              <img src={downloadIcon} alt="Download" className="btn-img" />
+            <Button className="export-btn" onClick={handleExportLeaderboard}>
+              <img src={exportIcon} alt="Export" className="btn-img" />
               <div>
-                <div className="btn-label">DOWNLOAD</div>
-                <span className="subtitle">Game Data (JSON)</span>
+                <div className="btn-label">Screenshot the</div>
+                <div className="btn-label">Leaderboard</div>
               </div>
             </Button>
             <Button className="download-btn pdf-btn" onClick={handleDownloadGameDataPDF}>
               <img src={downloadIcon} alt="Download PDF" className="btn-img" />
               <div>
-                <div className="btn-label">DOWNLOAD</div>
-                <span className="subtitle">Game Data (PDF)</span>
+                <div className="btn-label">Download the</div>
+                <span className="btn-label">Game Data (PDF)</span>
               </div>
             </Button>
-            <Button className="export-btn" onClick={handleExportLeaderboard}>
-              <img src={exportIcon} alt="Export" className="btn-img" />
+            <Button className="download-btn" onClick={handleDownloadGameData}>
+              <img src={downloadIcon} alt="Download" className="btn-img" />
               <div>
-                <div className="btn-label">EXPORT</div>
-                <span className="subtitle">The Leaderboard</span>
+                <div className="btn-label">Download raw</div>
+                <span className="btn-label">Game Data (JSON)</span>
               </div>
             </Button>
           </div>

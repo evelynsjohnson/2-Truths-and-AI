@@ -29,7 +29,7 @@ app.post('/api/generate-lies', async (c) => {
         console.log("Formatted input for lie generation:", formattedInput);
 
         // Check that ai model is provided and valid, else use default
-        const validAiModels = ['gpt-5-nano', 'gpt-4.1-mini', 'gpt-35-turbo'];
+        const validAiModels = ['gpt-5-nano', 'gpt-5-mini', 'gpt-5-chat', 'gpt-4.1-mini', 'gpt-35-turbo'];
         const aiModel = validAiModels.includes(body.aiModel) ? body.aiModel : 'gpt-5-nano';
 
         // Call OpenAI API with formatted input and generate lies
@@ -168,12 +168,12 @@ async function generateLiesFromTruths(truths, aiModel, env) {
                         "5. Match the user's writing style:\n" +
                         "   - Tone (casual, formal, enthusiastic)\n" +
                         "   - Grammar and spelling (including mistakes if present)\n" +
-                        "   - Punctuation habits (full stops, capitalization)\n" +
+                        "   - Punctuation habits (full stops, capitalization): IMPORTANT, do not put full stops if the user's truths do not contain them\n" +
                         "   - Language (use the same language as the user's statements)\n\n" +
 
                         "6. Keep lies appropriate:\n" +
                         "   - No offensive, derogatory, or hateful content\n" +
-                        "   - No explicit or inappropriate material\n\n" +
+                        //"   - No explicit or inappropriate material\n\n" +
 
                         "Remember: The lie should sound like something the user COULD have said, but about a DIFFERENT aspect of their life or interests.\n"
                     )
